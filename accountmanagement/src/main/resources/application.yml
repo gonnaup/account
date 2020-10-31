@@ -1,0 +1,23 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://my.ali.com:8806?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: 121314
+      maximum-pool-size: 8
+  redis:
+    host: my.ali.com
+    port: 8379
+    password: 121314
+
+  mail:
+    host: smtp.yeah.net
+    username: weimohun@yeah.net
+    password: YBVBDZQGLIRGVDFU
+    default-encoding: UTF-8
+    protocol: smtp
+mybatis:
+  mapper-locations: mapper/*.xml

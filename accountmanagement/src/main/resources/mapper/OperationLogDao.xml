@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gonnaup.accountmanagement.dao.OperationLogDao">
+
+    <resultMap type="org.gonnaup.accountmanagement.entity.OperationLog" id="OperationLogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="operaterType" column="operater_type" jdbcType="VARCHAR"/>
+        <result property="operaterId" column="operater_id" jdbcType="INTEGER"/>
+        <result property="operaterName" column="operater_name" jdbcType="VARCHAR"/>
+        <result property="operateType" column="operate_type" jdbcType="VARCHAR"/>
+        <result property="operateDetail" column="operate_detail" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OperationLogMap">
+        select
+          id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
+        from acountManagement.operation_log
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OperationLogMap">
+        select
+          id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
+        from acountManagement.operation_log
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="OperationLogMap">
+        select
+        id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
+        from acountManagement.operation_log
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="operaterType != null and operaterType != ''">
+                and operater_type = #{operaterType}
+            </if>
+            <if test="operaterId != null">
+                and operater_id = #{operaterId}
+            </if>
+            <if test="operaterName != null and operaterName != ''">
+                and operater_name = #{operaterName}
+            </if>
+            <if test="operateType != null and operateType != ''">
+                and operate_type = #{operateType}
+            </if>
+            <if test="operateDetail != null and operateDetail != ''">
+                and operate_detail = #{operateDetail}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type, operate_detail, createtime)
+        values (#{operaterType}, #{operaterId}, #{operaterName}, #{operateType}, #{operateDetail}, #{createtime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type,
+        operate_detail, createtime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.operaterType}, #{entity.operaterId}, #{entity.operaterName}, #{entity.operateType},
+            #{entity.operateDetail}, #{entity.createtime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type,
+        operate_detail, createtime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.operaterType}, #{entity.operaterId}, #{entity.operaterName}, #{entity.operateType},
+            #{entity.operateDetail}, #{entity.createtime})
+        </foreach>
+        on duplicate key update
+        operater_type = values(operater_type) , operater_id = values(operater_id) , operater_name =
+        values(operater_name) , operate_type = values(operate_type) , operate_detail = values(operate_detail) ,
+        createtime = values(createtime)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update acountManagement.operation_log
+        <set>
+            <if test="operaterType != null and operaterType != ''">
+                operater_type = #{operaterType},
+            </if>
+            <if test="operaterId != null">
+                operater_id = #{operaterId},
+            </if>
+            <if test="operaterName != null and operaterName != ''">
+                operater_name = #{operaterName},
+            </if>
+            <if test="operateType != null and operateType != ''">
+                operate_type = #{operateType},
+            </if>
+            <if test="operateDetail != null and operateDetail != ''">
+                operate_detail = #{operateDetail},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from acountManagement.operation_log where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gonnaup.accountmanagement.dao.AccountRoleDao">
+
+    <resultMap type="org.gonnaup.accountmanagement.entity.AccountRole" id="AccountRoleMap">
+        <result property="accountId" column="account_id" jdbcType="INTEGER"/>
+        <result property="roleId" column="role_id" jdbcType="INTEGER"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AccountRoleMap">
+        select
+          account_id, role_id, createtime, updatetime
+        from acountManagement.account_role
+        where account_id = #{accountId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AccountRoleMap">
+        select
+          account_id, role_id, createtime, updatetime
+        from acountManagement.account_role
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="AccountRoleMap">
+        select
+        account_id, role_id, createtime, updatetime
+        from acountManagement.account_role
+        <where>
+            <if test="accountId != null">
+                and account_id = #{accountId}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="updatetime != null">
+                and updatetime = #{updatetime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="accountId" useGeneratedKeys="true">
+        insert into acountManagement.account_role(createtime, updatetime)
+        values (#{createtime}, #{updatetime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="accountId" useGeneratedKeys="true">
+        insert into acountManagement.account_role(createtime, updatetime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createtime}, #{entity.updatetime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="accountId" useGeneratedKeys="true">
+        insert into acountManagement.account_role(createtime, updatetime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createtime}, #{entity.updatetime})
+        </foreach>
+        on duplicate key update
+        createtime = values(createtime) , updatetime = values(updatetime)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update acountManagement.account_role
+        <set>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime},
+            </if>
+        </set>
+        where account_id = #{accountId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from acountManagement.account_role where account_id = #{accountId}
+    </delete>
+
+</mapper>

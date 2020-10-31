@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gonnaup.accountmanagement.dao.AuthenticationDao">
+
+    <resultMap type="org.gonnaup.accountmanagement.entity.Authentication" id="AuthenticationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="accountId" column="account_id" jdbcType="INTEGER"/>
+        <result property="authType" column="auth_type" jdbcType="VARCHAR"/>
+        <result property="identifier" column="identifier" jdbcType="VARCHAR"/>
+        <result property="credential" column="credential" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="AuthenticationMap">
+        select
+          id, account_id, auth_type, identifier, credential, createtime, updatetime
+        from acountManagement.authentication
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="AuthenticationMap">
+        select
+          id, account_id, auth_type, identifier, credential, createtime, updatetime
+        from acountManagement.authentication
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="AuthenticationMap">
+        select
+        id, account_id, auth_type, identifier, credential, createtime, updatetime
+        from acountManagement.authentication
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="accountId != null">
+                and account_id = #{accountId}
+            </if>
+            <if test="authType != null and authType != ''">
+                and auth_type = #{authType}
+            </if>
+            <if test="identifier != null and identifier != ''">
+                and identifier = #{identifier}
+            </if>
+            <if test="credential != null and credential != ''">
+                and credential = #{credential}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="updatetime != null">
+                and updatetime = #{updatetime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime, updatetime)
+        values (#{accountId}, #{authType}, #{identifier}, #{credential}, #{createtime}, #{updatetime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime,
+        updatetime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.accountId}, #{entity.authType}, #{entity.identifier}, #{entity.credential}, #{entity.createtime},
+            #{entity.updatetime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime,
+        updatetime)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.accountId}, #{entity.authType}, #{entity.identifier}, #{entity.credential}, #{entity.createtime},
+            #{entity.updatetime})
+        </foreach>
+        on duplicate key update
+        account_id = values(account_id) , auth_type = values(auth_type) , identifier = values(identifier) , credential =
+        values(credential) , createtime = values(createtime) , updatetime = values(updatetime)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update acountManagement.authentication
+        <set>
+            <if test="accountId != null">
+                account_id = #{accountId},
+            </if>
+            <if test="authType != null and authType != ''">
+                auth_type = #{authType},
+            </if>
+            <if test="identifier != null and identifier != ''">
+                identifier = #{identifier},
+            </if>
+            <if test="credential != null and credential != ''">
+                credential = #{credential},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from acountManagement.authentication where id = #{id}
+    </delete>
+
+</mapper>
