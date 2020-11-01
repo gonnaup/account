@@ -13,7 +13,7 @@
     <select id="queryById" resultMap="RolePermissionMap">
         select
           role_id, permission_id, createtime, updatetime
-        from acountManagement.role_permission
+        from role_permission
         where role_id = #{roleId}
     </select>
 
@@ -21,7 +21,7 @@
     <select id="queryAllByLimit" resultMap="RolePermissionMap">
         select
           role_id, permission_id, createtime, updatetime
-        from acountManagement.role_permission
+        from role_permission
         limit #{offset}, #{limit}
     </select>
 
@@ -29,7 +29,7 @@
     <select id="queryAll" resultMap="RolePermissionMap">
         select
         role_id, permission_id, createtime, updatetime
-        from acountManagement.role_permission
+        from role_permission
         <where>
             <if test="roleId != null">
                 and role_id = #{roleId}
@@ -48,12 +48,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
-        insert into acountManagement.role_permission(createtime, updatetime)
+        insert into role_permission(createtime, updatetime)
         values (#{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into acountManagement.role_permission(createtime, updatetime)
+        insert into role_permission(createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.createtime}, #{entity.updatetime})
@@ -61,7 +61,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into acountManagement.role_permission(createtime, updatetime)
+        insert into role_permission(createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.createtime}, #{entity.updatetime})
@@ -72,7 +72,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.role_permission
+        update role_permission
         <set>
             <if test="createtime != null">
                 createtime = #{createtime},
@@ -86,7 +86,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.role_permission where role_id = #{roleId}
+        delete from role_permission where role_id = #{roleId}
     </delete>
 
 </mapper>

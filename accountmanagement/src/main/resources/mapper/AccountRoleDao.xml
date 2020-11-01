@@ -13,7 +13,7 @@
     <select id="queryById" resultMap="AccountRoleMap">
         select
           account_id, role_id, createtime, updatetime
-        from acountManagement.account_role
+        from account_role
         where account_id = #{accountId}
     </select>
 
@@ -21,7 +21,7 @@
     <select id="queryAllByLimit" resultMap="AccountRoleMap">
         select
           account_id, role_id, createtime, updatetime
-        from acountManagement.account_role
+        from account_role
         limit #{offset}, #{limit}
     </select>
 
@@ -29,7 +29,7 @@
     <select id="queryAll" resultMap="AccountRoleMap">
         select
         account_id, role_id, createtime, updatetime
-        from acountManagement.account_role
+        from account_role
         <where>
             <if test="accountId != null">
                 and account_id = #{accountId}
@@ -48,12 +48,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="accountId" useGeneratedKeys="true">
-        insert into acountManagement.account_role(createtime, updatetime)
+        insert into account_role(createtime, updatetime)
         values (#{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="accountId" useGeneratedKeys="true">
-        insert into acountManagement.account_role(createtime, updatetime)
+        insert into account_role(createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.createtime}, #{entity.updatetime})
@@ -61,7 +61,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="accountId" useGeneratedKeys="true">
-        insert into acountManagement.account_role(createtime, updatetime)
+        insert into account_role(createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.createtime}, #{entity.updatetime})
@@ -72,7 +72,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.account_role
+        update account_role
         <set>
             <if test="createtime != null">
                 createtime = #{createtime},
@@ -86,7 +86,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.account_role where account_id = #{accountId}
+        delete from account_role where account_id = #{accountId}
     </delete>
 
 </mapper>

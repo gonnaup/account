@@ -16,7 +16,7 @@
     <select id="queryById" resultMap="OperationLogMap">
         select
           id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
-        from acountManagement.operation_log
+        from operation_log
         where id = #{id}
     </select>
 
@@ -24,7 +24,7 @@
     <select id="queryAllByLimit" resultMap="OperationLogMap">
         select
           id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
-        from acountManagement.operation_log
+        from operation_log
         limit #{offset}, #{limit}
     </select>
 
@@ -32,7 +32,7 @@
     <select id="queryAll" resultMap="OperationLogMap">
         select
         id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
-        from acountManagement.operation_log
+        from operation_log
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -60,12 +60,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type, operate_detail, createtime)
+        insert into operation_log(operater_type, operater_id, operater_name, operate_type, operate_detail, createtime)
         values (#{operaterType}, #{operaterId}, #{operaterName}, #{operateType}, #{operateDetail}, #{createtime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type,
+        insert into operation_log(operater_type, operater_id, operater_name, operate_type,
         operate_detail, createtime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -75,7 +75,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.operation_log(operater_type, operater_id, operater_name, operate_type,
+        insert into operation_log(operater_type, operater_id, operater_name, operate_type,
         operate_detail, createtime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -90,7 +90,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.operation_log
+        update operation_log
         <set>
             <if test="operaterType != null and operaterType != ''">
                 operater_type = #{operaterType},
@@ -116,7 +116,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.operation_log where id = #{id}
+        delete from operation_log where id = #{id}
     </delete>
 
 </mapper>

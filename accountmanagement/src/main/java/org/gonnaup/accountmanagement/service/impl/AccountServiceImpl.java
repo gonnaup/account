@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<Account> queryAllByLimit(int offset, int limit) {
-        return this.accountDao.queryAllByLimit(offset, limit);
+        return this.accountDao.queryAllOfApplicationLimit(, offset, limit);
     }
 
     /**

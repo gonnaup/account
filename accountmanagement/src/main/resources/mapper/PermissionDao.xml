@@ -15,7 +15,7 @@
     <select id="queryById" resultMap="PermissionMap">
         select
           id, application_name, permission_name, description, createtime, updatetime
-        from acountManagement.permission
+        from permission
         where id = #{id}
     </select>
 
@@ -23,7 +23,7 @@
     <select id="queryAllByLimit" resultMap="PermissionMap">
         select
           id, application_name, permission_name, description, createtime, updatetime
-        from acountManagement.permission
+        from permission
         limit #{offset}, #{limit}
     </select>
 
@@ -31,7 +31,7 @@
     <select id="queryAll" resultMap="PermissionMap">
         select
         id, application_name, permission_name, description, createtime, updatetime
-        from acountManagement.permission
+        from permission
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -56,12 +56,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.permission(application_name, permission_name, description, createtime, updatetime)
+        insert into permission(application_name, permission_name, description, createtime, updatetime)
         values (#{applicationName}, #{permissionName}, #{description}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.permission(application_name, permission_name, description, createtime, updatetime)
+        insert into permission(application_name, permission_name, description, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationName}, #{entity.permissionName}, #{entity.description}, #{entity.createtime},
@@ -70,7 +70,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.permission(application_name, permission_name, description, createtime, updatetime)
+        insert into permission(application_name, permission_name, description, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationName}, #{entity.permissionName}, #{entity.description}, #{entity.createtime},
@@ -83,7 +83,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.permission
+        update permission
         <set>
             <if test="applicationName != null and applicationName != ''">
                 application_name = #{applicationName},
@@ -106,7 +106,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.permission where id = #{id}
+        delete from permission where id = #{id}
     </delete>
 
 </mapper>

@@ -13,7 +13,7 @@
     <select id="queryById" resultMap="ApplicationCodeMap">
         select
           application_name, application_code, createtime, updatetime
-        from acountManagement.application_code
+        from application_code
         where application_name = #{applicationName}
     </select>
 
@@ -21,7 +21,7 @@
     <select id="queryAllByLimit" resultMap="ApplicationCodeMap">
         select
           application_name, application_code, createtime, updatetime
-        from acountManagement.application_code
+        from application_code
         limit #{offset}, #{limit}
     </select>
 
@@ -29,7 +29,7 @@
     <select id="queryAll" resultMap="ApplicationCodeMap">
         select
         application_name, application_code, createtime, updatetime
-        from acountManagement.application_code
+        from application_code
         <where>
             <if test="applicationName != null and applicationName != ''">
                 and application_name = #{applicationName}
@@ -48,12 +48,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into acountManagement.application_code(application_code, createtime, updatetime)
+        insert into application_code(application_code, createtime, updatetime)
         values (#{applicationCode}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into acountManagement.application_code(application_code, createtime, updatetime)
+        insert into application_code(application_code, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationCode}, #{entity.createtime}, #{entity.updatetime})
@@ -61,7 +61,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into acountManagement.application_code(application_code, createtime, updatetime)
+        insert into application_code(application_code, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationCode}, #{entity.createtime}, #{entity.updatetime})
@@ -72,7 +72,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.application_code
+        update application_code
         <set>
             <if test="applicationCode != null">
                 application_code = #{applicationCode},
@@ -89,7 +89,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.application_code where application_name = #{applicationName}
+        delete from application_code where application_name = #{applicationName}
     </delete>
 
 </mapper>

@@ -15,7 +15,7 @@
     <select id="queryById" resultMap="ManagementAccountMap">
         select
           id, management_name, management_type, identifier, createtime, updatetime
-        from acountManagement.management_account
+        from management_account
         where id = #{id}
     </select>
 
@@ -23,7 +23,7 @@
     <select id="queryAllByLimit" resultMap="ManagementAccountMap">
         select
           id, management_name, management_type, identifier, createtime, updatetime
-        from acountManagement.management_account
+        from management_account
         limit #{offset}, #{limit}
     </select>
 
@@ -31,7 +31,7 @@
     <select id="queryAll" resultMap="ManagementAccountMap">
         select
         id, management_name, management_type, identifier, createtime, updatetime
-        from acountManagement.management_account
+        from management_account
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -56,12 +56,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.management_account(management_name, management_type, identifier, createtime, updatetime)
+        insert into management_account(management_name, management_type, identifier, createtime, updatetime)
         values (#{managementName}, #{managementType}, #{identifier}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.management_account(management_name, management_type, identifier, createtime,
+        insert into management_account(management_name, management_type, identifier, createtime,
         updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -71,7 +71,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.management_account(management_name, management_type, identifier, createtime,
+        insert into management_account(management_name, management_type, identifier, createtime,
         updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -85,7 +85,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.management_account
+        update management_account
         <set>
             <if test="managementName != null and managementName != ''">
                 management_name = #{managementName},
@@ -108,7 +108,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.management_account where id = #{id}
+        delete from management_account where id = #{id}
     </delete>
 
 </mapper>

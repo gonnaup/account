@@ -14,7 +14,7 @@
     <select id="queryById" resultMap="ApplicationRpcAccountMap">
         select
           id, application_name, identifier, createtime, updatetime
-        from acountManagement.application_rpc_account
+        from application_rpc_account
         where id = #{id}
     </select>
 
@@ -22,7 +22,7 @@
     <select id="queryAllByLimit" resultMap="ApplicationRpcAccountMap">
         select
           id, application_name, identifier, createtime, updatetime
-        from acountManagement.application_rpc_account
+        from application_rpc_account
         limit #{offset}, #{limit}
     </select>
 
@@ -30,7 +30,7 @@
     <select id="queryAll" resultMap="ApplicationRpcAccountMap">
         select
         id, application_name, identifier, createtime, updatetime
-        from acountManagement.application_rpc_account
+        from application_rpc_account
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -52,12 +52,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.application_rpc_account(application_name, identifier, createtime, updatetime)
+        insert into application_rpc_account(application_name, identifier, createtime, updatetime)
         values (#{applicationName}, #{identifier}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.application_rpc_account(application_name, identifier, createtime, updatetime)
+        insert into application_rpc_account(application_name, identifier, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationName}, #{entity.identifier}, #{entity.createtime}, #{entity.updatetime})
@@ -65,7 +65,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.application_rpc_account(application_name, identifier, createtime, updatetime)
+        insert into application_rpc_account(application_name, identifier, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.applicationName}, #{entity.identifier}, #{entity.createtime}, #{entity.updatetime})
@@ -77,7 +77,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.application_rpc_account
+        update application_rpc_account
         <set>
             <if test="applicationName != null and applicationName != ''">
                 application_name = #{applicationName},
@@ -97,7 +97,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.application_rpc_account where id = #{id}
+        delete from application_rpc_account where id = #{id}
     </delete>
 
 </mapper>

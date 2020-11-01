@@ -40,7 +40,7 @@ class AccountServiceTest {
         account.setAccountAvatar(null);
         account.setAccountName("jtest_name");
         account.setAccountNickname("nickname");
-        account.setAccountStatu("N");
+        account.setAccountState("N");
         account.setApplicationName("AccountManagement");
         account.setCreatetime(LocalDateTime.now());
         account.setUpdatetime(LocalDateTime.now());

@@ -8,35 +8,58 @@
         <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
         <result property="accountNickname" column="account_nickname" jdbcType="VARCHAR"/>
         <result property="accountAvatar" column="account_avatar" jdbcType="BLOB"/>
-        <result property="accountStatu" column="account_statu" jdbcType="VARCHAR"/>
+        <result property="accountState" column="account_state" jdbcType="VARCHAR"/>
         <result property="lastLogintime" column="last_logintime" jdbcType="TIMESTAMP"/>
         <result property="tag" column="tag" jdbcType="VARCHAR"/>
         <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
         <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap type="org.gonnaup.account.domain.AccountHeader" id="AccountHeaderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="accountName" column="account_name" jdbcType="VARCHAR"/>
+        <result property="accountNickname" column="account_nickname" jdbcType="VARCHAR"/>
+        <result property="accountAvatar" column="account_avatar" jdbcType="BLOB"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="AccountMap">
         select
-          id, application_name, account_name, account_nickname, account_avatar, account_statu, last_logintime, tag, createtime, updatetime
-        from acountManagement.account
+          id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag, createtime, updatetime
+        from account
+        where id = #{id}
+    </select>
+
+    <select id="queryHeaderById" resultMap="AccountHeaderMap">
+        select
+          id, account_name, account_nickname, account_avatar
+        from account
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="AccountMap">
         select
-          id, application_name, account_name, account_nickname, account_avatar, account_statu, last_logintime, tag, createtime, updatetime
-        from acountManagement.account
+          id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag, createtime, updatetime
+        from account
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--查询某应用的指定行数据-->
+    <select id="queryAllOfApplicationLimit" resultMap="AccountMap">
+        select
+          id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag, createtime, updatetime
+        from account
+        where application_name = #{applicationName}
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="AccountMap">
         select
-        id, application_name, account_name, account_nickname, account_avatar, account_statu, last_logintime, tag,
+        id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag,
         createtime, updatetime
-        from acountManagement.account
+        from account
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -50,46 +73,63 @@
             <if test="accountNickname != null and accountNickname != ''">
                 and account_nickname = #{accountNickname}
             </if>
-            <if test="accountStatu != null and accountStatu != ''">
-                and account_statu = #{accountStatu}
+            <if test="accountState != null and accountState != ''">
+                and account_state = #{accountState}
             </if>
         </where>
     </select>
 
+    <select id="accountNameExist" resultType="int">
+        select count(id)
+        from account
+        where application_name = #{applicationName}
+        and account_name = #{accountName}
+    </select>
+
+    <select id="accountNicknameExist" resultType="int">
+        select count(id)
+        from account
+        where application_name = #{applicationName}
+        and account_nickname = #{accountNickname}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
-        insert into acountManagement.account(id, application_name, account_name, account_nickname, account_avatar, account_statu, tag, createtime, updatetime)
-        values (#{id}, #{applicationName}, #{accountName}, #{accountNickname}, #{accountAvatar}, #{accountStatu}, #{tag}, #{createtime}, #{updatetime})
+        insert into account(id, application_name, account_name, account_nickname, account_avatar, account_state, tag, createtime, updatetime)
+        values (#{id}, #{applicationName}, #{accountName}, #{accountNickname}, #{accountAvatar}, #{accountState}, #{tag}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch">
-        insert into acountManagement.account(id, application_name, account_name, account_nickname, account_avatar,
-        account_statu, tag, createtime, updatetime)
+        insert into account(id, application_name, account_name, account_nickname, account_avatar,
+        account_state, tag, createtime, updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname}, #{entity.accountAvatar},
-            #{entity.accountStatu}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
+            (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname},
+            #{entity.accountAvatar},
+            #{entity.accountState}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch">
-        insert into acountManagement.account(id, application_name, account_name, account_nickname, account_avatar,
-        account_statu, last_logintime, tag, createtime, updatetime)
+        insert into account(id, application_name, account_name, account_nickname, account_avatar,
+        account_state, last_logintime, tag, createtime, updatetime)
         values
+
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname}, #{entity.accountAvatar},
-            #{entity.accountStatu}, #{entity.lastLogintime}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
+            (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname},
+            #{entity.accountAvatar},
+            #{entity.accountState}, #{entity.lastLogintime}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
         </foreach>
         on duplicate key update
         application_name = values(application_name) , account_name = values(account_name) , account_nickname =
-        values(account_nickname) , account_avatar = values(account_avatar) , account_statu = values(account_statu) ,
+        values(account_nickname) , account_avatar = values(account_avatar) , account_state = values(account_state) ,
         last_logintime = values(last_logintime) , tag = values(tag) , createtime = values(createtime) , updatetime =
         values(updatetime)
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.account
+        update account
         <set>
             <if test="applicationName != null and applicationName != ''">
                 application_name = #{applicationName},
@@ -103,8 +143,8 @@
             <if test="accountAvatar != null">
                 account_avatar = #{accountAvatar},
             </if>
-            <if test="accountStatu != null and accountStatu != ''">
-                account_statu = #{accountStatu},
+            <if test="accountState != null and accountState != ''">
+                account_state = #{accountState},
             </if>
             <if test="lastLogintime != null">
                 last_logintime = #{lastLogintime},
@@ -124,7 +164,20 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.account where id = #{id} limit 1
+        delete from account where id = #{id} limit 1
     </delete>
 
+    <!-- 查询账户状态 -->
+    <select id="findAccountStateById" resultType="java.lang.String">
+        select account_state
+        from account
+        where id = #{id}
+    </select>
+
+    <!-- 修改账户状态 -->
+    <update id="updateAccountStateById">
+        update account
+        set account_state = #{accountState}
+        where id = #{id}
+    </update>
 </mapper>

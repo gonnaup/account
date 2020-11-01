@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`account` (
   `account_name` VARCHAR(50) NOT NULL COMMENT '用户名，同一应用中唯一',
   `account_nickname` VARCHAR(50) NOT NULL COMMENT '昵称',
   `account_avatar` MEDIUMBLOB NULL COMMENT '头像',
-  `account_statu` CHAR(1) NOT NULL DEFAULT 'N' COMMENT '账户状态\nN - 正常\nF - 禁用',
+  `account_state` CHAR(1) NOT NULL DEFAULT 'N' COMMENT '账户状态\nN - 正常\nF - 禁用',
   `last_logintime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最近成功登陆时间，可用于清除僵尸账户',
   `tag` VARCHAR(255) NULL COMMENT '账户标记，管理员使用',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

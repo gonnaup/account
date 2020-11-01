@@ -39,7 +39,7 @@ public class Account implements Serializable {
      * N - 正常
      * F - 禁用
      */
-    private String accountStatu;
+    private String accountState;
     /**
      * 最近成功登陆时间，可用于清除僵尸账户
      */

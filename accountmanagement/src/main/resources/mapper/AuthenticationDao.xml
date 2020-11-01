@@ -16,7 +16,7 @@
     <select id="queryById" resultMap="AuthenticationMap">
         select
           id, account_id, auth_type, identifier, credential, createtime, updatetime
-        from acountManagement.authentication
+        from authentication
         where id = #{id}
     </select>
 
@@ -24,7 +24,7 @@
     <select id="queryAllByLimit" resultMap="AuthenticationMap">
         select
           id, account_id, auth_type, identifier, credential, createtime, updatetime
-        from acountManagement.authentication
+        from authentication
         limit #{offset}, #{limit}
     </select>
 
@@ -32,7 +32,7 @@
     <select id="queryAll" resultMap="AuthenticationMap">
         select
         id, account_id, auth_type, identifier, credential, createtime, updatetime
-        from acountManagement.authentication
+        from authentication
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -60,12 +60,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime, updatetime)
+        insert into authentication(account_id, auth_type, identifier, credential, createtime, updatetime)
         values (#{accountId}, #{authType}, #{identifier}, #{credential}, #{createtime}, #{updatetime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime,
+        insert into authentication(account_id, auth_type, identifier, credential, createtime,
         updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -75,7 +75,7 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into acountManagement.authentication(account_id, auth_type, identifier, credential, createtime,
+        insert into authentication(account_id, auth_type, identifier, credential, createtime,
         updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -89,7 +89,7 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update acountManagement.authentication
+        update authentication
         <set>
             <if test="accountId != null">
                 account_id = #{accountId},
@@ -115,7 +115,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from acountManagement.authentication where id = #{id}
+        delete from authentication where id = #{id}
     </delete>
 
 </mapper>
