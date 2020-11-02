@@ -217,7 +217,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '远程调用者账号，用于验证调用是否合法';
 
-CREATE INDEX `application_rpc_account_name` ON `acountManagement`.`application_rpc_account` (`application_name` ASC);
+CREATE UNIQUE INDEX `application_rpc_account_name` ON `acountManagement`.`application_rpc_account` (`application_name` ASC);
 
 
 -- -----------------------------------------------------

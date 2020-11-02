@@ -39,7 +39,14 @@ public interface ApplicationRpcAccountDao {
      * @param applicationRpcAccount 实例对象
      * @return 对象列表
      */
-    List<ApplicationRpcAccount> queryAll(ApplicationRpcAccount applicationRpcAccount);
+    List<ApplicationRpcAccount> queryAllConditionalByLimit(@Param("applicationRpcAccount") ApplicationRpcAccount applicationRpcAccount, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 根据应用名查询远程调用账号
+     * @param applicationName
+     * @return 远程调用账号
+     */
+    ApplicationRpcAccount queryByApplicationName(@Param("applicationName") String applicationName);
 
     /**
      * 新增数据
@@ -56,14 +63,6 @@ public interface ApplicationRpcAccountDao {
      * @return 影响行数
      */
     int insertBatch(@Param("entities") List<ApplicationRpcAccount> entities);
-
-    /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<ApplicationRpcAccount> 实例对象列表
-     * @return 影响行数
-     */
-    int insertOrUpdateBatch(@Param("entities") List<ApplicationRpcAccount> entities);
 
     /**
      * 修改数据
