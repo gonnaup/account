@@ -196,9 +196,9 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`management_account` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COMMENT = '系统管理员账号';
+COMMENT = '管理员账号';
 
-CREATE INDEX `management_account_name` ON `acountManagement`.`management_account` (`management_name` ASC);
+CREATE UNIQUE INDEX `management_account_name` ON `acountManagement`.`management_account` (`management_name` ASC);
 
 
 -- -----------------------------------------------------

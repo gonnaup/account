@@ -28,59 +28,53 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="ManagementAccountMap">
+    <select id="queryAllConditionalByLimit" resultMap="ManagementAccountMap">
         select
         id, management_name, management_type, identifier, createtime, updatetime
         from management_account
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="managementAccount.id != null">
+                and id = #{managementAccount.id}
             </if>
-            <if test="managementName != null and managementName != ''">
-                and management_name = #{managementName}
+            <if test="managementAccount.managementName != null and managementAccount.managementName != ''">
+                and management_name = #{managementAccount.managementName}
             </if>
-            <if test="managementType != null and managementType != ''">
-                and management_type = #{managementType}
+            <if test="managementAccount.managementType != null and managementAccount.managementType != ''">
+                and management_type = #{managementAccount.managementType}
             </if>
-            <if test="identifier != null and identifier != ''">
-                and identifier = #{identifier}
+            <if test="managementAccount.identifier != null and managementAccount.identifier != ''">
+                and identifier = #{managementAccount.identifier}
             </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
+            <if test="managementAccount.createtime != null">
+                and createtime = #{managementAccount.createtime}
             </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
+            <if test="managementAccount.updatetime != null">
+                and updatetime = #{managementAccount.updatetime}
             </if>
         </where>
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryByManagementName" resultMap="ManagementAccountMap">
+        select id, management_name, management_type, identifier, createtime, updatetime
+        from management_account
+        where management_name = #{managementName}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into management_account(management_name, management_type, identifier, createtime, updatetime)
-        values (#{managementName}, #{managementType}, #{identifier}, #{createtime}, #{updatetime})
+    <insert id="insert">
+        insert into management_account(id, management_name, management_type, identifier, createtime, updatetime)
+        values (#{id}, #{managementName}, #{managementType}, #{identifier}, #{createtime}, #{updatetime})
     </insert>
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into management_account(management_name, management_type, identifier, createtime,
+    <insert id="insertBatch">
+        insert into management_account(id, management_name, management_type, identifier, createtime,
         updatetime)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.managementName}, #{entity.managementType}, #{entity.identifier}, #{entity.createtime},
+            (#{entity.id}, #{entity.managementName}, #{entity.managementType}, #{entity.identifier}, #{entity.createtime},
             #{entity.updatetime})
         </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into management_account(management_name, management_type, identifier, createtime,
-        updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.managementName}, #{entity.managementType}, #{entity.identifier}, #{entity.createtime},
-            #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        management_name = values(management_name) , management_type = values(management_type) , identifier =
-        values(identifier) , createtime = values(createtime) , updatetime = values(updatetime)
     </insert>
 
     <!--通过主键修改数据-->

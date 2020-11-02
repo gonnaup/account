@@ -24,6 +24,13 @@ public interface ManagementAccountDao {
     ManagementAccount queryById(Long id);
 
     /**
+     * 通过管理员名称查询单条数据
+     * @param managementName 管理员名称
+     * @return 管理员账号对象
+     */
+    ManagementAccount queryByManagementName(@Param("managementName") String managementName);
+
+    /**
      * 查询指定行数据
      *
      * @param offset 查询起始位置
@@ -39,7 +46,7 @@ public interface ManagementAccountDao {
      * @param managementAccount 实例对象
      * @return 对象列表
      */
-    List<ManagementAccount> queryAll(ManagementAccount managementAccount);
+    List<ManagementAccount> queryAllConditionalByLimit(@Param("managementAccount") ManagementAccount managementAccount, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 新增数据
@@ -56,14 +63,6 @@ public interface ManagementAccountDao {
      * @return 影响行数
      */
     int insertBatch(@Param("entities") List<ManagementAccount> entities);
-
-    /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<ManagementAccount> 实例对象列表
-     * @return 影响行数
-     */
-    int insertOrUpdateBatch(@Param("entities") List<ManagementAccount> entities);
 
     /**
      * 修改数据

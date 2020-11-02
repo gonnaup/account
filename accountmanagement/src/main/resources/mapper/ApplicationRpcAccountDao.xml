@@ -32,8 +32,8 @@
         id, application_name, identifier, createtime, updatetime
         from application_rpc_account
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="applicationRpcAccount.id != null">
+                and id = #{applicationRpcAccount.id}
             </if>
             <if test="applicationRpcAccount.applicationName != null and applicationRpcAccount.applicationName != ''">
                 and application_name = #{applicationRpcAccount.applicationName}

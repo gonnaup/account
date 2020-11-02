@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 
 /**
  * 系统管理员账号(ManagementAccount)实体类
+ * 此账号用于管理此系统中的数据，分为两种
+ *  A - 系统管理员，拥有所有权限
+ *  S - 分为调用者管理员， 只能管理自身服务所属数据
  *
  * @author gonnaup
  * @since 2020-10-29 10:53:26
