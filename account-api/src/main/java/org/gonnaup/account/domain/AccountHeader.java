@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/** 账户主要信息
+/** 账户核心信息
  * @author gonnaup
  * @version 1.0
  * @Created on 2020/11/1 20:08

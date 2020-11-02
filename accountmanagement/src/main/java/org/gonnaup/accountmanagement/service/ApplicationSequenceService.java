@@ -13,14 +13,6 @@ import java.util.List;
 public interface ApplicationSequenceService {
 
     /**
-     * 通过ID查询单条数据
-     *
-     * @param applicationName 主键
-     * @return 实例对象
-     */
-    ApplicationSequence queryById(String applicationName);
-
-    /**
      * 查询多条数据
      *
      * @param offset 查询起始位置
@@ -38,19 +30,11 @@ public interface ApplicationSequenceService {
     ApplicationSequence insert(ApplicationSequence applicationSequence);
 
     /**
-     * 修改数据
-     *
-     * @param applicationSequence 实例对象
-     * @return 实例对象
-     */
-    ApplicationSequence update(ApplicationSequence applicationSequence);
-
-    /**
      * 通过主键删除数据
      *
-     * @param applicationName 主键
+     * @param applicationSequenceKey 主键
      * @return 是否成功
      */
-    boolean deleteById(String applicationName);
+    boolean deleteById(ApplicationSequenceKey applicationSequenceKey);
 
 }

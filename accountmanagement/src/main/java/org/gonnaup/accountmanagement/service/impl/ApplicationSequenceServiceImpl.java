@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.service.impl;
 
 import org.gonnaup.accountmanagement.dao.ApplicationSequenceDao;
 import org.gonnaup.accountmanagement.entity.ApplicationSequence;
+import org.gonnaup.accountmanagement.service.ApplicationSequenceKey;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,6 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
     @Autowired
     private ApplicationSequenceDao applicationSequenceDao;
 
-    /**
-     * 通过ID查询单条数据
-     *
-     * @param applicationName 主键
-     * @return 实例对象
-     */
-    @Override
-    public ApplicationSequence queryById(String applicationName) {
-        return this.applicationSequenceDao.queryById(applicationName);
-    }
 
     /**
      * 查询多条数据
@@ -39,7 +30,8 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
      */
     @Override
     public List<ApplicationSequence> queryAllByLimit(int offset, int limit) {
-        return this.applicationSequenceDao.queryAllByLimit(offset, limit);
+        // todo
+        return null;
     }
 
     /**
@@ -55,25 +47,13 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
     }
 
     /**
-     * 修改数据
-     *
-     * @param applicationSequence 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public ApplicationSequence update(ApplicationSequence applicationSequence) {
-        this.applicationSequenceDao.update(applicationSequence);
-        return this.queryById(applicationSequence.getApplicationName());
-    }
-
-    /**
      * 通过主键删除数据
      *
-     * @param applicationName 主键
+     * @param applicationSequenceKey 主键
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(String applicationName) {
-        return this.applicationSequenceDao.deleteById(applicationName) > 0;
+    public boolean deleteById(ApplicationSequenceKey applicationSequenceKey) {
+        return this.applicationSequenceDao.deleteById(applicationSequenceKey.getApplicationName(), applicationSequenceKey.getSequenceType()) > 0;
     }
 }

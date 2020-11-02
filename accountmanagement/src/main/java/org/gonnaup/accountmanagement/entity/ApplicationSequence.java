@@ -24,11 +24,11 @@ public class ApplicationSequence implements Serializable {
     /**
      * 序列号
      */
-    private Integer sequence;
+    private int sequence;
     /**
      * 序列号间隔
      */
-    private Integer step;
+    private int step;
 
 
 }

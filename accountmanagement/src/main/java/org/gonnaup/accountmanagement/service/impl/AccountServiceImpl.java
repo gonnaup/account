@@ -39,7 +39,8 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public List<Account> queryAllByLimit(int offset, int limit) {
-        return this.accountDao.queryAllOfApplicationLimit(, offset, limit);
+        // todo 条件查询实现
+        return null;
     }
 
     /**

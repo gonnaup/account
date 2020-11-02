@@ -9,24 +9,33 @@
         <result property="step" column="step" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap type="org.gonnaup.accountmanagement.entity.ApplicationSequenceHeader" id="ApplicationSequenceHeaderMap">
+        <result property="sequence" column="sequence" jdbcType="INTEGER"/>
+        <result property="step" column="step" jdbcType="INTEGER"/>
+    </resultMap>
+
     <!--查询单个-->
-    <select id="queryById" resultMap="ApplicationSequenceMap">
+    <select id="queryByIdForUpdate" resultMap="ApplicationSequenceHeaderMap">
         select
-          application_name, sequence_type, sequence, step
+          sequence, step
         from application_sequence
         where application_name = #{applicationName}
+        and sequence_type = #{sequenceType}
+        for update
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="ApplicationSequenceMap">
-        select
-          application_name, sequence_type, sequence, step
-        from application_sequence
-        limit #{offset}, #{limit}
-    </select>
+    <!--通过主键修改数据-->
+    <update id="update">
+        update application_sequence
+        set
+            sequence = #{sequence},
+            step = #{step},
+        where application_name = #{applicationName}
+        and sequence_type = #{sequenceType}
+    </update>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="ApplicationSequenceMap">
+    <select id="queryAllConditionalByLimit" resultMap="ApplicationSequenceMap">
         select
         application_name, sequence_type, sequence, step
         from application_sequence
@@ -44,49 +53,21 @@
                 and step = #{step}
             </if>
         </where>
+        limit #{offset}, #{limit}
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_sequence(sequence, step)
-        values (#{sequence}, #{step})
+        insert into application_sequence(application_name, sequence_type, sequence, step)
+        values (#{entity.applicationName}, #{entity.sequenceType}, #{sequence}, #{step})
     </insert>
-
-    <insert id="insertBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_sequence(sequence, step)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.sequence}, #{entity.step})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_sequence(sequence, step)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.sequence}, #{entity.step})
-        </foreach>
-        on duplicate key update
-        sequence = values(sequence) , step = values(step)
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        update application_sequence
-        <set>
-            <if test="sequence != null">
-                sequence = #{sequence},
-            </if>
-            <if test="step != null">
-                step = #{step},
-            </if>
-        </set>
-        where application_name = #{applicationName}
-    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from application_sequence where application_name = #{applicationName}
+        delete from application_sequence
+        where application_name = #{applicationName}
+        and sequence_type = #{sequenceType}
+        limit 1
     </delete>
 
 </mapper>

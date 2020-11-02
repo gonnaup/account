@@ -37,14 +37,6 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="AccountMap">
-        select
-          id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag, createtime, updatetime
-        from account
-        limit #{offset}, #{limit}
-    </select>
-
     <!--查询某应用的指定行数据-->
     <select id="queryAllOfApplicationLimit" resultMap="AccountMap">
         select
@@ -55,7 +47,7 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="AccountMap">
+    <select id="queryAllConditionalByLimit" resultMap="AccountMap">
         select
         id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag,
         createtime, updatetime
@@ -77,6 +69,7 @@
                 and account_state = #{accountState}
             </if>
         </where>
+        limit #{offset}, #{limit}
     </select>
 
     <select id="accountNameExist" resultType="int">
