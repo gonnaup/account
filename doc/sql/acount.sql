@@ -164,24 +164,6 @@ CREATE INDEX `fk_acount_role_2_idx` ON `acountManagement`.`account_role` (`role_
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`account_token`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`account_token` ;
-
-CREATE TABLE IF NOT EXISTS `acountManagement`.`account_token` (
-  `id` BIGINT NOT NULL COMMENT 'ID',
-  `account_id` BIGINT NOT NULL COMMENT '账户ID',
-  `account_token` VARCHAR(50) NOT NULL COMMENT 'token值',
-  `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COMMENT = '用户Token';
-
-CREATE UNIQUE INDEX `acount_id_UNIQUE` ON `acountManagement`.`account_token` (`account_id` ASC);
-
-
--- -----------------------------------------------------
 -- Table `acountManagement`.`management_account`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `acountManagement`.`management_account` ;
