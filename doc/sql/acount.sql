@@ -230,13 +230,13 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`operation_log` (
   `operater_type` VARCHAR(1) NOT NULL COMMENT '操作人员类型\nA-系统管理员(一般为维护应用信息和角色关联信息)\nS-服务调用方(一般为创建用户)',
   `operater_id` BIGINT NOT NULL COMMENT '账号',
   `operater_name` VARCHAR(50) NOT NULL COMMENT '操作者名称',
-  `operate_type` VARCHAR(1) NOT NULL COMMENT '操作类型\nA-添加操作\nU-更新操作',
+  `operate_type` VARCHAR(1) NOT NULL COMMENT '操作类型\nA-添加操作\nU-更新操作\nD-删除操作',
   `operate_detail` VARCHAR(1000) NULL COMMENT '操作内容细节',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COMMENT = '系统管理员账号';
+COMMENT = '系统操作日志';
 
 CREATE INDEX `operation_log_name_type` ON `acountManagement`.`operation_log` (`operater_name` ASC, `operate_type` ASC);
 

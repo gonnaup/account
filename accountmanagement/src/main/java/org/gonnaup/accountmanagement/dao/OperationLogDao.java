@@ -39,7 +39,7 @@ public interface OperationLogDao {
      * @param operationLog 实例对象
      * @return 对象列表
      */
-    List<OperationLog> queryAll(OperationLog operationLog);
+    List<OperationLog> queryAllCoditionalByLimit(@Param("operationLog") OperationLog operationLog, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 新增数据
@@ -56,14 +56,6 @@ public interface OperationLogDao {
      * @return 影响行数
      */
     int insertBatch(@Param("entities") List<OperationLog> entities);
-
-    /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<OperationLog> 实例对象列表
-     * @return 影响行数
-     */
-    int insertOrUpdateBatch(@Param("entities") List<OperationLog> entities);
 
     /**
      * 修改数据

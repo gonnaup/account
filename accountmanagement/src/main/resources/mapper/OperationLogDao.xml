@@ -29,63 +29,47 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="OperationLogMap">
+    <select id="queryAllCoditionalByLimit" resultMap="OperationLogMap">
         select
         id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
         from operation_log
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="operationLog.id != null">
+                and id = #{operationLog.id}
             </if>
-            <if test="operaterType != null and operaterType != ''">
-                and operater_type = #{operaterType}
+            <if test="operationLog.operaterType != null and operationLog.operaterType != ''">
+                and operater_type = #{operationLog.operaterType}
             </if>
-            <if test="operaterId != null">
-                and operater_id = #{operaterId}
+            <if test="operationLog.operaterId != null">
+                and operater_id = #{operationLog.operaterId}
             </if>
-            <if test="operaterName != null and operaterName != ''">
-                and operater_name = #{operaterName}
+            <if test="operationLog.operaterName != null and operationLog.operaterName != ''">
+                and operater_name = #{operationLog.operaterName}
             </if>
-            <if test="operateType != null and operateType != ''">
-                and operate_type = #{operateType}
+            <if test="operationLog.operateType != null and operationLog.operateType != ''">
+                and operate_type = #{operationLog.operateType}
             </if>
-            <if test="operateDetail != null and operateDetail != ''">
-                and operate_detail = #{operateDetail}
-            </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
+            <if test="operationLog.createtime != null">
+                and createtime = #{operationLog.createtime}
             </if>
         </where>
+        limit #{offset}, #{limit}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into operation_log(operater_type, operater_id, operater_name, operate_type, operate_detail, createtime)
-        values (#{operaterType}, #{operaterId}, #{operaterName}, #{operateType}, #{operateDetail}, #{createtime})
+    <insert id="insert">
+        insert into operation_log(id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime)
+        values (#{id}, #{operaterType}, #{operaterId}, #{operaterName}, #{operateType}, #{operateDetail}, #{createtime})
     </insert>
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into operation_log(operater_type, operater_id, operater_name, operate_type,
+    <insert id="insertBatch">
+        insert into operation_log(id, operater_type, operater_id, operater_name, operate_type,
         operate_detail, createtime)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.operaterType}, #{entity.operaterId}, #{entity.operaterName}, #{entity.operateType},
+            (#{entity.id}, #{entity.operaterType}, #{entity.operaterId}, #{entity.operaterName}, #{entity.operateType},
             #{entity.operateDetail}, #{entity.createtime})
         </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into operation_log(operater_type, operater_id, operater_name, operate_type,
-        operate_detail, createtime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.operaterType}, #{entity.operaterId}, #{entity.operaterName}, #{entity.operateType},
-            #{entity.operateDetail}, #{entity.createtime})
-        </foreach>
-        on duplicate key update
-        operater_type = values(operater_type) , operater_id = values(operater_id) , operater_name =
-        values(operater_name) , operate_type = values(operate_type) , operate_detail = values(operate_detail) ,
-        createtime = values(createtime)
     </insert>
 
     <!--通过主键修改数据-->
@@ -116,7 +100,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from operation_log where id = #{id}
+        delete from operation_log where id = #{id} limit 1
     </delete>
 
 </mapper>

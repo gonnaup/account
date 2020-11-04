@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 系统管理员账号(OperationLog)实体类
+ * 系统操作日志(OperationLog)实体类
  *
  * @author gonnaup
  * @since 2020-10-29 10:53:27
@@ -37,6 +37,7 @@ public class OperationLog implements Serializable {
      * 操作类型
      * A-添加操作
      * U-更新操作
+     * D-删除操作
      */
     private String operateType;
 
