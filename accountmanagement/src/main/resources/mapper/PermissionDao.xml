@@ -19,23 +19,12 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="PermissionMap">
-        select
-          id, application_name, permission_name, description, createtime, updatetime
-        from permission
-        limit #{offset}, #{limit}
-    </select>
-
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="PermissionMap">
+    <select id="queryAllConditionalByLimit" resultMap="PermissionMap">
         select
         id, application_name, permission_name, description, createtime, updatetime
         from permission
         <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
             <if test="applicationName != null and applicationName != ''">
                 and application_name = #{applicationName}
             </if>
@@ -45,40 +34,22 @@
             <if test="description != null and description != ''">
                 and description = #{description}
             </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
-            </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
-            </if>
         </where>
+        limit #{offset}, #{limit}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into permission(application_name, permission_name, description, createtime, updatetime)
-        values (#{applicationName}, #{permissionName}, #{description}, #{createtime}, #{updatetime})
+    <insert id="insert">
+        insert into permission(id, application_name, permission_name, description)
+        values (#{id}, #{applicationName}, #{permissionName}, #{description})
     </insert>
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into permission(application_name, permission_name, description, createtime, updatetime)
+    <insert id="insertBatch">
+        insert into permission(id, application_name, permission_name, description)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.applicationName}, #{entity.permissionName}, #{entity.description}, #{entity.createtime},
-            #{entity.updatetime})
+            (#{entity.id}, #{entity.applicationName}, #{entity.permissionName}, #{entity.description})
         </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into permission(application_name, permission_name, description, createtime, updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.applicationName}, #{entity.permissionName}, #{entity.description}, #{entity.createtime},
-            #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        application_name = values(application_name) , permission_name = values(permission_name) , description =
-        values(description) , createtime = values(createtime) , updatetime = values(updatetime)
     </insert>
 
     <!--通过主键修改数据-->
@@ -94,19 +65,13 @@
             <if test="description != null and description != ''">
                 description = #{description},
             </if>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
-            </if>
         </set>
         where id = #{id}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from permission where id = #{id}
+        delete from permission where id = #{id} limit 1
     </delete>
 
 </mapper>

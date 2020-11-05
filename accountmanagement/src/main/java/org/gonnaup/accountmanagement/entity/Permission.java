@@ -22,7 +22,9 @@ public class Permission implements Serializable {
      * 所属服务(为不同服务定制不同角色)
      */
     private String applicationName;
-
+    /**
+     * 权限名称
+     */
     private String permissionName;
     /**
      * 权限描述

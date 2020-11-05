@@ -10,83 +10,33 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="queryById" resultMap="RolePermissionMap">
+    <select id="queryByRoleId" resultMap="RolePermissionMap">
         select
           role_id, permission_id, createtime, updatetime
         from role_permission
         where role_id = #{roleId}
-    </select>
-
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="RolePermissionMap">
-        select
-          role_id, permission_id, createtime, updatetime
-        from role_permission
-        limit #{offset}, #{limit}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="RolePermissionMap">
-        select
-        role_id, permission_id, createtime, updatetime
-        from role_permission
-        <where>
-            <if test="roleId != null">
-                and role_id = #{roleId}
-            </if>
-            <if test="permissionId != null">
-                and permission_id = #{permissionId}
-            </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
-            </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
-            </if>
-        </where>
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
-        insert into role_permission(createtime, updatetime)
-        values (#{createtime}, #{updatetime})
+    <insert id="insert">
+        insert into role_permission(role_id, permission_id)
+        values (#{roleId}, #{permissionId})
     </insert>
 
-    <insert id="insertBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into role_permission(createtime, updatetime)
+    <insert id="insertBatch">
+        insert into role_permission(role_id, permission_id)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.updatetime})
+            (#{entity.roleId}, #{entity.permissionId})
         </foreach>
     </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into role_permission(createtime, updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        createtime = values(createtime) , updatetime = values(updatetime)
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        update role_permission
-        <set>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
-            </if>
-        </set>
-        where role_id = #{roleId}
-    </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteByRoleId">
         delete from role_permission where role_id = #{roleId}
     </delete>
 
+    <delete id="deleteByRoleIdAndPermissionId">
+        delete from role_permission where role_id = #{roleId} and permission_id = #{permissionId} limit 1
+    </delete>
 </mapper>

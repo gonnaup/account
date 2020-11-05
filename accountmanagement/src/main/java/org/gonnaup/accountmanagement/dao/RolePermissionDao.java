@@ -21,25 +21,7 @@ public interface RolePermissionDao {
      * @param roleId 主键
      * @return 实例对象
      */
-    RolePermission queryById(Long roleId);
-
-    /**
-     * 查询指定行数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<RolePermission> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
-
-
-    /**
-     * 通过实体作为筛选条件查询
-     *
-     * @param rolePermission 实例对象
-     * @return 对象列表
-     */
-    List<RolePermission> queryAll(RolePermission rolePermission);
+    List<RolePermission> queryByRoleId(Long roleId);
 
     /**
      * 新增数据
@@ -57,28 +39,21 @@ public interface RolePermissionDao {
      */
     int insertBatch(@Param("entities") List<RolePermission> entities);
 
-    /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<RolePermission> 实例对象列表
-     * @return 影响行数
-     */
-    int insertOrUpdateBatch(@Param("entities") List<RolePermission> entities);
-
-    /**
-     * 修改数据
-     *
-     * @param rolePermission 实例对象
-     * @return 影响行数
-     */
-    int update(RolePermission rolePermission);
 
     /**
      * 通过主键删除数据
      *
-     * @param roleId 主键
+     * @param roleId
      * @return 影响行数
      */
-    int deleteById(Long roleId);
+    int deleteByRoleId(Long roleId);
+
+    /**
+     * 删除单个角色的权限
+     * @param roleId
+     * @param permissionId
+     * @return
+     */
+    int deleteByRoleIdAndPermissionId(@Param("roleId") Long roleId, @Param("permissionId") Long permissionId);
 
 }
