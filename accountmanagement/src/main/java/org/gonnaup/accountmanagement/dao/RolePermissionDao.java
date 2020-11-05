@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.dao;
 
 import org.apache.ibatis.annotations.Param;
+import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +17,11 @@ import java.util.List;
 public interface RolePermissionDao {
 
     /**
-     * 通过ID查询单条数据
-     *
-     * @param roleId 主键
-     * @return 实例对象
+     * 查询某角色的所有权限
+     * @param roleId
+     * @return 权限列表
      */
-    List<RolePermission> queryByRoleId(Long roleId);
+    List<Permission> queryPermissionsByRoleId(Long roleId);
 
     /**
      * 新增数据
@@ -41,7 +41,7 @@ public interface RolePermissionDao {
 
 
     /**
-     * 通过主键删除数据
+     * 删除角色的所有权限
      *
      * @param roleId
      * @return 影响行数
@@ -49,7 +49,7 @@ public interface RolePermissionDao {
     int deleteByRoleId(Long roleId);
 
     /**
-     * 删除单个角色的权限
+     * 删除单个角色的某个权限
      * @param roleId
      * @param permissionId
      * @return

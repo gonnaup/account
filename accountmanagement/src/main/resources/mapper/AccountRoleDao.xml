@@ -10,83 +10,36 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="queryById" resultMap="AccountRoleMap">
+    <select id="queryRolesByAccountId" resultMap="org.gonnaup.accountmanagement.dao.RoleDao.RoleMap">
         select
-          account_id, role_id, createtime, updatetime
-        from account_role
-        where account_id = #{accountId}
-    </select>
+          id, application_name, role_name, description, createtime, updatetime
+        from role
+        inner join account_role ar
+                on role.id = ar.role_id
+                    and ar.account_id = #{accountId}
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="AccountRoleMap">
-        select
-          account_id, role_id, createtime, updatetime
-        from account_role
-        limit #{offset}, #{limit}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="AccountRoleMap">
-        select
-        account_id, role_id, createtime, updatetime
-        from account_role
-        <where>
-            <if test="accountId != null">
-                and account_id = #{accountId}
-            </if>
-            <if test="roleId != null">
-                and role_id = #{roleId}
-            </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
-            </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
-            </if>
-        </where>
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="accountId" useGeneratedKeys="true">
-        insert into account_role(createtime, updatetime)
-        values (#{createtime}, #{updatetime})
+    <insert id="insert">
+        insert into account_role(account_id, role_id)
+        values (#{accountId}, #{roleId})
     </insert>
 
-    <insert id="insertBatch" keyProperty="accountId" useGeneratedKeys="true">
-        insert into account_role(createtime, updatetime)
+    <insert id="insertBatch">
+        insert into account_role(account_id, role_id)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.updatetime})
+            (#{entity.accountId}, #{entity.roleId})
         </foreach>
     </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="accountId" useGeneratedKeys="true">
-        insert into account_role(createtime, updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        createtime = values(createtime) , updatetime = values(updatetime)
-    </insert>
-
-    <!--通过主键修改数据-->
-    <update id="update">
-        update account_role
-        <set>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
-            </if>
-        </set>
-        where account_id = #{accountId}
-    </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteByAccountId">
         delete from account_role where account_id = #{accountId}
     </delete>
 
+    <delete id="deleteByAccountIdAndRoleId">
+        delete from account_role where account_id = #{accountId} and role_id = #{roleId} limit 1
+    </delete>
 </mapper>

@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 
 import java.util.List;
@@ -13,21 +14,12 @@ import java.util.List;
 public interface RolePermissionService {
 
     /**
-     * 通过ID查询单条数据
+     * 查询某角色的所有权限
      *
-     * @param roleId 主键
-     * @return 实例对象
+     * @param roleId 角色ID
+     * @return 权限列表
      */
-    RolePermission queryById(Long roleId);
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<RolePermission> queryAllByLimit(int offset, int limit);
+    List<Permission> findPermissionsByRoleId(Long roleId);
 
     /**
      * 新增数据
@@ -38,19 +30,20 @@ public interface RolePermissionService {
     RolePermission insert(RolePermission rolePermission);
 
     /**
-     * 修改数据
+     * 删除角色所有权限
      *
-     * @param rolePermission 实例对象
-     * @return 实例对象
-     */
-    RolePermission update(RolePermission rolePermission);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param roleId 主键
+     * @param roleId 角色id
      * @return 是否成功
      */
-    boolean deleteById(Long roleId);
+    boolean deleteByRoleId(Long roleId);
+
+    /**
+     * 删除单个角色的权限
+     * @param roleId 角色id
+     * @param permissionId 权限id
+     * @return
+     */
+    boolean deleteByRoleIdAndPermissionId(Long roleId, Long permissionId);
+
 
 }

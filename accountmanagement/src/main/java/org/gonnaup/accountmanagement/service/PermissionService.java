@@ -2,8 +2,6 @@ package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.accountmanagement.entity.Permission;
 
-import java.util.List;
-
 /**
  * 角色权限表(Permission)表服务接口
  *
@@ -19,15 +17,6 @@ public interface PermissionService {
      * @return 实例对象
      */
     Permission queryById(Long id);
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<Permission> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据

@@ -10,7 +10,7 @@
         <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
         <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
         <collection property="permissions" ofType="org.gonnaup.accountmanagement.entity.Permission" column="id"
-                    select="org.gonnaup.accountmanagement.dao.RolePermissionDao.queryByRoleId"/>
+                    select="org.gonnaup.accountmanagement.dao.PermissionDao.queryByRoleId"/>
     </resultMap>
 
     <!--查询单个-->
@@ -19,6 +19,13 @@
           id, application_name, role_name, description, createtime, updatetime
         from role
         where id = #{id}
+    </select>
+
+    <select id="queryByAccountId" resultMap="RoleMap">
+        select id, application_name, role_name, description, createtime, updatetime
+        from role
+        join account_role ar on role.id = ar.role_id
+        and ar.account_id = #{accountId}
     </select>
 
     <!--通过实体作为筛选条件查询-->

@@ -6,8 +6,6 @@ import org.gonnaup.accountmanagement.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * 角色权限表(Permission)表服务实现类
  *
@@ -28,18 +26,6 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Permission queryById(Long id) {
         return this.permissionDao.queryById(id);
-    }
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<Permission> queryAllByLimit(int offset, int limit) {
-        return this.permissionDao.queryAllByLimit(offset, limit);
     }
 
     /**

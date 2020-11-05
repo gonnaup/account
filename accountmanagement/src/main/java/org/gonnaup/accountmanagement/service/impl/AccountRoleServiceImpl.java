@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.service.impl;
 
 import org.gonnaup.accountmanagement.dao.AccountRoleDao;
 import org.gonnaup.accountmanagement.entity.AccountRole;
+import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,26 +21,14 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     private AccountRoleDao accountRoleDao;
 
     /**
-     * 通过ID查询单条数据
+     * 查询账户的角色信息
      *
      * @param accountId 主键
      * @return 实例对象
      */
     @Override
-    public AccountRole queryById(Long accountId) {
-        return this.accountRoleDao.queryById(accountId);
-    }
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<AccountRole> queryAllByLimit(int offset, int limit) {
-        return this.accountRoleDao.queryAllByLimit(offset, limit);
+    public List<Role> findRolesByAccountId(Long accountId) {
+        return accountRoleDao.queryRolesByAccountId(accountId);
     }
 
     /**
@@ -55,25 +44,25 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     }
 
     /**
-     * 修改数据
-     *
-     * @param accountRole 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public AccountRole update(AccountRole accountRole) {
-        this.accountRoleDao.update(accountRole);
-        return this.queryById(accountRole.getAccountId());
-    }
-
-    /**
-     * 通过主键删除数据
+     * 删除账户所有角色
      *
      * @param accountId 主键
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Long accountId) {
-        return this.accountRoleDao.deleteById(accountId) > 0;
+    public boolean deleteByAccountId(Long accountId) {
+        return accountRoleDao.deleteByAccountId(accountId) >= 0;
+    }
+
+    /**
+     * 删除账户单个角色
+     *
+     * @param accountId
+     * @param roleId
+     * @return
+     */
+    @Override
+    public boolean deleteByAccountIdAndRoleId(Long accountId, Long roleId) {
+        return accountRoleDao.deleteByAccountIdAndRoleId(accountId, roleId) > 0;
     }
 }

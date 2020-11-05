@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 public class AccountRole implements Serializable {
     private static final long serialVersionUID = -27925456995372772L;
     /**
-     * ID
+     * 账号ID
      */
     private Long accountId;
-
+    /**
+     * 角色ID
+     */
     private Long roleId;
     /**
      * 创建时间

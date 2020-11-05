@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.accountmanagement.entity.AccountRole;
+import org.gonnaup.accountmanagement.entity.Role;
 
 import java.util.List;
 
@@ -13,21 +14,13 @@ import java.util.List;
 public interface AccountRoleService {
 
     /**
-     * 通过ID查询单条数据
+     * 查询账户的角色信息
      *
      * @param accountId 主键
      * @return 实例对象
      */
-    AccountRole queryById(Long accountId);
+    List<Role> findRolesByAccountId(Long accountId);
 
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<AccountRole> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
@@ -38,19 +31,19 @@ public interface AccountRoleService {
     AccountRole insert(AccountRole accountRole);
 
     /**
-     * 修改数据
-     *
-     * @param accountRole 实例对象
-     * @return 实例对象
-     */
-    AccountRole update(AccountRole accountRole);
-
-    /**
-     * 通过主键删除数据
+     * 删除账户所有角色
      *
      * @param accountId 主键
      * @return 是否成功
      */
-    boolean deleteById(Long accountId);
+    boolean deleteByAccountId(Long accountId);
+
+    /**
+     * 删除账户单个角色
+     * @param accountId
+     * @param roleId
+     * @return
+     */
+    boolean deleteByAccountIdAndRoleId(Long accountId, Long roleId);
 
 }

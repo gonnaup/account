@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.service.impl;
 
 import org.gonnaup.accountmanagement.dao.RolePermissionDao;
+import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.gonnaup.accountmanagement.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,26 +21,14 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     private RolePermissionDao rolePermissionDao;
 
     /**
-     * 通过ID查询单条数据
+     * 查询某角色的所有权限
      *
-     * @param roleId 主键
-     * @return 实例对象
+     * @param roleId 角色ID
+     * @return 权限列表
      */
     @Override
-    public RolePermission queryById(Long roleId) {
-        return this.rolePermissionDao.queryById(roleId);
-    }
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<RolePermission> queryAllByLimit(int offset, int limit) {
-        return this.rolePermissionDao.queryAllByLimit(offset, limit);
+    public List<Permission> findPermissionsByRoleId(Long roleId) {
+        return rolePermissionDao.queryPermissionsByRoleId(roleId);
     }
 
     /**
@@ -55,25 +44,25 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     /**
-     * 修改数据
+     * 删除角色所有权限
      *
-     * @param rolePermission 实例对象
-     * @return 实例对象
-     */
-    @Override
-    public RolePermission update(RolePermission rolePermission) {
-        this.rolePermissionDao.update(rolePermission);
-        return this.queryById(rolePermission.getRoleId());
-    }
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param roleId 主键
+     * @param roleId 角色id
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Long roleId) {
-        return this.rolePermissionDao.deleteById(roleId) > 0;
+    public boolean deleteByRoleId(Long roleId) {
+        return rolePermissionDao.deleteByRoleId(roleId) >= 0;
+    }
+
+    /**
+     * 删除单个角色的权限
+     *
+     * @param roleId       角色id
+     * @param permissionId 权限id
+     * @return
+     */
+    @Override
+    public boolean deleteByRoleIdAndPermissionId(Long roleId, Long permissionId) {
+        return rolePermissionDao.deleteByRoleIdAndPermissionId(roleId, permissionId) > 0;
     }
 }

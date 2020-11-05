@@ -22,12 +22,12 @@ public interface RoleService {
 
     /**
      * 查询多条数据
-     *
+     * @param role 条件
      * @param offset 查询起始位置
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<Role> queryAllByLimit(int offset, int limit);
+    List<Role> findAllConditionalByLimit(Role role, int offset, int limit);
 
     /**
      * 新增数据

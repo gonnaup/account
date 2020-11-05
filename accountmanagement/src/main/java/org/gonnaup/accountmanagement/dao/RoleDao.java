@@ -23,6 +23,13 @@ public interface RoleDao {
      */
     Role queryById(Long id);
 
+    /**
+     * 查询账户拥有的角色
+     * @param accountId
+     * @return 角色列表
+     */
+    List<Role> queryByAccountId(Long accountId);
+
 
     /**
      * 通过实体作为筛选条件查询

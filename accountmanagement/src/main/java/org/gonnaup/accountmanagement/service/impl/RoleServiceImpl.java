@@ -32,14 +32,14 @@ public class RoleServiceImpl implements RoleService {
 
     /**
      * 查询多条数据
-     *
+     * @param role 多条件对象
      * @param offset 查询起始位置
      * @param limit  查询条数
      * @return 对象列表
      */
     @Override
-    public List<Role> queryAllByLimit(int offset, int limit) {
-        return this.roleDao.queryAllByLimit(offset, limit);
+    public List<Role> findAllConditionalByLimit(Role role, int offset, int limit) {
+        return roleDao.queryAllConditionalByLimit(role, offset, limit);
     }
 
     /**
