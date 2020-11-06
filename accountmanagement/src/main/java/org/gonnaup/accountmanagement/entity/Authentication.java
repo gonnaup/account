@@ -19,10 +19,13 @@ public class Authentication implements Serializable {
      */
     private Long id;
 
+    /**
+     * 账户ID
+     */
     private Long accountId;
     /**
      * 认证类型
-     * A-账户
+     * P-密码
      * E-邮箱
      * W-微信
      */

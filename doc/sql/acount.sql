@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `acountManagement`.`authentication` ;
 CREATE TABLE IF NOT EXISTS `acountManagement`.`authentication` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `account_id` BIGINT NOT NULL,
-  `auth_type` CHAR(1) NOT NULL COMMENT '认证类型\nA-账户\nE-邮箱\nW-微信',
+  `auth_type` CHAR(1) NOT NULL COMMENT '认证类型\nP-密码\nE-邮箱\nW-微信',
   `identifier` VARCHAR(255) NOT NULL COMMENT '唯一标识(用户名，\n邮箱或第三方应用\n的唯一标识)',
   `credential` VARCHAR(255) NULL COMMENT '凭证(密码或第三方token)',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -68,7 +68,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '账户认证信息';
 
-CREATE INDEX `auth_acountid_index` ON `acountManagement`.`authentication` (`account_id` ASC);
+CREATE UNIQUE INDEX `auth_acountid_type_index` ON `acountManagement`.`authentication` (`account_id` ASC, `auth_type` ASC);
 
 
 -- -----------------------------------------------------

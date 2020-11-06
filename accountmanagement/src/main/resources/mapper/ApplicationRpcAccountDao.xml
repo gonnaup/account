@@ -81,12 +81,6 @@
             <if test="identifier != null and identifier != ''">
                 identifier = #{identifier},
             </if>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
-            </if>
         </set>
         where id = #{id}
     </update>

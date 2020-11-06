@@ -91,9 +91,6 @@
             <if test="operateDetail != null and operateDetail != ''">
                 operate_detail = #{operateDetail},
             </if>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
         </set>
         where id = #{id}
     </update>

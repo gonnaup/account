@@ -72,19 +72,13 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update application_code
+        update application_code t
         <set>
             <if test="applicationCode != null">
-                application_code = #{applicationCode},
-            </if>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
+                t.application_code = #{applicationCode},
             </if>
         </set>
-        where application_name = #{applicationName}
+        where t.application_name = #{applicationName}
     </update>
 
     <!--通过主键删除-->

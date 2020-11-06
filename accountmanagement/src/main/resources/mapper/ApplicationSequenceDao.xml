@@ -29,7 +29,7 @@
         update application_sequence
         set
             sequence = #{sequence},
-            step = #{step},
+            step = #{step}
         where application_name = #{applicationName}
         and sequence_type = #{sequenceType}
     </update>

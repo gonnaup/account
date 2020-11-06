@@ -20,71 +20,23 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="AuthenticationMap">
-        select
-          id, account_id, auth_type, identifier, credential, createtime, updatetime
+    <select id="queryByAccountIdAndAuthType" resultMap="AuthenticationMap">
+        select id,
+               account_id,
+               auth_type,
+               identifier,
+               credential,
+               createtime,
+               updatetime
         from authentication
-        limit #{offset}, #{limit}
-    </select>
-
-    <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="AuthenticationMap">
-        select
-        id, account_id, auth_type, identifier, credential, createtime, updatetime
-        from authentication
-        <where>
-            <if test="id != null">
-                and id = #{id}
-            </if>
-            <if test="accountId != null">
-                and account_id = #{accountId}
-            </if>
-            <if test="authType != null and authType != ''">
-                and auth_type = #{authType}
-            </if>
-            <if test="identifier != null and identifier != ''">
-                and identifier = #{identifier}
-            </if>
-            <if test="credential != null and credential != ''">
-                and credential = #{credential}
-            </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
-            </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
-            </if>
-        </where>
+        where account_id = #{accountId}
+          and auth_type = #{authType}
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into authentication(account_id, auth_type, identifier, credential, createtime, updatetime)
-        values (#{accountId}, #{authType}, #{identifier}, #{credential}, #{createtime}, #{updatetime})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into authentication(account_id, auth_type, identifier, credential, createtime,
-        updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.accountId}, #{entity.authType}, #{entity.identifier}, #{entity.credential}, #{entity.createtime},
-            #{entity.updatetime})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into authentication(account_id, auth_type, identifier, credential, createtime,
-        updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.accountId}, #{entity.authType}, #{entity.identifier}, #{entity.credential}, #{entity.createtime},
-            #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        account_id = values(account_id) , auth_type = values(auth_type) , identifier = values(identifier) , credential =
-        values(credential) , createtime = values(createtime) , updatetime = values(updatetime)
+    <insert id="insert">
+        insert into authentication(id, account_id, auth_type, identifier, credential, createtime, updatetime)
+        values (#{id}, #{accountId}, #{authType}, #{identifier}, #{credential}, #{createtime}, #{updatetime})
     </insert>
 
     <!--通过主键修改数据-->
@@ -103,19 +55,16 @@
             <if test="credential != null and credential != ''">
                 credential = #{credential},
             </if>
-            <if test="createtime != null">
-                createtime = #{createtime},
-            </if>
-            <if test="updatetime != null">
-                updatetime = #{updatetime},
-            </if>
         </set>
         where id = #{id}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from authentication where id = #{id}
+        delete from authentication where id = #{id} limit 1
     </delete>
 
+    <delete id="deleteByAccountIdAndAuthType">
+        delete from authentication where account_id = #{accountId} and auth_type = #{authType} limit 1
+    </delete>
 </mapper>
