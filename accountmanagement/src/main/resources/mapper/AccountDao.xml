@@ -37,15 +37,6 @@
         where id = #{id}
     </select>
 
-    <!--查询某应用的指定行数据-->
-    <select id="queryAllOfApplicationLimit" resultMap="AccountMap">
-        select
-          id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag, createtime, updatetime
-        from account
-        where application_name = #{applicationName}
-        limit #{offset}, #{limit}
-    </select>
-
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditionalByLimit" resultMap="AccountMap">
         select
@@ -53,20 +44,20 @@
         createtime, updatetime
         from account
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <if test="account.id != null">
+                and id = #{account.id}
             </if>
-            <if test="applicationName != null and applicationName != ''">
-                and application_name = #{applicationName}
+            <if test="account.applicationName != null and account.applicationName != ''">
+                and application_name = #{account.applicationName}
             </if>
-            <if test="accountName != null and accountName != ''">
-                and account_name = #{accountName}
+            <if test="account.accountName != null and account.accountName != ''">
+                and account_name = #{account.accountName}
             </if>
-            <if test="accountNickname != null and accountNickname != ''">
-                and account_nickname = #{accountNickname}
+            <if test="account.accountNickname != null and account.accountNickname != ''">
+                and account_nickname = #{account.accountNickname}
             </if>
-            <if test="accountState != null and accountState != ''">
-                and account_state = #{accountState}
+            <if test="account.accountState != null and account.accountState != ''">
+                and account_state = #{account.accountState}
             </if>
         </where>
         limit #{offset}, #{limit}
@@ -155,7 +146,7 @@
     </delete>
 
     <!-- 查询账户状态 -->
-    <select id="findAccountStateById" resultType="java.lang.String">
+    <select id="queryAccountStateById" resultType="java.lang.String">
         select account_state
         from account
         where id = #{id}

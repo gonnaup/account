@@ -32,22 +32,12 @@ public interface AccountDao {
     AccountHeader queryHeaderById(Long id);
 
     /**
-     * 查询某应用的指定行账户数据
-     *
-     * @param applicationName 应用名称
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<Account> queryAllOfApplicationLimit(@Param("applicationName") String applicationName, @Param("offset") int offset, @Param("limit") int limit);
-
-    /**
      * 通过实体作为筛选条件查询
      *
      * @param account 实例对象
      * @return 对象列表
      */
-    List<Account> queryAllConditionalByLimit(Account account);
+    List<Account> queryAllConditionalByLimit(@Param("account") Account account, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 某应用使用某个账户名的数据个数
@@ -70,9 +60,7 @@ public interface AccountDao {
      * @param id
      * @return 账户状态
      */
-    String findAccountStateById(Long id);
-
-
+    String queryAccountStateById(Long id);
 
     /**
      * 新增数据
