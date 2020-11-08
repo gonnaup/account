@@ -18,7 +18,7 @@ public interface OperationLogService {
      * @param id 主键
      * @return 实例对象
      */
-    OperationLog queryById(Long id);
+    OperationLog findById(Long id);
 
     /**
      * 查询多条数据
@@ -27,7 +27,7 @@ public interface OperationLogService {
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<OperationLog> queryAllByLimit(int offset, int limit);
+    List<OperationLog> findAllByLimit(int offset, int limit);
 
     /**
      * 新增数据

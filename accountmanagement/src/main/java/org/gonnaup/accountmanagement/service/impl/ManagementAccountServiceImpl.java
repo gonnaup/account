@@ -26,7 +26,7 @@ public class ManagementAccountServiceImpl implements ManagementAccountService {
      * @return 实例对象
      */
     @Override
-    public ManagementAccount queryById(Long id) {
+    public ManagementAccount findById(Long id) {
         return this.managementAccountDao.queryById(id);
     }
 
@@ -38,7 +38,7 @@ public class ManagementAccountServiceImpl implements ManagementAccountService {
      * @return 对象列表
      */
     @Override
-    public List<ManagementAccount> queryAllByLimit(int offset, int limit) {
+    public List<ManagementAccount> findAllByLimit(int offset, int limit) {
         return this.managementAccountDao.queryAllByLimit(offset, limit);
     }
 
@@ -63,7 +63,7 @@ public class ManagementAccountServiceImpl implements ManagementAccountService {
     @Override
     public ManagementAccount update(ManagementAccount managementAccount) {
         this.managementAccountDao.update(managementAccount);
-        return this.queryById(managementAccount.getId());
+        return this.findById(managementAccount.getId());
     }
 
     /**

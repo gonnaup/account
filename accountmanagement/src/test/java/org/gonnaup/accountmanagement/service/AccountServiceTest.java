@@ -30,7 +30,6 @@ class AccountServiceTest {
 
     @Test
     void queryAllByLimit() {
-        accountService.queryAllByLimit(1, 10);
     }
 
     @Test
@@ -45,7 +44,7 @@ class AccountServiceTest {
         account.setCreatetime(LocalDateTime.now());
         account.setUpdatetime(LocalDateTime.now());
         accountService.insert(account);
-        Assertions.assertNotNull(accountService.queryById(100989489384L));
+        Assertions.assertNotNull(accountService.findById(100989489384L));
     }
 
     @Test

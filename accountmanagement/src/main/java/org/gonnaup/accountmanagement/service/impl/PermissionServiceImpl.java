@@ -24,7 +24,7 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 实例对象
      */
     @Override
-    public Permission queryById(Long id) {
+    public Permission findById(Long id) {
         return this.permissionDao.queryById(id);
     }
 
@@ -49,7 +49,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Permission update(Permission permission) {
         this.permissionDao.update(permission);
-        return this.queryById(permission.getId());
+        return this.findById(permission.getId());
     }
 
     /**

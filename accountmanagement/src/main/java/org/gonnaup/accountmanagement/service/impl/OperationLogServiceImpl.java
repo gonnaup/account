@@ -26,7 +26,7 @@ public class OperationLogServiceImpl implements OperationLogService {
      * @return 实例对象
      */
     @Override
-    public OperationLog queryById(Long id) {
+    public OperationLog findById(Long id) {
         return this.operationLogDao.queryById(id);
     }
 
@@ -38,7 +38,7 @@ public class OperationLogServiceImpl implements OperationLogService {
      * @return 对象列表
      */
     @Override
-    public List<OperationLog> queryAllByLimit(int offset, int limit) {
+    public List<OperationLog> findAllByLimit(int offset, int limit) {
         return this.operationLogDao.queryAllByLimit(offset, limit);
     }
 
@@ -63,7 +63,7 @@ public class OperationLogServiceImpl implements OperationLogService {
     @Override
     public OperationLog update(OperationLog operationLog) {
         this.operationLogDao.update(operationLog);
-        return this.queryById(operationLog.getId());
+        return this.findById(operationLog.getId());
     }
 
     /**

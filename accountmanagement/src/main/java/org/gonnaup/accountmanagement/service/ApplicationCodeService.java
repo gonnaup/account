@@ -18,7 +18,7 @@ public interface ApplicationCodeService {
      * @param applicationName 主键
      * @return 实例对象
      */
-    ApplicationCode queryById(String applicationName);
+    ApplicationCode findByPrimarykey(String applicationName);
 
     /**
      * 查询多条数据
@@ -27,7 +27,7 @@ public interface ApplicationCodeService {
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<ApplicationCode> queryAllByLimit(int offset, int limit);
+    List<ApplicationCode> findAllByLimit(int offset, int limit);
 
     /**
      * 新增数据

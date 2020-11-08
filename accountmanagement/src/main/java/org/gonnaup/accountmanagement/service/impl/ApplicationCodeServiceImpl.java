@@ -26,7 +26,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      * @return 实例对象
      */
     @Override
-    public ApplicationCode queryById(String applicationName) {
+    public ApplicationCode findByPrimarykey(String applicationName) {
         return this.applicationCodeDao.queryById(applicationName);
     }
 
@@ -38,7 +38,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      * @return 对象列表
      */
     @Override
-    public List<ApplicationCode> queryAllByLimit(int offset, int limit) {
+    public List<ApplicationCode> findAllByLimit(int offset, int limit) {
         return this.applicationCodeDao.queryAllByLimit(offset, limit);
     }
 
@@ -63,7 +63,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
     @Override
     public ApplicationCode update(ApplicationCode applicationCode) {
         this.applicationCodeDao.update(applicationCode);
-        return this.queryById(applicationCode.getApplicationName());
+        return this.findByPrimarykey(applicationCode.getApplicationName());
     }
 
     /**

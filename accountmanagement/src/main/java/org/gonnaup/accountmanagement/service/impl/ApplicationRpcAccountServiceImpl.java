@@ -26,7 +26,7 @@ public class ApplicationRpcAccountServiceImpl implements ApplicationRpcAccountSe
      * @return 实例对象
      */
     @Override
-    public ApplicationRpcAccount queryById(Long id) {
+    public ApplicationRpcAccount findById(Long id) {
         return this.applicationRpcAccountDao.queryById(id);
     }
 
@@ -38,7 +38,7 @@ public class ApplicationRpcAccountServiceImpl implements ApplicationRpcAccountSe
      * @return 对象列表
      */
     @Override
-    public List<ApplicationRpcAccount> queryAllByLimit(int offset, int limit) {
+    public List<ApplicationRpcAccount> findAllByLimit(int offset, int limit) {
         return this.applicationRpcAccountDao.queryAllByLimit(offset, limit);
     }
 
@@ -63,7 +63,7 @@ public class ApplicationRpcAccountServiceImpl implements ApplicationRpcAccountSe
     @Override
     public ApplicationRpcAccount update(ApplicationRpcAccount applicationRpcAccount) {
         this.applicationRpcAccountDao.update(applicationRpcAccount);
-        return this.queryById(applicationRpcAccount.getId());
+        return this.findById(applicationRpcAccount.getId());
     }
 
     /**

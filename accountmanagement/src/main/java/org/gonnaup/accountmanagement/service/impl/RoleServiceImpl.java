@@ -26,7 +26,7 @@ public class RoleServiceImpl implements RoleService {
      * @return 实例对象
      */
     @Override
-    public Role queryById(Long id) {
+    public Role findById(Long id) {
         return this.roleDao.queryById(id);
     }
 
@@ -63,7 +63,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role update(Role role) {
         this.roleDao.update(role);
-        return this.queryById(role.getId());
+        return this.findById(role.getId());
     }
 
     /**

@@ -18,7 +18,7 @@ public interface RoleService {
      * @param id 主键
      * @return 实例对象
      */
-    Role queryById(Long id);
+    Role findById(Long id);
 
     /**
      * 查询多条数据

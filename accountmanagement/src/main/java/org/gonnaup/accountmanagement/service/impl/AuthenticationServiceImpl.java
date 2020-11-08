@@ -6,8 +6,6 @@ import org.gonnaup.accountmanagement.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * 账户认证信息(Authentication)表服务实现类
  *
@@ -26,20 +24,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 实例对象
      */
     @Override
-    public Authentication queryById(Long id) {
+    public Authentication findById(Long id) {
         return this.authenticationDao.queryById(id);
-    }
-
-    /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    @Override
-    public List<Authentication> queryAllByLimit(int offset, int limit) {
-        return this.authenticationDao.queryAllByLimit(offset, limit);
     }
 
     /**
@@ -63,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Authentication update(Authentication authentication) {
         this.authenticationDao.update(authentication);
-        return this.queryById(authentication.getId());
+        return this.findById(authentication.getId());
     }
 
     /**

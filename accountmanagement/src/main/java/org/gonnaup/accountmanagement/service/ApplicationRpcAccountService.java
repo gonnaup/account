@@ -18,7 +18,7 @@ public interface ApplicationRpcAccountService {
      * @param id 主键
      * @return 实例对象
      */
-    ApplicationRpcAccount queryById(Long id);
+    ApplicationRpcAccount findById(Long id);
 
     /**
      * 查询多条数据
@@ -27,7 +27,7 @@ public interface ApplicationRpcAccountService {
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<ApplicationRpcAccount> queryAllByLimit(int offset, int limit);
+    List<ApplicationRpcAccount> findAllByLimit(int offset, int limit);
 
     /**
      * 新增数据

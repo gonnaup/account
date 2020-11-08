@@ -16,7 +16,7 @@ public interface PermissionService {
      * @param id 主键
      * @return 实例对象
      */
-    Permission queryById(Long id);
+    Permission findById(Long id);
 
     /**
      * 新增数据

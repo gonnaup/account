@@ -26,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 实例对象
      */
     @Override
-    public Account queryById(Long id) {
+    public Account findById(Long id) {
         return this.accountDao.queryById(id);
     }
 
@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 对象列表
      */
     @Override
-    public List<Account> queryAllByLimit(int offset, int limit) {
+    public List<Account> findAllByLimit(int offset, int limit) {
         // todo 条件查询实现
         return null;
     }
@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account update(Account account) {
         this.accountDao.update(account);
-        return this.queryById(account.getId());
+        return this.findById(account.getId());
     }
 
     /**

@@ -18,7 +18,7 @@ public interface ManagementAccountService {
      * @param id 主键
      * @return 实例对象
      */
-    ManagementAccount queryById(Long id);
+    ManagementAccount findById(Long id);
 
     /**
      * 查询多条数据
@@ -27,7 +27,7 @@ public interface ManagementAccountService {
      * @param limit  查询条数
      * @return 对象列表
      */
-    List<ManagementAccount> queryAllByLimit(int offset, int limit);
+    List<ManagementAccount> findAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
