@@ -40,26 +40,35 @@
         application_name, sequence_type, sequence, step
         from application_sequence
         <where>
-            <if test="applicationName != null and applicationName != ''">
-                and application_name = #{applicationName}
+            <if test="applicationSequenceKey.applicationName != null and applicationSequenceKey.applicationName != ''">
+                and application_name = #{applicationSequenceKey.applicationName}
             </if>
-            <if test="sequenceType != null and sequenceType != ''">
-                and sequence_type = #{sequenceType}
-            </if>
-            <if test="sequence != null">
-                and sequence = #{sequence}
-            </if>
-            <if test="step != null">
-                and step = #{step}
+            <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
+                and sequence_type = #{applicationSequenceKey.sequenceType}
             </if>
         </where>
+        order by application_name
         limit #{offset}, #{limit}
     </select>
 
+    <select id="countAllConditional" resultType="int">
+        select
+            count(application_name)
+        from application_sequence
+        <where>
+            <if test="applicationSequenceKey.applicationName != null and applicationSequenceKey.applicationName != ''">
+                and application_name = #{applicationSequenceKey.applicationName}
+            </if>
+            <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
+                and sequence_type = #{applicationSequenceKey.sequenceType}
+            </if>
+        </where>
+    </select>
+
     <!--新增所有列-->
-    <insert id="insert" keyProperty="applicationName" useGeneratedKeys="true">
+    <insert id="insert">
         insert into application_sequence(application_name, sequence_type, sequence, step)
-        values (#{entity.applicationName}, #{entity.sequenceType}, #{sequence}, #{step})
+        values (#{applicationName}, #{sequenceType}, #{sequence}, #{step})
     </insert>
 
     <!--通过主键删除-->

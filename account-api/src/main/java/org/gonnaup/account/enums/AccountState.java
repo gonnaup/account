@@ -1,14 +1,11 @@
 package org.gonnaup.account.enums;
 
-import lombok.Getter;
-
 /**
  * 账户状态
  * @author gonnaup
  * @version 1.0
  * @Created on 2020/11/1 19:23
  */
-@Getter
 public enum AccountState {
     // forbid 禁用状态
     F("禁用"),
@@ -20,6 +17,10 @@ public enum AccountState {
 
     private AccountState(String description) {
         this.description = description;
+    }
+
+    public String description() {
+        return description;
     }
 
 }

@@ -24,22 +24,19 @@ public interface OperationLogDao {
     OperationLog queryById(Long id);
 
     /**
-     * 查询指定行数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
-     */
-    List<OperationLog> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
-
-
-    /**
      * 通过实体作为筛选条件查询
      *
      * @param operationLog 实例对象
      * @return 对象列表
      */
     List<OperationLog> queryAllCoditionalByLimit(@Param("operationLog") OperationLog operationLog, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 查询符合条件的总记录数
+     * @param operationLog
+     * @return 总记录数
+     */
+    int countAllConditional(@Param("operationLog") OperationLog operationLog);
 
     /**
      * 新增数据

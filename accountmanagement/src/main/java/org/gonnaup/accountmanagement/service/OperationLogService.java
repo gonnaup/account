@@ -1,8 +1,8 @@
 package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.accountmanagement.entity.OperationLog;
-
-import java.util.List;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 
 /**
  * 系统管理员账号(OperationLog)表服务接口
@@ -23,31 +23,26 @@ public interface OperationLogService {
     /**
      * 查询多条数据
      *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
+     * @param operationLog 条件对象, 为<code>null</code>时查询所有
+     * @param pageable     分页
      * @return 对象列表
      */
-    List<OperationLog> findAllByLimit(int offset, int limit);
+    Page<OperationLog> findAllConditionalPaged(OperationLog operationLog, Pageable pageable);
 
     /**
      * 新增数据
-     *
      * @param operationLog 实例对象
-     * @return 实例对象
      */
     OperationLog insert(OperationLog operationLog);
 
     /**
      * 修改数据
-     *
      * @param operationLog 实例对象
-     * @return 实例对象
      */
-    OperationLog update(OperationLog operationLog);
+    void update(OperationLog operationLog);
 
     /**
      * 通过主键删除数据
-     *
      * @param id 主键
      * @return 是否成功
      */

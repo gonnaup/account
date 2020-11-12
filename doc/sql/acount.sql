@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`operation_log` (
   `operater_id` BIGINT NOT NULL COMMENT '账号',
   `operater_name` VARCHAR(50) NOT NULL COMMENT '操作者名称',
   `operate_type` VARCHAR(1) NOT NULL COMMENT '操作类型\nA-添加操作\nU-更新操作\nD-删除操作',
-  `operate_detail` VARCHAR(1000) NULL COMMENT '操作内容细节',
+  `operate_detail` VARCHAR(3000) NULL COMMENT '操作内容细节',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
@@ -230,7 +230,7 @@ DROP TABLE IF EXISTS `acountManagement`.`application_code` ;
 
 CREATE TABLE IF NOT EXISTS `acountManagement`.`application_code` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
-  `application_code` INT NOT NULL COMMENT '应用代码 100~999的数字',
+  `application_code` INT NOT NULL COMMENT '应用代码 10~99的数字',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`application_name`))

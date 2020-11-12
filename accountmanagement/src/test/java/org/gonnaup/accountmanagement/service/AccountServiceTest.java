@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.account.domain.Account;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,7 @@ class AccountServiceTest {
     }
 
     @Test
+    @Disabled
     void insert() {
         Account account = new Account();
         account.setId(100989489384L);

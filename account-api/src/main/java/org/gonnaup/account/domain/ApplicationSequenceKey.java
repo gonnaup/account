@@ -1,7 +1,8 @@
-package org.gonnaup.accountmanagement.service;
+package org.gonnaup.account.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** 序列主键包装对象
  * @author gonnaup
@@ -9,7 +10,8 @@ import lombok.Data;
  * @Created on 2020/11/2 11:07
  */
 @Data
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
+@NoArgsConstructor
 public class ApplicationSequenceKey {
     /**
      * 应用名称

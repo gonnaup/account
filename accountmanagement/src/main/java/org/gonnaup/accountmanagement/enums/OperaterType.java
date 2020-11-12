@@ -1,14 +1,11 @@
 package org.gonnaup.accountmanagement.enums;
 
-import lombok.Getter;
-
 /**
  * 操作员类型
  * @author gonnaup
  * @version 1.0
  * @Created on 2020/11/2 15:28
  */
-@Getter
 public enum OperaterType {
 
     A("系统管理员"),
@@ -18,6 +15,10 @@ public enum OperaterType {
 
     private OperaterType(String description) {
         this.description = description;
+    }
+
+    public String description() {
+        return description;
     }
 
 }

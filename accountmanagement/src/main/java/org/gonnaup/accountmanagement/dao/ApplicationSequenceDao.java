@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.dao;
 
 import org.apache.ibatis.annotations.Param;
+import org.gonnaup.account.domain.ApplicationSequenceKey;
 import org.gonnaup.accountmanagement.entity.ApplicationSequence;
 import org.gonnaup.accountmanagement.entity.ApplicationSequenceHeader;
 import org.springframework.stereotype.Repository;
@@ -39,7 +40,14 @@ public interface ApplicationSequenceDao {
      * @param applicationSequence 实例对象
      * @return 对象列表
      */
-    List<ApplicationSequence> queryAllConditionalByLimit(ApplicationSequence applicationSequence);
+    List<ApplicationSequence> queryAllConditionalByLimit(@Param("applicationSequenceKey") ApplicationSequenceKey applicationSequenceKey, @Param("offset") int offset, @Param("limit") int limit);
+
+    /**
+     * 查询符合条件的总记录数
+     * @param applicationSequence
+     * @return 总记录数
+     */
+    int countAllConditional(@Param("applicationSequenceKey") ApplicationSequenceKey applicationSequenceKey);
 
     /**
      * 新增数据
