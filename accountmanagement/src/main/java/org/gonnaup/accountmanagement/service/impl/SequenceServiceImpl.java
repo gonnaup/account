@@ -15,6 +15,7 @@ import org.gonnaup.accountmanagement.service.ApplicationCodeService;
 import org.gonnaup.accountmanagement.service.SequenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
@@ -72,7 +73,7 @@ public class SequenceServiceImpl implements SequenceService {
      * @throws DataNotInitialized 当应用编码或序列对象未初始化时抛出此异常
      */
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW) //传播方式设置为REQUIRES_NEW，防止当嵌套在其他事务中回滚造成序列重复
     public void fillSequenceQueue(ApplicationSequenceKey applicationSequenceKey, BlockingQueue<Long> queue) throws DataNotInitialized {
         ApplicationSequenceHeader applicationSequenceHeader = applicationSequenceDao.queryByIdForUpdate(applicationSequenceKey.getApplicationName(), applicationSequenceKey.getSequenceType());
         int originsequence = applicationSequenceHeader.getSequence();

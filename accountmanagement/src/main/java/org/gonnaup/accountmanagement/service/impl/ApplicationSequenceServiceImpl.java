@@ -89,7 +89,7 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
              * 通过判断后只有一个线程取到值
              */
         } else if (queue.size() <= lowestFactor) {
-            synchronized (queue) {
+            synchronized (queue) {//因为同一个key的队列对象是同一实例，多线程竞争这个key的队列使用权时使用这个queue实例对象作为锁即可
                 if (queue.size() <= lowestFactor) { //双重检测，防止重复填充
                     if (log.isDebugEnabled()) {
                         log.debug("{} 队列填充", applicationSequenceKey);
