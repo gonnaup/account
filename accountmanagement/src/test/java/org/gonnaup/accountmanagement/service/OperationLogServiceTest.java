@@ -1,6 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
-import org.gonnaup.accountmanagement.constant.Operaters;
+import org.gonnaup.accountmanagement.constant.TestOperaters;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.common.domain.Page;
@@ -28,7 +28,7 @@ class OperationLogServiceTest {
     @Transactional
     @Rollback
     void insertAndFindByIdAndDelete() {
-        OperationLog test = OperationLog.of(Operaters.ADMIN, OperateType.A, "test");
+        OperationLog test = OperationLog.of(TestOperaters.ADMIN, OperateType.A, "test");
         OperationLog inserted = operationLogService.insert(test);
         Assertions.assertNotNull(operationLogService.findById(inserted.getId()));
 
@@ -47,10 +47,10 @@ class OperationLogServiceTest {
     @Transactional
     @Rollback
     void findAllConditionalByLimit() {
-        OperationLog test = OperationLog.of(Operaters.ADMIN, OperateType.A, "test");
+        OperationLog test = OperationLog.of(TestOperaters.ADMIN, OperateType.A, "test");
         OperationLog inserted = operationLogService.insert(test);
         OperationLog query = new OperationLog();
-        query.setOperaterName(Operaters.ADMIN.getOperaterName());
+        query.setOperaterName(TestOperaters.ADMIN.getOperaterName());
         Page<OperationLog> paged = operationLogService.findAllConditionalPaged(query, Pageable.of(1, 1));
         Assertions.assertEquals(paged.getData().size(), 1);
         operationLogService.deleteById(inserted.getId());
