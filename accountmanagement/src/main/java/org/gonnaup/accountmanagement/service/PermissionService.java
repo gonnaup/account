@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.Permission;
 
 /**
@@ -22,24 +23,26 @@ public interface PermissionService {
      * 新增数据
      *
      * @param permission 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    Permission insert(Permission permission);
+    Permission insert(Permission permission, Operater operater);
 
     /**
      * 修改数据
      *
      * @param permission 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    Permission update(Permission permission);
+    Permission update(Permission permission, Operater operater);
 
     /**
      * 通过主键删除数据
      *
      * @param id 主键
+     * @param operater 操作者
      * @return 是否成功
      */
-    boolean deleteById(Long id);
-
+    boolean deleteById(Long id, Operater operater);
 }
