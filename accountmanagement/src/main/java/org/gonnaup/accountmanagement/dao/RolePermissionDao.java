@@ -24,6 +24,22 @@ public interface RolePermissionDao {
     List<Permission> queryPermissionsByRoleId(Long roleId);
 
     /**
+     * 查询某权限关联的角色
+     * 用于能否删除权限判断条件
+     * @param permissionId
+     * @return 关联数目
+     */
+    int countPermissionRelated(Long permissionId);
+
+    /**
+     * 查询某角色关联的权限
+     * 用于能否删除角色条件判断
+     * @param roleId
+     * @return 关联数目
+     */
+    int countRoleRelated(Long roleId);
+
+    /**
      * 新增数据
      *
      * @param rolePermission 实例对象

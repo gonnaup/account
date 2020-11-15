@@ -20,6 +20,12 @@
 
     </select>
 
+    <select id="countRoleRelated" resultType="int">
+        select count(1)
+        from account_role
+        where role_id = #{roleId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into account_role(account_id, role_id)

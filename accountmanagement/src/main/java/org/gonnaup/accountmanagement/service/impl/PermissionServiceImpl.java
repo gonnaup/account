@@ -3,10 +3,12 @@ package org.gonnaup.accountmanagement.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.PermissionDao;
+import org.gonnaup.accountmanagement.dao.RolePermissionDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.enums.OperateType;
+import org.gonnaup.accountmanagement.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.service.PermissionService;
@@ -24,6 +26,9 @@ import org.springframework.stereotype.Service;
 public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private PermissionDao permissionDao;
+
+    @Autowired
+    private RolePermissionDao rolePermissionDao;
 
     @Autowired
     private ApplicationSequenceService applicationSequenceService;
@@ -86,6 +91,11 @@ public class PermissionServiceImpl implements PermissionService {
      */
     @Override
     public boolean deleteById(Long id, Operater operater) {
+        //先判断是否存在关联数据(角色关联数据)
+        int relatedCount = rolePermissionDao.countPermissionRelated(id);
+        if (relatedCount > 0) {
+            throw new RelatedDataExistsException(String.format("权限[id=%s]存在关联角色，请先删除关联数据!", id));
+        }
         Permission origin = findById(id);
         if (origin != null) {
             permissionDao.deleteById(id);

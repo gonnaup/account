@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.AccountRole;
 import org.gonnaup.accountmanagement.entity.Role;
 
@@ -23,27 +24,29 @@ public interface AccountRoleService {
 
 
     /**
-     * 新增数据
+     * 批量新增数据
      *
-     * @param accountRole 实例对象
+     * @param accountRoleList 实例对象组
+     * @param operater 操作者
      * @return 实例对象
      */
-    AccountRole insert(AccountRole accountRole);
+    List<AccountRole> insertBatch(List<AccountRole> accountRoleList, Operater operater);
 
     /**
      * 删除账户所有角色
      *
-     * @param accountId 主键
+     * @param accountId 账户ID
+     * @param operater 操作者
      * @return 是否成功
      */
-    boolean deleteByAccountId(Long accountId);
+    boolean deleteByAccountId(Long accountId, Operater operater);
 
     /**
-     * 删除账户单个角色
-     * @param accountId
-     * @param roleId
-     * @return
+     * 删除账户的多组角色
+     * @param keys 账户角色列表
+     * @param operater 操作者
+     * @return 删除个数
      */
-    boolean deleteByAccountIdAndRoleId(Long accountId, Long roleId);
+    int deleteMany(List<AccountRole> keys, Operater operater);
 
 }

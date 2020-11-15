@@ -2,11 +2,14 @@ package org.gonnaup.accountmanagement.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
+import org.gonnaup.accountmanagement.dao.AccountRoleDao;
 import org.gonnaup.accountmanagement.dao.RoleDao;
+import org.gonnaup.accountmanagement.dao.RolePermissionDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.enums.OperateType;
+import org.gonnaup.accountmanagement.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.service.RolePermissionService;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 /**
  * 账户角色表(Role)表服务实现类
@@ -31,6 +35,12 @@ import java.util.Optional;
 public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private AccountRoleDao accountRoleDao;
+
+    @Autowired
+    private RolePermissionDao rolePermissionDao;
 
     @Autowired
     private ApplicationSequenceService applicationSequenceService;
@@ -112,7 +122,23 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public boolean deleteById(Long id, Operater operater) {
-        //TODO 和账号的外键判断
+        //是否存在关联数据
+        int relatedAccount = accountRoleDao.countRoleRelated(id);
+        int relatedPermission = rolePermissionDao.countRoleRelated(id);
+        StringJoiner joiner = new StringJoiner(",", "[", "]"); //拼接 [账户,权限]
+        joiner.setEmptyValue("");//设置空值, 没有添加值则为"",不设置此值则为"[]"
+        if (relatedAccount > 0) {
+            joiner.add("账户");//账户关联
+        }
+        if (relatedPermission > 0) {
+            joiner.add("权限");
+        }
+        String related = joiner.toString();
+        if (!related.isEmpty()) {//至少有一种关联数据
+            String message = "角色[id=" + id + "]和" + related + "存在关联数据，请先删除关联数据!";
+            throw new RelatedDataExistsException(message);
+        }
+        //删除逻辑
         Role origin = findById(id);
         if (origin != null) {
             int count = roleDao.deleteById(id);

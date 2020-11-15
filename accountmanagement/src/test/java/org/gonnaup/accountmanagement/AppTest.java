@@ -10,6 +10,7 @@ import org.junit.platform.commons.annotation.Testable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -43,14 +44,27 @@ public class AppTest {
         );
 
         Map<OperaterType, List<String>> collect = operaters.stream().collect(Collectors.groupingBy(Operater::getOperaterType,
-                Collector.of((Supplier<List<String>>) ArrayList::new, (list, o) -> {
-                            list.add(Strings.padEnd(o.getOperaterName().toUpperCase(), 8, '0'));
-                        },
+                Collector.of((Supplier<List<String>>) ArrayList::new, (list, o) -> list.add(Strings.padEnd(o.getOperaterName().toUpperCase(), 8, '0')),
                         (list, list2) -> {
                             list.addAll(list2);
                             return list;
                         })));
         log.info("收集的map => {}", collect);
+    }
+
+    @Test
+    void stringJoiner() {
+        StringJoiner joiner = new StringJoiner(",", "[", "]");
+        joiner.add("A").add("B").add("C");
+        log.info("joiner {}", joiner);
+
+        StringJoiner empty = new StringJoiner(",", "[", "]");
+        log.info("empty joiner {}", empty);
+
+
+        StringJoiner emptyWithValue = new StringJoiner(",", "[", "]");
+        emptyWithValue.setEmptyValue("");
+        log.info("empty joiner {}", emptyWithValue);
     }
 
 }

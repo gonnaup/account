@@ -10,6 +10,18 @@
           and t.id = t1.permission_id
     </select>
 
+    <select id="countPermissionRelated" resultType="int">
+        select count(1)
+        from role_permission
+        where permission_id = #{permissionId}
+    </select>
+
+    <select id="countRoleRelated" resultType="int">
+        select count(1)
+        from role_permission
+        where role_id = #{roleId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into role_permission(role_id, permission_id)

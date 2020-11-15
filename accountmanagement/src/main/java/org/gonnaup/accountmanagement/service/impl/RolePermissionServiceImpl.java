@@ -63,9 +63,10 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public List<RolePermission> insertBatch(List<RolePermission> rolePermissionList, Operater operater) {
         if (CollectionUtils.isNotEmpty(rolePermissionList)) {
             rolePermissionDao.insertBatch(rolePermissionList);
-            log.info("[{}] 批量插入角色关联权限 {}", operater.getOperaterId(), rolePermissionList);
+            String rolepermissionInfo = rolePermissionList.toString();
+            log.info("[{}] 批量插入角色关联权限 {}", operater.getOperaterId(), rolepermissionInfo);
 
-            operationLogService.insert(OperationLog.of(operater, OperateType.A, "新增角色关联权限：" + rolePermissionList.toString()));
+            operationLogService.insert(OperationLog.of(operater, OperateType.A, "新增角色关联权限：" + rolepermissionInfo));
         }
         return rolePermissionList;
     }
@@ -106,23 +107,23 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     public int deleteMany(List<RolePermission> keys, Operater operater) {
         if (CollectionUtils.isNotEmpty(keys)) {
             //角色id - 解除的权限名称 进行分组收集
-            Map<Long, List<String>> roleIdPermissionName = keys.stream().collect(Collectors.groupingBy(RolePermission::getRoleId,
+            Map<Long, List<String>> roleIdPermissionName = keys.parallelStream().collect(Collectors.groupingBy(RolePermission::getRoleId,
                     Collector.of((Supplier<List<String>>) ArrayList::new, (list, rolePermission) -> {
                         Permission permission = permissionService.findById(rolePermission.getPermissionId());
                         if (permission != null) {
                             //删除角色的权限
                             rolePermissionDao.deleteByRoleIdAndPermissionId(rolePermission.getRoleId(), rolePermission.getPermissionId());
-                            String permissionName = permission.getPermissionName();
-                            log.info("[{}] 解除角色id=[{}] 的权限 {}", operater.getOperaterId(), rolePermission.getRoleId(), permissionName);
-                            list.add(permissionName);//收集权限名，用来记录日志
+                            list.add(permission.getPermissionName());//收集权限名，用来记录日志
                         }
                     }, (left, right) -> {
                         left.addAll(right);
                         return left;
                     })));
 
-            operationLogService.insert(OperationLog.of(operater, OperateType.D, "批量解除角色关联权限(角色id - 权限名称)：" + roleIdPermissionName));
-            return roleIdPermissionName.values().stream().mapToInt(s -> s.size()).sum();
+            String rolepermissionnameInfo = roleIdPermissionName.toString();
+            log.info("[{}] 批量解除角色关联权限(角色id - 权限名称) {}", operater.getOperaterId(), rolepermissionnameInfo);
+            operationLogService.insert(OperationLog.of(operater, OperateType.D, "批量解除角色关联权限(角色id - 权限名称)：" + rolepermissionnameInfo));
+            return roleIdPermissionName.values().stream().mapToInt(List::size).sum();
         }
         return 0;
     }
