@@ -25,13 +25,18 @@
     </select>
 
     <!--通过主键修改数据-->
-    <update id="update">
+    <update id="updateSequence">
         update application_sequence
-        set
-            sequence = #{sequence},
-            step = #{step}
+        set sequence = #{sequence}
         where application_name = #{applicationName}
-        and sequence_type = #{sequenceType}
+          and sequence_type = #{sequenceType}
+    </update>
+
+    <update id="updateStep">
+        update application_sequence
+        set step = #{step}
+        where application_name = #{applicationName}
+          and sequence_type = #{sequenceType}
     </update>
 
     <!--通过实体作为筛选条件查询-->

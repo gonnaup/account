@@ -38,7 +38,7 @@ class ApplicationSequenceServiceTest {
 
     @Test
     void produceSequence() {
-        applicationSequenceService.insert(ApplicationSequence.of(TEST_KEY, 0, 100), TestOperaters.ADMIN);
+        applicationSequenceService.insert(ApplicationSequence.of(TEST_KEY, 99999859, 100), TestOperaters.ADMIN);
         Set<Long> seq = Collections.newSetFromMap(new ConcurrentHashMap<>());
         Set<Integer> index = Collections.newSetFromMap(new ConcurrentHashMap<>());
         IntStream.range(1, 1000).parallel().forEach(i -> {
@@ -47,6 +47,7 @@ class ApplicationSequenceServiceTest {
             index.add(i);
             log.info("{} 获取sequence {}", i, sequence);
         });
+        Assertions.assertEquals(seq.size(), index.size());
         log.info("seq总共 {} 个", seq.size());
         log.info("index总共 {} 个", index.size());
         applicationSequenceService.deleteOne(TEST_KEY, TestOperaters.ADMIN);
@@ -67,9 +68,10 @@ class ApplicationSequenceServiceTest {
     @Rollback
     void update() {
         applicationSequenceService.insert(ApplicationSequence.of(TEST_KEY, 0, 100), Operater.of(OperaterType.A, 1000000000L, "admin"));
-        applicationSequenceService.update(ApplicationSequence.of(TEST_KEY, 1000, 100), TestOperaters.ADMIN);
+        applicationSequenceService.update(ApplicationSequence.of(TEST_KEY, 1000, 200), TestOperaters.ADMIN);
         Page<ApplicationSequence> paged = applicationSequenceService.findAllConditionalPaged(TEST_KEY, Pageable.of(1, 1));
-        Assertions.assertEquals(paged.getData().get(0).getSequence(), 1000);
+        Assertions.assertEquals(paged.getData().get(0).getStep(), 200);
+        Assertions.assertEquals(paged.getData().get(0).getSequence(), 0);
         applicationSequenceService.deleteOne(TEST_KEY, TestOperaters.ADMIN);
     }
 

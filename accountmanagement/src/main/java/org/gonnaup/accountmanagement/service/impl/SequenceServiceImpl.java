@@ -80,6 +80,7 @@ public class SequenceServiceImpl implements SequenceService {
         int step = applicationSequenceHeader.getStep();
         //sequence位数溢出，则重新设置
         if (originsequence + step > MAX_SEQUENCE) {
+            log.info("序列[{}] + 间隔[{}] 大于 最大序列号[{}], 重置序列号为0", originsequence, step, MAX_SEQUENCE);
             originsequence = 0;
         }
         final int sequence = originsequence;
@@ -95,7 +96,7 @@ public class SequenceServiceImpl implements SequenceService {
                 .collect(Collectors.toList());
         log.info("填充序列队列 {}, sequence {}, step {}", applicationSequenceKey, sequence, step);
         queue.addAll(seqlist);
-        applicationSequenceDao.update(ApplicationSequence.of(applicationSequenceKey, sequence + step, step));
+        applicationSequenceDao.updateSequence(ApplicationSequence.of(applicationSequenceKey, sequence + step, step));
     }
 
 }

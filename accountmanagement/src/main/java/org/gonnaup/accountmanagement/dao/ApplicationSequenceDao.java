@@ -27,12 +27,19 @@ public interface ApplicationSequenceDao {
     ApplicationSequenceHeader queryByIdForUpdate(@Param("applicationName") String applicationName, @Param("sequenceType") String sequenceType);
 
     /**
-     * 修改数据
+     * 修改sequence列
      *
      * @param applicationSequence 实例对象
      * @return 影响行数
      */
-    int update(ApplicationSequence applicationSequence);
+    int updateSequence(ApplicationSequence applicationSequence);
+
+    /**
+     * 修改step列
+     * @param applicationSequence
+     * @return
+     */
+    int updateStep(ApplicationSequence applicationSequence);
 
     /**
      * 通过实体作为筛选条件查询

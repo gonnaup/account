@@ -143,9 +143,9 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
     @Override
     @Transactional
     public ApplicationSequence update(ApplicationSequence applicationSequence, Operater operater) {
-        applicationSequenceDao.update(applicationSequence);
+        applicationSequenceDao.updateStep(applicationSequence);
         log.info("[{}] 更新应用序列 {}", operater.getOperaterId(), applicationSequence);
-        operationLogService.insert(OperationLog.of(operater, OperateType.U, applicationSequence.toString()));
+        operationLogService.insert(OperationLog.of(operater, OperateType.U, "更新应用序列：" + applicationSequence.toString()));
         return applicationSequence;
     }
 
@@ -161,7 +161,7 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
     public boolean deleteOne(ApplicationSequenceKey applicationSequenceKey, Operater operater) {
         int count = applicationSequenceDao.deleteById(applicationSequenceKey.getApplicationName(), applicationSequenceKey.getSequenceType());
         log.info("[{}] 删除应用序列 {}", operater.getOperaterId(), applicationSequenceKey);
-        operationLogService.insert(OperationLog.of(operater, OperateType.D, applicationSequenceKey.toString()));
+        operationLogService.insert(OperationLog.of(operater, OperateType.D, "删除应用序列：" + applicationSequenceKey.toString()));
         return count > 0;
     }
 }
