@@ -40,6 +40,13 @@ public interface RoleDao {
     List<Role> queryAllConditionalByLimit(@Param("role") Role role, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
+     * 查询符合条件的总数
+     * @param role
+     * @return 总条数
+     */
+    int countAllConditional(@Param("role") Role role);
+
+    /**
      * 新增数据
      *
      * @param role 实例对象

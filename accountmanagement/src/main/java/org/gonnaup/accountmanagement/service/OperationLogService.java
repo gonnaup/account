@@ -25,7 +25,7 @@ public interface OperationLogService {
      *
      * @param operationLog 条件对象, 为<code>null</code>时查询所有
      * @param pageable     分页
-     * @return 对象列表
+     * @return 对象页
      */
     Page<OperationLog> findAllConditionalPaged(OperationLog operationLog, Pageable pageable);
 

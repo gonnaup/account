@@ -19,6 +19,8 @@
         <mybatis-springboot-starter.version>2.1.3</mybatis-springboot-starter.version>
         <dubbo-springboot-starter.version>2.7.8</dubbo-springboot-starter.version>
         <guava.version>29.0-jre</guava.version>
+        <apache.commonslang3.version>3.9</apache.commonslang3.version>
+        <apache.commonscollection4.version>4.4</apache.commonscollection4.version>
     </properties>
 
 
@@ -48,6 +50,18 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.commonslang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache.commonscollection4.version}</version>
             </dependency>
 
             <dependency>

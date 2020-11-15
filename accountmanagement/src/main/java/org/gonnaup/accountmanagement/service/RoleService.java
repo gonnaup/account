@@ -1,8 +1,9 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.Role;
-
-import java.util.List;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 
 /**
  * 账户角色表(Role)表服务接口
@@ -23,34 +24,36 @@ public interface RoleService {
     /**
      * 查询多条数据
      * @param role 条件
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
+     * @param pageable 分页条件
+     * @return 对象页
      */
-    List<Role> findAllConditionalByLimit(Role role, int offset, int limit);
+    Page<Role> findAllConditionalPaged(Role role, Pageable pageable);
 
     /**
      * 新增数据
      *
      * @param role 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    Role insert(Role role);
+    Role insert(Role role, Operater operater);
 
     /**
      * 修改数据
      *
      * @param role 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    Role update(Role role);
+    Role update(Role role, Operater operater);
 
     /**
      * 通过主键删除数据
      *
      * @param id 主键
+     * @param operater 操作者
      * @return 是否成功
      */
-    boolean deleteById(Long id);
+    boolean deleteById(Long id, Operater operater);
 
 }

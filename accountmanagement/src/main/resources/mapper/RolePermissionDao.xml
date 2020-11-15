@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.gonnaup.accountmanagement.dao.RolePermissionDao">
+
     <select id="queryPermissionsByRoleId" resultMap="org.gonnaup.accountmanagement.dao.PermissionDao.PermissionMap">
         select
                 t.id, t.application_name, t.permission_name, t.description, t.createtime, t.updatetime

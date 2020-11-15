@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 
@@ -22,28 +23,29 @@ public interface RolePermissionService {
     List<Permission> findPermissionsByRoleId(Long roleId);
 
     /**
-     * 新增数据
-     *
-     * @param rolePermission 实例对象
-     * @return 实例对象
-     */
-    RolePermission insert(RolePermission rolePermission);
-
-    /**
-     * 删除角色所有权限
-     *
-     * @param roleId 角色id
-     * @return 是否成功
-     */
-    boolean deleteByRoleId(Long roleId);
-
-    /**
-     * 删除单个角色的权限
-     * @param roleId 角色id
-     * @param permissionId 权限id
+     * 批量插入
+     * @param rolePermissionList
+     * @param operater 操作者
      * @return
      */
-    boolean deleteByRoleIdAndPermissionId(Long roleId, Long permissionId);
+    List<RolePermission> insertBatch(List<RolePermission> rolePermissionList, Operater operater);
+
+    /**
+     * 解除角色所有关联的权限
+     *
+     * @param roleId 角色id
+     * @param operater 操作者
+     * @return 是否成功
+     */
+    boolean deleteByRoleId(Long roleId, Operater operater);
+
+    /**
+     * 解除多个角色的权限
+     * @param keys 主键列表
+     * @param operater 操作者
+     * @return 删除个数
+     */
+    int deleteMany(List<RolePermission> keys, Operater operater);
 
 
 }

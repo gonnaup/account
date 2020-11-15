@@ -11,6 +11,7 @@
     <artifactId>accountmanagement</artifactId>
 
     <dependencies>
+        <!-- 项目依赖 -->
         <dependency>
             <groupId>org.gonnaup</groupId>
             <artifactId>account-api</artifactId>
@@ -22,10 +23,17 @@
             <artifactId>common</artifactId>
         </dependency>
 
+        <!-- 工具类依赖 -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>org.apache.dubbo</groupId>-->
 <!--            <artifactId>dubbo-spring-boot-starter</artifactId>-->
@@ -34,6 +42,8 @@
 <!--            <groupId>org.springframework.boot</groupId>-->
 <!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
 <!--        </dependency>-->
+
+        <!-- spring 依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>

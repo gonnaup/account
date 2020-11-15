@@ -9,8 +9,6 @@
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
         <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
-        <collection property="permissions" ofType="org.gonnaup.accountmanagement.entity.Permission" column="id"
-                    select="org.gonnaup.accountmanagement.dao.PermissionDao.queryByRoleId"/>
     </resultMap>
 
     <!--查询单个-->
@@ -47,7 +45,28 @@
                 and description like concat('%', #{role.description}, '%')
             </if>
         </where>
+        order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="countAllConditional" resultType="int">
+        select
+            count(1) as total
+        from role
+        <where>
+            <if test="role.id != null">
+                and id = #{role.id}
+            </if>
+            <if test="role.applicationName != null and role.applicationName != ''">
+                and application_name = #{role.applicationName}
+            </if>
+            <if test="role.roleName != null and role.roleName != ''">
+                and role_name like concat('%', #{role.roleName}, '%')
+            </if>
+            <if test="role.description != null and role.description != ''">
+                and description like concat('%', #{role.description}, '%')
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->

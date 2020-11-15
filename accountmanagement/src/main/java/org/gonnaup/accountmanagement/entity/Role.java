@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 账户角色表(Role)实体类
@@ -39,10 +38,5 @@ public class Role implements Serializable {
      * 更新时间
      */
     private LocalDateTime updatetime;
-
-    /**
-     * 包含权限列表
-     */
-    private List<Permission> permissions;
 
 }
