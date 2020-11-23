@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement;
 
+import com.github.javafaker.Faker;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.accountmanagement.domain.Operater;
@@ -7,10 +8,7 @@ import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -61,10 +59,19 @@ public class AppTest {
         StringJoiner empty = new StringJoiner(",", "[", "]");
         log.info("empty joiner {}", empty);
 
-
         StringJoiner emptyWithValue = new StringJoiner(",", "[", "]");
         emptyWithValue.setEmptyValue("");
         log.info("empty joiner {}", emptyWithValue);
+    }
+
+    @Test
+    void javafaker() {
+        Map<String, String> map = new HashMap<>();
+        Faker faker = new Faker(Locale.CHINA);
+        map.put("name", faker.name().fullName());
+        map.put("company", faker.company().name());
+        map.put("weather", faker.weather().description());
+        log.info(map.toString());
     }
 
 }

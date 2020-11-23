@@ -40,6 +40,13 @@ public interface AccountDao {
     List<Account> queryAllConditionalByLimit(@Param("account") Account account, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
+     * 获取符合条件数据的总条数
+     * @param account 条件
+     * @return 总条数
+     */
+    int countAllConditional(@Param("account") Account account);
+
+    /**
      * 某应用使用某个账户名的数据个数
      * @param applicationName
      * @param accountName

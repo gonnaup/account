@@ -43,6 +43,7 @@ DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '账户信息';
 
 CREATE UNIQUE INDEX `account_application_account_name` ON `acountManagement`.`account` (`application_name` ASC, `account_name` ASC);
+CREATE INDEX `account_application_account_nickname` ON `acountManagement`.`account` (`application_name` ASC, `account_nickname` ASC);
 
 
 -- -----------------------------------------------------

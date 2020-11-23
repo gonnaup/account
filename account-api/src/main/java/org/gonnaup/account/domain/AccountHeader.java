@@ -14,21 +14,24 @@ public class AccountHeader implements Serializable {
 
     private static final long serialVersionUID = -5648343139832680637L;
 
+    /**
+     * 账户id
+     */
     private Long id;
 
+    /**
+     * 账户名称，唯一
+     */
     private String accountName;
 
+    /**
+     * 昵称
+     */
     private String accountNickname;
 
+    /**
+     * 头像
+     */
     private byte[] accountAvatar;
-
-    public Account toAccount() {
-        Account account = new Account();
-        account.setId(id);
-        account.setAccountName(accountName);
-        account.setAccountNickname(accountNickname);
-        account.setAccountAvatar(accountAvatar);
-        return account;
-    }
 
 }

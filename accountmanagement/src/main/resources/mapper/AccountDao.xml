@@ -51,16 +51,45 @@
                 and application_name = #{account.applicationName}
             </if>
             <if test="account.accountName != null and account.accountName != ''">
-                and account_name = #{account.accountName}
+                and account_name like concat('%', #{account.accountName} , '%')
             </if>
             <if test="account.accountNickname != null and account.accountNickname != ''">
-                and account_nickname = #{account.accountNickname}
+                and account_nickname like concat('%', #{account.accountNickname}, '%')
             </if>
             <if test="account.accountState != null and account.accountState != ''">
                 and account_state = #{account.accountState}
             </if>
+            <if test="account.tag != null and account.tag != ''">
+                and tag like concat('%', ${account.tag}, '%')
+            </if>
         </where>
+        order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="countAllConditional" resultType="int">
+        select count(1)
+        from account
+        <where>
+            <if test="account.id != null">
+                and id = #{account.id}
+            </if>
+            <if test="account.applicationName != null and account.applicationName != ''">
+                and application_name = #{account.applicationName}
+            </if>
+            <if test="account.accountName != null and account.accountName != ''">
+                and account_name like concat('%', #{account.accountName} , '%')
+            </if>
+            <if test="account.accountNickname != null and account.accountNickname != ''">
+                and account_nickname like concat('%', #{account.accountNickname}, '%')
+            </if>
+            <if test="account.accountState != null and account.accountState != ''">
+                and account_state = #{account.accountState}
+            </if>
+            <if test="account.tag != null and account.tag != ''">
+                and tag like concat('%', ${account.tag}, '%')
+            </if>
+        </where>
     </select>
 
     <select id="accountNameExist" resultType="int">

@@ -1,12 +1,13 @@
 package org.gonnaup.accountmanagement.service.impl;
 
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.accountmanagement.dao.AccountDao;
 import org.gonnaup.accountmanagement.service.AccountService;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 账户信息(Account)表服务实现类
@@ -31,16 +32,54 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 查询多条数据
+     * 通过ID查询账户核心信息
      *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
+     * @param id 账户id
+     * @return 账户核心信息
+     */
+    @Override
+    public AccountHeader findHeaderById(Long id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * 多条件查询
+     *
+     * @param account  查询条件
+     * @param pageable 分页对象
      * @return 对象列表
      */
     @Override
-    public List<Account> findAllByLimit(int offset, int limit) {
-        // todo 条件查询实现
+    public Page<Account> findAllConditionalPaged(Account account, Pageable pageable) {
+        // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * 应用中的用户名是否已存在
+     *
+     * @param aplicationName 应用名
+     * @param accountName    账户名
+     * @return <code>true</code> - 已存在；<code>false</code> - 未存在
+     */
+    @Override
+    public boolean accountNameExist(String aplicationName, String accountName) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /**
+     * 应用中的用户名是否已存在
+     *
+     * @param aplicationName  应用名
+     * @param accountNickname 账户昵称
+     * @return <code>true</code> - 已存在；<code>false</code> - 未存在
+     */
+    @Override
+    public boolean accountNicknameExist(String aplicationName, String accountNickname) {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     /**

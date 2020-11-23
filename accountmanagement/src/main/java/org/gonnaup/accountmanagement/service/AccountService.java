@@ -2,8 +2,9 @@ package org.gonnaup.accountmanagement.service;
 
 
 import org.gonnaup.account.domain.Account;
-
-import java.util.List;
+import org.gonnaup.account.domain.AccountHeader;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 
 /**
  * 账户信息(Account)表服务接口
@@ -16,22 +17,45 @@ public interface AccountService {
     /**
      * 通过ID查询单条数据
      *
-     * @param id 主键
+     * @param id 账户id
      * @return 实例对象
      */
     Account findById(Long id);
 
     /**
-     * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
-     * @return 对象列表
+     * 通过ID查询账户核心信息
+     * @param id 账户id
+     * @return 账户核心信息
      */
-    List<Account> findAllByLimit(int offset, int limit);
+    AccountHeader findHeaderById(Long id);
 
     /**
-     * 新增数据
+     * 多条件查询
+     *
+     * @param account 查询条件
+     * @param pageable  分页对象
+     * @return 对象列表
+     */
+    Page<Account> findAllConditionalPaged(Account account, Pageable pageable);
+
+    /**
+     * 应用中的用户名是否已存在
+     * @param aplicationName 应用名
+     * @param accountName 账户名
+     * @return <code>true</code> - 已存在；<code>false</code> - 未存在
+     */
+    boolean accountNameExist(String aplicationName, String accountName);
+
+    /**
+     * 应用中的用户名是否已存在
+     * @param aplicationName 应用名
+     * @param accountNickname 账户昵称
+     * @return <code>true</code> - 已存在；<code>false</code> - 未存在
+     */
+    boolean accountNicknameExist(String aplicationName, String accountNickname);
+
+    /**
+     * 新增账户数据数据
      *
      * @param account 实例对象
      * @return 实例对象

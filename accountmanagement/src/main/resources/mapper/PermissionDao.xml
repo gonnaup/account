@@ -25,16 +25,20 @@
         id, application_name, permission_name, description, createtime, updatetime
         from permission
         <where>
-            <if test="applicationName != null and applicationName != ''">
-                and application_name = #{applicationName}
+            <if test="permission.id != null">
+                and id = #{permission.id}
             </if>
-            <if test="permissionName != null and permissionName != ''">
-                and permission_name = #{permissionName}
+            <if test="permission.applicationName != null and permission.applicationName != ''">
+                and application_name = #{permission.applicationName}
             </if>
-            <if test="description != null and description != ''">
-                and description = #{description}
+            <if test="permission.permissionName != null and permission.permissionName != ''">
+                and permission_name like concat('%', #{permission.permissionName} , '%')
+            </if>
+            <if test="permission.description != null and permission.description != ''">
+                and description like concat('%', #{permission.description} , '%')
             </if>
         </where>
+        order by id
         limit #{offset}, #{limit}
     </select>
 
