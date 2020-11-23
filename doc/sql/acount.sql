@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`authentication` (
   `auth_type` CHAR(1) NOT NULL COMMENT '认证类型\nP-密码\nE-邮箱\nW-微信',
   `identifier` VARCHAR(255) NOT NULL COMMENT '唯一标识(用户名，\n邮箱或第三方应用\n的唯一标识)',
   `credential` VARCHAR(255) NULL COMMENT '凭证(密码或第三方token)',
+  `expires` BIGINT NULL COMMENT '过期时间，OAuth2登录时使用',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

@@ -23,6 +23,7 @@ public class Authentication implements Serializable {
      * 账户ID
      */
     private Long accountId;
+
     /**
      * 认证类型
      * P-密码
@@ -30,20 +31,30 @@ public class Authentication implements Serializable {
      * W-微信
      */
     private String authType;
+
     /**
      * 唯一标识(用户名，
      * 邮箱或第三方应用
      * 的唯一标识)
      */
     private String identifier;
+
     /**
      * 凭证(密码或第三方token)
      */
     private String credential;
+
+    /**
+     * 过期时间，OAuth2登录时使用
+     */
+    private Long expires;
+
+
     /**
      * 创建时间
      */
     private LocalDateTime createtime;
+
     /**
      * 更新时间
      */
