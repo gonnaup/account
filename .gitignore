@@ -1,6 +1,6 @@
 HELP.md
 
-
+~$*.docx
 *.mwb.bak
 target/
 !.mvn/wrapper/maven-wrapper.jar
