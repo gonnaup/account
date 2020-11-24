@@ -10,7 +10,9 @@ public enum AuthType {
 
     P("密码"),
     E("邮箱"),
-    W("微信");
+    W("微信"),
+    Q("QQ"),
+    B("微博");
 
     private final String description;
 

@@ -25,10 +25,17 @@ public class Authentication implements Serializable {
     private Long accountId;
 
     /**
+     * 应用名称
+     */
+    private String applicationName;
+
+    /**
      * 认证类型
      * P-密码
      * E-邮箱
      * W-微信
+     * Q-QQ
+     * B-微博
      */
     private String authType;
 

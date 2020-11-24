@@ -16,7 +16,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="AuthenticationMap">
         select
-          id, account_id, auth_type, identifier, credential, expires, createtime, updatetime
+          id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime
         from authentication
         where id = #{id}
     </select>
@@ -24,6 +24,7 @@
     <select id="queryByAccountIdAndAuthType" resultMap="AuthenticationMap">
         select id,
                account_id,
+               application_name,
                auth_type,
                identifier,
                credential,
@@ -37,8 +38,8 @@
 
     <!--新增所有列-->
     <insert id="insert">
-        insert into authentication(id, account_id, auth_type, identifier, credential, expires, createtime, updatetime)
-        values (#{id}, #{accountId}, #{authType}, #{identifier}, #{credential}, #{expires}, #{createtime}, #{updatetime})
+        insert into authentication(id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime)
+        values (#{id}, #{accountId},#{applicationName}, #{authType}, #{identifier}, #{credential}, #{expires}, #{createtime}, #{updatetime})
     </insert>
 
     <!--通过主键修改数据-->
