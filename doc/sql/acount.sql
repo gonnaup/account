@@ -8,25 +8,11 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema acountManagement
+-- Table `account`
 -- -----------------------------------------------------
--- 账户管理
-DROP SCHEMA IF EXISTS `acountManagement` ;
+DROP TABLE IF EXISTS `account` ;
 
--- -----------------------------------------------------
--- Schema acountManagement
---
--- 账户管理
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `acountManagement` DEFAULT CHARACTER SET utf8mb4 ;
-USE `acountManagement` ;
-
--- -----------------------------------------------------
--- Table `acountManagement`.`account`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`account` ;
-
-CREATE TABLE IF NOT EXISTS `acountManagement`.`account` (
+CREATE TABLE IF NOT EXISTS `account` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `account_name` VARCHAR(50) NOT NULL COMMENT '用户名，同一应用中唯一',
@@ -42,16 +28,16 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '账户信息';
 
-CREATE UNIQUE INDEX `account_application_account_name` ON `acountManagement`.`account` (`application_name` ASC, `account_name` ASC);
-CREATE INDEX `account_application_account_nickname` ON `acountManagement`.`account` (`application_name` ASC, `account_nickname` ASC);
+CREATE UNIQUE INDEX `account_application_account_name` ON `account` (`application_name` ASC, `account_name` ASC);
+CREATE INDEX `account_application_account_nickname` ON `account` (`application_name` ASC, `account_nickname` ASC);
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`authentication`
+-- Table `authentication`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`authentication` ;
+DROP TABLE IF EXISTS `authentication` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`authentication` (
+CREATE TABLE IF NOT EXISTS `authentication` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `account_id` BIGINT NOT NULL,
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
@@ -64,21 +50,21 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`authentication` (
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_Authentication_1`
     FOREIGN KEY (`account_id`)
-    REFERENCES `acountManagement`.`account` (`id`)
+    REFERENCES `account` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '账户认证信息';
-CREATE UNIQUE INDEX `auth_unique_index` ON `acountManagement`.`authentication`(`application_name` ASC, `auth_type` ASC, `identifier` ASC);
+CREATE UNIQUE INDEX `auth_unique_index` ON `authentication`(`application_name` ASC, `auth_type` ASC, `identifier` ASC);
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`role`
+-- Table `role`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`role` ;
+DROP TABLE IF EXISTS `role` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`role` (
+CREATE TABLE IF NOT EXISTS `role` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `application_name` VARCHAR(50) NOT NULL DEFAULT 'AccountManagement' COMMENT '所属服务(为不同服务定制不同角色)',
   `role_name` VARCHAR(64) NOT NULL COMMENT '角色名',
@@ -92,11 +78,11 @@ COMMENT = '账户角色表';
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`permission`
+-- Table `permission`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`permission` ;
+DROP TABLE IF EXISTS `permission` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`permission` (
+CREATE TABLE IF NOT EXISTS `permission` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `application_name` VARCHAR(50) NOT NULL DEFAULT 'AccountManagement' COMMENT '所属服务(为不同服务定制不同角色)',
   `permission_name` VARCHAR(30) NOT NULL,
@@ -110,11 +96,11 @@ COMMENT = '角色权限表';
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`role_permission`
+-- Table `role_permission`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`role_permission` ;
+DROP TABLE IF EXISTS `role_permission` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`role_permission` (
+CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` BIGINT NOT NULL COMMENT '角色id',
   `permission_id` BIGINT NOT NULL COMMENT '权限id',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -122,27 +108,27 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`role_permission` (
   PRIMARY KEY (`role_id`, `permission_id`),
   CONSTRAINT `fk_role_permission_1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `acountManagement`.`role` (`id`)
+    REFERENCES `role` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_role_permission_2`
     FOREIGN KEY (`permission_id`)
-    REFERENCES `acountManagement`.`permission` (`id`)
+    REFERENCES `permission` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '角色权限关联表';
 
-CREATE INDEX `fk_role_permission_2_idx` ON `acountManagement`.`role_permission` (`permission_id` ASC);
+CREATE INDEX `fk_role_permission_2_idx` ON `role_permission` (`permission_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`account_role`
+-- Table `account_role`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`account_role` ;
+DROP TABLE IF EXISTS `account_role` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`account_role` (
+CREATE TABLE IF NOT EXISTS `account_role` (
   `account_id` BIGINT NOT NULL COMMENT 'ID',
   `role_id` BIGINT NOT NULL,
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -150,27 +136,27 @@ CREATE TABLE IF NOT EXISTS `acountManagement`.`account_role` (
   PRIMARY KEY (`account_id`, `role_id`),
   CONSTRAINT `fk_acount_role_1`
     FOREIGN KEY (`account_id`)
-    REFERENCES `acountManagement`.`account` (`id`)
+    REFERENCES `account` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_acount_role_2`
     FOREIGN KEY (`role_id`)
-    REFERENCES `acountManagement`.`role` (`id`)
+    REFERENCES `role` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '账户权限表';
 
-CREATE INDEX `fk_acount_role_2_idx` ON `acountManagement`.`account_role` (`role_id` ASC);
+CREATE INDEX `fk_acount_role_2_idx` ON `account_role` (`role_id` ASC);
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`operation_log`
+-- Table `operation_log`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`operation_log` ;
+DROP TABLE IF EXISTS `operation_log` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`operation_log` (
+CREATE TABLE IF NOT EXISTS `operation_log` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `operater_type` VARCHAR(1) NOT NULL COMMENT '操作人员类型\nA-系统管理员(一般为维护应用信息和角色关联信息)\nS-服务调用方(一般为创建用户)',
   `operater_id` BIGINT NOT NULL COMMENT '账号',
@@ -183,15 +169,15 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COMMENT = '系统操作日志';
 
-CREATE INDEX `operation_log_name_type` ON `acountManagement`.`operation_log` (`operater_name` ASC, `operate_type` ASC);
+CREATE INDEX `operation_log_name_type` ON `operation_log` (`operater_name` ASC, `operate_type` ASC);
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`application_code`
+-- Table `application_code`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`application_code` ;
+DROP TABLE IF EXISTS `application_code` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`application_code` (
+CREATE TABLE IF NOT EXISTS `application_code` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `application_code` INT NOT NULL COMMENT '应用代码 10~99的数字',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -202,11 +188,11 @@ COMMENT = '应用代码';
 
 
 -- -----------------------------------------------------
--- Table `acountManagement`.`application_sequence`
+-- Table `application_sequence`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `acountManagement`.`application_sequence` ;
+DROP TABLE IF EXISTS `application_sequence` ;
 
-CREATE TABLE IF NOT EXISTS `acountManagement`.`application_sequence` (
+CREATE TABLE IF NOT EXISTS `application_sequence` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `sequence_type` VARCHAR(20) NOT NULL COMMENT '序列类型',
   `sequence` INT NOT NULL COMMENT '序列号',
