@@ -30,6 +30,16 @@ public interface AuthenticationDao {
     Authentication queryByAccountIdAndAuthType(@Param("accountId") Long accountId, @Param("authType") String authType);
 
     /**
+     * 按条件查询单个认证信息（唯一索引）
+     * @param applicationName 应用名
+     * @param authType 认证类型
+     * @param identifier 认证标的
+     * @return 认证对象
+     */
+    Authentication queryByApplicationnameAndAuthtypeAndIdentifier(@Param("applicationName") String applicationName, @Param("authType") String authType, @Param("identifier") String identifier);
+
+
+    /**
      * 新增数据
      *
      * @param authentication 实例对象

@@ -37,6 +37,13 @@
         where id = #{id}
     </select>
 
+    <select id="queryAccountIdByApplicationnameAndAccountname" resultType="long">
+        select id
+        from account
+        where application_name = #{applicationName}
+          and account_name = #{accountName}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditionalByLimit" resultMap="AccountMap">
         select

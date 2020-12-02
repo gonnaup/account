@@ -36,6 +36,22 @@
           and auth_type = #{authType}
     </select>
 
+    <select id="queryByApplicationnameAndAuthtypeAndIdentifier" resultMap="AuthenticationMap">
+        select id,
+               account_id,
+               application_name,
+               auth_type,
+               identifier,
+               credential,
+               expires,
+               createtime,
+               updatetime
+        from authentication
+        where application_name = #{applicationName}
+          and auth_type = #{authType}
+          and identifier = #{identifier}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into authentication(id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime)
