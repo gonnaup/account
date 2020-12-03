@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>账号管理系统</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">账号管理系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img" alt="">
+                    gonnaup
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a href="javascript:;" router-url="/html/account.html">账号管理</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" router-url="/html/authentication.html">认证管理</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">角色和权限</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" router-url="/html/role.html">角色管理</a></dd>
+                        <dd><a href="javascript:;" router-url="/html/permission.html">权限管理</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" router-url="/html/applicationcode.html">应用代码</a>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;" router-url="/html/applicationsequence.html">应用序列</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+<!--         内容主体区域-->
+<!--        <iframe id="iframeMain" src="" class="mainiframe"></iframe>-->
+        <div id="content-container" class="layui-tab-content"></div>
+    </div>
+
+    <div class="layui-footer" style="text-align: center">
+        <!-- 底部固定区域 -->
+        © gonnaup
+    </div>
+</div>
+<script src="../layui/layui.all.js"></script>
+<script src="../js/router.js"></script>
+<script>
+    //JavaScript代码区域
+    var $ = layui.jquery
+    $(document).ready(function () {
+        $("[router-url]").click(function (e) {
+            e.preventDefault();
+            routerTo($(this).attr("router-url"))
+        })
+    });
+</script>
+</body>
+</html>
