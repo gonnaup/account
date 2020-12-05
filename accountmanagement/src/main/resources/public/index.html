@@ -82,18 +82,22 @@
         © gonnaup
     </div>
 </div>
-<script src="../layui/layui.all.js"></script>
+<script src="../layui/layui.js"></script>
 <script src="../axios/axios.min.js"></script>
 <script src="../js/router.js"></script>
 <script>
     //JavaScript代码区域
-    var $ = layui.jquery
-    $(document).ready(function () {
-        $("[router-url]").click(function (e) {
-            e.preventDefault();
-            routerTo($(this).attr("router-url"))
-        })
-    });
+    layui.use(['jquery', 'element'], function () {
+        var $ = layui.jquery
+        var element = layui.element
+        element.init()
+        $(document).ready(function () {
+            $("[router-url]").click(function (e) {
+                e.preventDefault();
+                routerTo($(this).attr("router-url"))
+            })
+        });
+    })
 </script>
 </body>
 </html>

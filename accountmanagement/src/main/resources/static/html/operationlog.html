@@ -4,70 +4,105 @@
     <meta charset="utf-8">
 </header>
 <body>
-<table id="oprationlogTable" lay-filter="oprationlog"></table>
-<script type="text/javascript">
-    var table = layui.table;
-    table.render({
-        elem: '#oprationlogTable',
-        url: '../operationlog/list',
-        page: true,
-        toolbar: '#operationlogQueryToolbar',
-        title: '操作日志',
-        parseData: function (data) {
-            return {
-                'code': 0,
-                "msg": '',
-                'count': data.total,
-                'data': data.data
-            }
-        },
-        cols: [[
-            {type: 'radio'},
-            {field: 'sid', title: 'ID', width: 180},
-            {field: 'operaterName', title: '操作者名称', width: 100},
-            {field: 'operaterId', title: '操作者账号', width: 120},
-            {field: 'operaterType', title: '操作者类型', width: 100},
-            {field: 'operateType', title: '操作类型', width: 100},
-            {field: 'operateDetail', title: '操作日志'},
-            {field: 'createtime', title: '操作时间', width: 140},
-        ]]
-    });
-</script>
-<script type="text/html" id="operationlogQueryToolbar">
-    <div class="layui-container">
-        <form class="layui-form">
-            <div class="layui-row">
-                <div class="layui-col-md3">
-                    <label class="main-querylabel">操作者名称：</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" type="text" name="operater" placeholder="操作者名称">
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h3 class="layui-colla-title"><i class="layui-icon layui-icon-search"></i>查询</h3>
+        <div class="layui-colla-content">
+            <div class="layui-container" style="margin-left: 0">
+                <form class="layui-form">
+                    <div class="layui-row">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">操作者名称：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="operater" placeholder="操作者名称">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">操作者类型：</label>
+                            <div class="layui-input-block">
+                                <select name="operaterType">
+                                    <option value="">全部类型</option>
+                                    <option value="A">系统管理员</option>
+                                    <option value="S">应用管理员</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="layui-col-md3 main-marginLeft10">
-                    <label class="main-querylabel">操作者类型：</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" type="text" name="operaterType" placeholder="操作者类型">
+                    <div class="layui-row main-marginTop10">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">操作类型：</label>
+                            <div class="layui-input-block">
+                                <select name="operateType">
+                                    <option value="">全部类型</option>
+                                    <option value="A">添加</option>
+                                    <option value="U">更新</option>
+                                    <option value="D">删除</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">操作日志：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="operateDetail" placeholder="操作日志">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <button class="layui-btn" lay-submit lay-filter="operationlogQueryForm">查询</button>
+                        </div>
                     </div>
-                </div>
-
-
+                </form>
             </div>
-            <div class="layui-row main-marginTop10">
-                <div class="layui-col-md3">
-                    <label class="main-querylabel">操作类型：</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" type="text" name="operateType" placeholder="操作类型">
-                    </div>
-                </div>
-                <div class="layui-col-md3 main-marginLeft10">
-                    <label class="main-querylabel">操作日志：</label>
-                    <div class="layui-input-block">
-                        <input class="layui-input" type="text" name="operateDetail" placeholder="操作日志">
-                    </div>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
+</div>
+
+<table id="oprationlogTable" lay-filter="oprationlog"></table>
+
+<script type="text/javascript">
+    layui.use(['element', 'table', 'form'], function () {
+        var element = layui.element
+        element.init()
+        var table = layui.table;
+        var operationlogTable = table.render({
+            elem: '#oprationlogTable',
+            url: '../operationlog/list',
+            page: true,
+            toolbar: true,
+            title: '操作日志',
+            parseData: function (data) {
+                return {
+                    'code': 0,
+                    "msg": '',
+                    'count': data.total,
+                    'data': data.data
+                }
+            },
+            cols: [[
+                {type: 'radio'},
+                {field: 'sid', title: 'ID', width: 180},
+                {field: 'operaterName', title: '操作者名称', width: 100},
+                {field: 'operaterId', title: '操作者账号', width: 120},
+                {field: 'operaterType', title: '操作者类型', width: 100},
+                {field: 'operateType', title: '操作类型', width: 100},
+                {field: 'operateDetail', title: '操作日志'},
+                {field: 'createtime', title: '操作时间', width: 140},
+            ]]
+        })
+
+        var form = layui.form
+        form.render('select')
+        form.on('submit(operationlogQueryForm)', function (data) {
+            operationlogTable.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false
+        })
+    })
+
+
 </script>
 </body>
 </html>
