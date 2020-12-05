@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<header>
+    <meta charset="utf-8">
+</header>
+<body>
+<table id="oprationlogTable" lay-filter="oprationlog"></table>
+<script type="text/javascript">
+    var table = layui.table;
+    table.render({
+        elem: '#oprationlogTable',
+        url: '../operationlog/list',
+        page: true,
+        toolbar: '#operationlogQueryToolbar',
+        title: '操作日志',
+        parseData: function (data) {
+            return {
+                'code': 0,
+                "msg": '',
+                'count': data.total,
+                'data': data.data
+            }
+        },
+        cols: [[
+            {type: 'radio'},
+            {field: 'sid', title: 'ID', width: 180},
+            {field: 'operaterName', title: '操作者名称', width: 100},
+            {field: 'operaterId', title: '操作者账号', width: 120},
+            {field: 'operaterType', title: '操作者类型', width: 100},
+            {field: 'operateType', title: '操作类型', width: 100},
+            {field: 'operateDetail', title: '操作日志'},
+            {field: 'createtime', title: '操作时间', width: 140},
+        ]]
+    });
+</script>
+<script type="text/html" id="operationlogQueryToolbar">
+    <div class="layui-container">
+        <form class="layui-form">
+            <div class="layui-row">
+                <div class="layui-col-md3">
+                    <label class="main-querylabel">操作者名称：</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="operater" placeholder="操作者名称">
+                    </div>
+                </div>
+                <div class="layui-col-md3 main-marginLeft10">
+                    <label class="main-querylabel">操作者类型：</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="operaterType" placeholder="操作者类型">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="layui-row main-marginTop10">
+                <div class="layui-col-md3">
+                    <label class="main-querylabel">操作类型：</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="operateType" placeholder="操作类型">
+                    </div>
+                </div>
+                <div class="layui-col-md3 main-marginLeft10">
+                    <label class="main-querylabel">操作日志：</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" type="text" name="operateDetail" placeholder="操作日志">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+</body>
+</html>

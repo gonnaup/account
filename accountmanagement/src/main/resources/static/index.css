@@ -1,0 +1,16 @@
+.main-querylabel {
+    float: left;
+    display: block;
+    padding: 9px 10px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: right;
+}
+
+.main-marginTop10 {
+    margin-top: 10px;
+}
+
+.main-marginLeft10 {
+    margin-left: 10px;
+}

@@ -1,15 +1,10 @@
 var routerTo = function (url) {
-    var $ = layui.jquery;
-    $("#content-container").html('');
-    $.ajax({
-        url: url,
-        type: 'get',
-        dataType: 'html',
-        success: function (rsData) {
-            $("#content-container").html(rsData);
-        },
-        error: function () {
+    axios.get(url)
+        .then(function (result) {
+            var $ = layui.jquery;
+            $("#content-container").html(result.data);
+        })
+        .catch(function (err) {
             return layui.layer.msg('无法获取页面：' + url);
-        }
-    });
+        });
 }

@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.enums.OperateType;
@@ -20,6 +21,7 @@ public class OperationLog implements Serializable {
     /**
      * ID
      */
+    @JsonIgnore
     private Long id;
     /**
      * 操作人员类型 {@link org.gonnaup.accountmanagement.enums.OperaterType}

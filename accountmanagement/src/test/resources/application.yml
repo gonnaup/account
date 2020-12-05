@@ -1,5 +1,7 @@
 server:
   port: 8080
+  servlet:
+    context-path: /accountmanagement
 spring:
   datasource:
     url: jdbc:mysql://my.ali.com:8806/acountManagement?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
@@ -12,7 +14,6 @@ spring:
     host: my.ali.com
     port: 8379
     password: 121314
-
   mail:
     host: smtp.yeah.net
     username: weimohun@yeah.net
@@ -24,5 +25,12 @@ mybatis:
   lazy-initialization: true
 logging:
   level:
-    org.gonnaup.accountmanagement: debug
-    org.mybatis.spring: debug
+    org.gonnaup.accountmanagement.dao: info
+dubbo:
+  application:
+    name: dubbo-accountmanagement
+  protocol:
+    port: 20880
+    name: dubbo
+  registry:
+    address: multicast://224.5.6.7:1234
