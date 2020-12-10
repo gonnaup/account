@@ -33,7 +33,7 @@ public class Account implements Serializable {
     /**
      * 头像
      */
-    private byte[] accountAvatar;
+    private String accountAvatar;
     /**
      * 账户状态
      * N - 正常

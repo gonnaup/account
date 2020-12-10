@@ -32,6 +32,6 @@ public class AccountHeader implements Serializable {
     /**
      * 头像
      */
-    private byte[] accountAvatar;
+    private String accountAvatar;
 
 }
