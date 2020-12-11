@@ -26,6 +26,7 @@ public interface AccountService {
 
     /**
      * 通过ID查询账户核心信息
+     *
      * @param id 账户id
      * @return 账户核心信息
      */
@@ -34,37 +35,40 @@ public interface AccountService {
     /**
      * 多条件查询
      *
-     * @param account 查询条件
-     * @param pageable  分页对象
+     * @param account  查询条件
+     * @param pageable 分页对象
      * @return 对象列表
      */
     Page<Account> findAllConditionalPaged(Account account, Pageable pageable);
 
     /**
      * 应用中的用户名是否已存在
+     *
      * @param aplicationName 应用名
-     * @param accountName 账户名
+     * @param accountName    账户名
      * @return <code>true</code> - 已存在；<code>false</code> - 未存在
      */
     default boolean accountNameExist(String aplicationName, String accountName) {
-        return findAccountIdByAccountname(aplicationName, accountName).isPresent();
+        return findHeaderByAccountname(aplicationName, accountName).isPresent();
     }
 
     /**
      * 应用中的用户名是否已存在
-     * @param aplicationName 应用名
+     *
+     * @param aplicationName  应用名
      * @param accountNickname 账户昵称
      * @return <code>true</code> - 已存在；<code>false</code> - 未存在
      */
     boolean accountNicknameExist(String aplicationName, String accountNickname);
 
     /**
-     * 根据账号名查询账号ID，用于判断账号名是否已注册或登录验证
+     * 根据账号名查询账号核心信息，用于判断账号名是否已注册或登录验证
+     *
      * @param applicationName 应用名
-     * @param accountName 账号名
-     * @return 账号ID Optional
+     * @param accountName     账号名
+     * @return 账号核心信息 Optional
      */
-    Optional<Long> findAccountIdByAccountname(String applicationName, String accountName);
+    Optional<AccountHeader> findHeaderByAccountname(String applicationName, String accountName);
 
     /**
      * 新增账户数据数据

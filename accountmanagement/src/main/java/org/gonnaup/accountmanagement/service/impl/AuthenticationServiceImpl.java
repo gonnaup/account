@@ -52,6 +52,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     /**
+     * 查询账号的email认证信息
+     *
+     * @param accountId 账号id
+     * @return email认证信息
+     */
+    @Override
+    public Authentication findByAccountIdOfEmail(Long accountId) {
+        return authenticationDao.queryByAccountIdAndAuthType(accountId, AuthType.E.name());
+    }
+
+    /**
      * 新增数据
      *
      * @param authentication 实例对象

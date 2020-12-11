@@ -37,8 +37,9 @@
         where id = #{id}
     </select>
 
-    <select id="queryAccountIdByApplicationnameAndAccountname" resultType="long">
-        select id
+    <select id="queryHeaderByApplicationnameAndAccountname" resultMap="AccountHeaderMap">
+        select
+                id, account_name, account_nickname, account_avatar
         from account
         where application_name = #{applicationName}
           and account_name = #{accountName}

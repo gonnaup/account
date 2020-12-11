@@ -41,6 +41,13 @@ public interface AuthenticationService {
     Optional<Authentication> findOne(String applicationName, String authType, String identifier);
 
     /**
+     * 查询账号的email认证信息
+     * @param accountId 账号id
+     * @return email认证信息
+     */
+    Authentication findByAccountIdOfEmail(Long accountId);
+
+    /**
      * 新增数据
      *
      * @param authentication 实例对象

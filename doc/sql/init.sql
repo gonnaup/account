@@ -1,10 +1,14 @@
 insert into application_code (application_name, application_code)
 values ('AccountManagement', 10);
 insert into application_sequence (application_name, sequence_type, sequence, step)
-values ('AccountManagement', 'account', 0, 100);
+values ('AccountManagement', 'account', 100, 100);
 insert into application_sequence (application_name, sequence_type, sequence, step)
-values ('AccountManagement', 'authentication', 0, 100);
+values ('AccountManagement', 'authentication', 100, 100);
 insert into application_sequence (application_name, sequence_type, sequence, step)
-values ('AccountManagement', 'role_permission', 0, 100);
+values ('AccountManagement', 'role_permission', 100, 100);
 insert into application_sequence (application_name, sequence_type, sequence, step)
-values ('AccountManagement', 'operationLog', 0, 100);
+values ('AccountManagement', 'operationLog', 100, 100);
+insert into account(id, application_name, account_name, account_nickname, account_avatar, tag)
+values (102020121100000001, 'AccountManagement', 'admin', 'admin', NULL, 'admin account');
+insert into authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
+values (102020121100000001, 102020121100000001, 'AccountManagement', 'E', 'gonnaup@yeah.net', 'DA6E98BBA5CFCB77357FC279C4FAF4CC', 0)

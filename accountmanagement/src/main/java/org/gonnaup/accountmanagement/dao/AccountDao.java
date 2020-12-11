@@ -32,12 +32,12 @@ public interface AccountDao {
     AccountHeader queryHeaderById(Long id);
 
     /**
-     * 根据应用名称和账号名查询账号ID
+     * 根据应用名称和账号名查询账号核心信息
      * @param applicationName 应用名称
      * @param accountName 账号名
-     * @return 账号ID，没有则返回 <code>null</code>
+     * @return 账号核心信息，没有则返回 <code>null</code>
      */
-    Long queryAccountIdByApplicationnameAndAccountname(@Param("applicationName") String applicationName, @Param("accountName") String accountName);
+    AccountHeader queryHeaderByApplicationnameAndAccountname(@Param("applicationName") String applicationName, @Param("accountName") String accountName);
 
     /**
      * 通过实体作为筛选条件查询

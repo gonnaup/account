@@ -4,11 +4,16 @@ import org.gonnaup.account.domain.ApplicationSequenceKey;
 
 /**
  * {@link ApplicationSequenceKey} 常量值
+ *
  * @author gonnaup
  * @version 1.0
  * @Created on 2020/11/10 16:06
  */
-public abstract class AppSequenceKey {
+public class AppSequenceKey {
+
+    private AppSequenceKey() {
+    }
+
     //用于账户id序列
     public static final ApplicationSequenceKey ACCOUNT = ApplicationSequenceKey.of(ApplicationName.APPNAME, "account");
 

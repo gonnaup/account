@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.vo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.enums.OperaterType;
@@ -11,6 +12,7 @@ import org.springframework.beans.BeanUtils;
  * @version 1.0
  * @Created on 2020/12/4 13:04
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class OperationLogVO extends OperationLog {
 

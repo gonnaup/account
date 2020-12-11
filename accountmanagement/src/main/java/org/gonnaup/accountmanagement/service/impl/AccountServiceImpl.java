@@ -78,15 +78,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * 根据账号名查询账号ID，用于判断账号名是否已注册或登录验证
+     * 根据账号名查询账号核心信息，用于判断账号名是否已注册或登录验证
      *
      * @param applicationName 应用名
      * @param accountName     账号名
-     * @return 账号ID Optional
+     * @return 账号核心信息 Optional
      */
     @Override
-    public Optional<Long> findAccountIdByAccountname(String applicationName, String accountName) {
-        return Optional.ofNullable(accountDao.queryAccountIdByApplicationnameAndAccountname(applicationName, accountName));
+    public Optional<AccountHeader> findHeaderByAccountname(String applicationName, String accountName) {
+        return Optional.ofNullable(accountDao.queryHeaderByApplicationnameAndAccountname(applicationName, accountName));
     }
 
     /**
