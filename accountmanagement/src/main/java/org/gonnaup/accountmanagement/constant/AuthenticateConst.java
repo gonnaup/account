@@ -18,4 +18,7 @@ public class AuthenticateConst {
     //盐
     public static final String SALT = "$ACCOUNT$";
 
+    //jwt过期时间 7天
+    public static final Long JWT_EXPIRE_TIME = 7 * 24 * 60 * 60L;
+
 }

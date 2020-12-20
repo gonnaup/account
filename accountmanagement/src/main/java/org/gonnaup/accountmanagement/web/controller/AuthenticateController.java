@@ -10,6 +10,7 @@ import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.util.JWTUtil;
 import org.gonnaup.common.domain.Result;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpSession;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-/** 认证controller
+/**
+ * 认证controller
+ *
  * @author hy
  * @version 2020/12/11 11:12
  */
@@ -45,12 +49,13 @@ public class AuthenticateController {
 
     /**
      * 用户密码登录方式
-     * @param login 登录信息
+     *
+     * @param login   登录信息
      * @param session
      * @return
      */
     @PostMapping("/login")
-    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login, HttpSession session) {
+    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login) {
         //todo 登录次数控制
         //是否是email
         String identifier = login.getIdentifier();
@@ -72,9 +77,9 @@ public class AuthenticateController {
                     Optional<AccountHeader> headerOptional = accountService.findHeaderById(auth.getAccountId());// always exists
                     AccountHeader accountHeader = headerOptional.orElseThrow();
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
-                    session.setAttribute("login", true);
-                    session.setAttribute("account", accountHeader.getAccountName());
-                    return Result.<AccountHeader>builder().code("200").success().data(accountHeader).build();
+                    return Result.<AccountHeader>builder().code("200")
+                            .message(JWTUtil.signJWT(accountHeader.getId(), new Date(Instant.now().getEpochSecond() + AuthenticateConst.JWT_EXPIRE_TIME)))
+                            .data(accountHeader).build();
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
                     throw new AuthenticationException("用户名或密码错误");
@@ -95,9 +100,9 @@ public class AuthenticateController {
                 Authentication authentication = authenticationService.findByAccountIdOfEmail(accountHeader.getId());
                 if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(authentication.getCredential())) {
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
-                    session.setAttribute("login", true);
-                    session.setAttribute("account", identifier);
-                    return Result.<AccountHeader>builder().code("200").success().data(accountHeader).build();
+                    return Result.<AccountHeader>builder().code("200")
+                            .message(JWTUtil.signJWT(accountHeader.getId(), new Date(Instant.now().getEpochSecond() + AuthenticateConst.JWT_EXPIRE_TIME)))
+                            .data(accountHeader).build();
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
                     throw new AuthenticationException("用户名或密码错误");

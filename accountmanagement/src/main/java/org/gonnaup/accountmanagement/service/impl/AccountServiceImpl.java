@@ -60,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public Page<Account> findAllConditionalPaged(Account account, Pageable pageable) {
+        account = Optional.ofNullable(account).orElse(new Account());
         List<Account> accountList = accountDao.queryAllConditionalByLimit(account, pageable.getOffset(), pageable.getSize());
         int count = accountDao.countAllConditional(account);
         return Page.of(accountList, count);

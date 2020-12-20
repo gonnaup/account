@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @Created on 2020/12/4 11:37
  */
 @RestController
-@RequestMapping("/operationlog")
+@RequestMapping("/api/operationlog")
 public class OperationLogController {
 
     @Autowired
