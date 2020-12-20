@@ -20,6 +20,10 @@ spring:
     password: YBVBDZQGLIRGVDFU
     default-encoding: UTF-8
     protocol: smtp
+  cache:
+    cache-names: AccountManagement
+    redis:
+      key-prefix: cache$accountmanagement.
 mybatis:
   mapper-locations: mapper/*.xml
   lazy-initialization: true

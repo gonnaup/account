@@ -3,12 +3,17 @@ package org.gonnaup.accountmanagement.service.impl;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
+import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.dao.AccountDao;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +26,7 @@ import java.util.Optional;
  * @since 2020-10-29 10:53:18
  */
 @Service("accountService")
+@CacheConfig(cacheNames = {ApplicationName.APPNAME})
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
@@ -36,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 实例对象
      */
     @Override
+    @Cacheable(key = "#id")
     public Optional<Account> findById(Long id) {
         return Optional.ofNullable(accountDao.queryById(id));
     }
@@ -111,6 +118,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 实例对象
      */
     @Override
+    @CachePut(key = "#account.id")
     public Account update(Account account) {
         this.accountDao.update(account);
         return this.findById(account.getId()).orElse(null);
@@ -123,6 +131,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 是否成功
      */
     @Override
+    @CacheEvict(key = "#id")
     public boolean deleteById(Long id) {
         return this.accountDao.deleteById(id) > 0;
     }
