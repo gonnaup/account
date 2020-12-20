@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 
 import java.security.Key;
@@ -45,7 +46,7 @@ public class JWTUtil {
      * @param jwt
      * @return 账号ID
      */
-    public static Long jwtVerified(String jwt) {
+    public static Long jwtVerified(String jwt) throws JwtInvalidException {
         try {
             String subject = Jwts.parserBuilder().setSigningKey(SECRET_KEY)
                     .build()
@@ -54,25 +55,17 @@ public class JWTUtil {
             return Long.valueOf(subject);
         } catch (ExpiredJwtException e) {
             log.error("jwt {} 已过期", jwt);
+            throw new JwtInvalidException("凭证已过期");
         } catch (UnsupportedJwtException | MalformedJwtException e) {
             log.error("不支持的jwt {}", jwt);
+            throw new JwtInvalidException("凭证错误");
         } catch (SignatureException e) {
             log.error("jwt {} 签名错误", jwt);
+            throw new JwtInvalidException("凭证错误");
         } catch (IllegalArgumentException e) {
             log.error("jwt {} 参数错误", jwt);
+            throw new JwtInvalidException("凭证错误");
         }
-        return null;
-    }
-
-
-    public static void main(String[] args) {
-        String admin = Jwts.builder().setSubject("admin")
-                .signWith(SECRET_KEY).compact();
-        System.out.println(admin);
-
-
-        System.out.println(Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(admin).getBody().getSubject());
-
     }
 
 }

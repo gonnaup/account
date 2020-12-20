@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.exception;
+package org.gonnaup.account.exception;
 
 /**
  * 存在关联数据异常

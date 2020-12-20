@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.exception;
+package org.gonnaup.account.exception;
 
 /**
  * 登录认证异常
