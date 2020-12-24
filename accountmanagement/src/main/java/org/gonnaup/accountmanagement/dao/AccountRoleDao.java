@@ -25,6 +25,13 @@ public interface AccountRoleDao {
     List<Role> queryRolesByAccountId(Long accountId);
 
     /**
+     * 查询账户所有角色名
+     * @param accountId 账户ID
+     * @return 角色名列表
+     */
+    List<String> queryRoleNamesByAccountId(Long accountId);
+
+    /**
      * 查询某角色关联账户数
      * 用作能否删除角色条件判断
      * @param roleId

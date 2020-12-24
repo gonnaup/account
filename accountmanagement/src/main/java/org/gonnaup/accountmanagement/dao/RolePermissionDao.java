@@ -6,6 +6,7 @@ import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 角色权限关联表(RolePermission)表数据库访问层
@@ -22,6 +23,13 @@ public interface RolePermissionDao {
      * @return 权限列表
      */
     List<Permission> queryPermissionsByRoleId(Long roleId);
+
+    /**
+     * 查询角色所有权限名
+     * @param roleId 角色ID
+     * @return 权限名列表
+     */
+    Set<String> queryPermissionNamesByRoleId(Long roleId);
 
     /**
      * 查询某权限关联的角色

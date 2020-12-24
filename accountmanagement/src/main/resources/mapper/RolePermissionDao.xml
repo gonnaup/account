@@ -10,6 +10,14 @@
           and t.id = t1.permission_id
     </select>
 
+    <select id="queryPermissionNamesByRoleId" resultType="string">
+        select
+                t.permission_name
+        from permission t, role_permission t1
+        where t1.role_id = #{roleId}
+          and t.id = t1.permission_id
+    </select>
+
     <select id="countPermissionRelated" resultType="int">
         select count(1)
         from role_permission

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
@@ -26,6 +27,7 @@ public class LoginDTO implements Serializable {
      * 密码
      */
     @NotNull(message = "密码不能为空")
+    @Size(min = 6, message = "密码需大于6位")
     private char[] credential;
 
 }

@@ -6,8 +6,6 @@ import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 
-import java.util.Optional;
-
 /**
  * 账户信息(Account)表服务接口
  *
@@ -22,7 +20,7 @@ public interface AccountService {
      * @param id 账户id
      * @return 实例对象
      */
-    Optional<Account> findById(Long id);
+    Account findById(Long id);
 
     /**
      * 通过ID查询账户核心信息
@@ -30,7 +28,7 @@ public interface AccountService {
      * @param id 账户id
      * @return 账户核心信息
      */
-    Optional<AccountHeader> findHeaderById(Long id);
+    AccountHeader findHeaderById(Long id);
 
     /**
      * 多条件查询
@@ -49,7 +47,7 @@ public interface AccountService {
      * @return <code>true</code> - 已存在；<code>false</code> - 未存在
      */
     default boolean accountNameExist(String aplicationName, String accountName) {
-        return findHeaderByAccountname(aplicationName, accountName).isPresent();
+        return findHeaderByAccountname(aplicationName, accountName) != null;
     }
 
     /**
@@ -68,7 +66,7 @@ public interface AccountService {
      * @param accountName     账号名
      * @return 账号核心信息 Optional
      */
-    Optional<AccountHeader> findHeaderByAccountname(String applicationName, String accountName);
+    AccountHeader findHeaderByAccountname(String applicationName, String accountName);
 
     /**
      * 新增账户数据数据

@@ -1,10 +1,15 @@
-package org.gonnaup.accountmanagement.web;
+package org.gonnaup.account.annotation;
+
+import java.lang.annotation.*;
 
 /**
  * api需要某角色访问
  * @author gonnaup
  * @version 2020/12/20 11:28
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 public @interface RequireRole {
     /**
      * 角色列表

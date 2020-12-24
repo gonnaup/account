@@ -9,8 +9,6 @@ import org.gonnaup.accountmanagement.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 /**
  * 账户认证信息(Authentication)表服务实现类
  *
@@ -34,8 +32,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 实例对象
      */
     @Override
-    public Optional<Authentication> findById(Long id) {
-        return Optional.ofNullable(authenticationDao.queryById(id));
+    public Authentication findById(Long id) {
+        return authenticationDao.queryById(id);
     }
 
     /**
@@ -44,11 +42,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param applicationName 应用名
      * @param authType        认证类型{@link AuthType}
      * @param identifier      认证标的
-     * @return 认证信息 <code>Optional</code>
+     * @return 认证信息
      */
     @Override
-    public Optional<Authentication> findOne(String applicationName, String authType, String identifier) {
-        return Optional.ofNullable(authenticationDao.queryByApplicationnameAndAuthtypeAndIdentifier(applicationName, authType, identifier));
+    public Authentication findOne(String applicationName, String authType, String identifier) {
+        return authenticationDao.queryByApplicationnameAndAuthtypeAndIdentifier(applicationName, authType, identifier);
     }
 
     /**
@@ -85,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Authentication update(Authentication authentication) {
         this.authenticationDao.update(authentication);
-        return this.findById(authentication.getId()).orElse(null);
+        return this.findById(authentication.getId());
     }
 
     /**

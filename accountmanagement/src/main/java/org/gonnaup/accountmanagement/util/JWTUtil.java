@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
+import org.gonnaup.accountmanagement.domain.JwtData;
 
 import java.security.Key;
 import java.util.Date;
@@ -46,13 +47,15 @@ public class JWTUtil {
      * @param jwt
      * @return 账号ID
      */
-    public static Long jwtVerified(String jwt) throws JwtInvalidException {
+    public static JwtData jwtVerified(String jwt) throws JwtInvalidException {
         try {
-            String subject = Jwts.parserBuilder().setSigningKey(SECRET_KEY)
+            Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(jwt)
-                    .getBody().getSubject();
-            return Long.valueOf(subject);
+                    .getBody();
+            Long subject = Long.valueOf(claims.getSubject());
+            String appName = claims.getIssuer();
+            return JwtData.of(subject, appName);
         } catch (ExpiredJwtException e) {
             log.error("jwt {} 已过期", jwt);
             throw new JwtInvalidException("凭证已过期");

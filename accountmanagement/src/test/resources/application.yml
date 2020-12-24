@@ -4,7 +4,7 @@ server:
     context-path: /accountmanagement
 spring:
   datasource:
-    url: jdbc:mysql://my.ali.com:8806/accountManagement?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://my.ali.com:8806/test?useSSL=false&useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
@@ -20,12 +20,16 @@ spring:
     password: YBVBDZQGLIRGVDFU
     default-encoding: UTF-8
     protocol: smtp
+  cache:
+    redis:
+      key-prefix: redisCache::$
+      time-to-live: 60000
 mybatis:
   mapper-locations: mapper/*.xml
   lazy-initialization: true
 logging:
   level:
-    org.gonnaup.accountmanagement.dao: info
+    org.gonnaup.accountmanagement.dao: debug
 dubbo:
   application:
     name: dubbo-accountmanagement

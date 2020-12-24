@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
  * @author gonnaup
  * @since 2020-10-29 10:53:29
  */
-@Service("permissionService")
 @Slf4j
+@Service("permissionService")
 public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private PermissionDao permissionDao;

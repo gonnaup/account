@@ -66,7 +66,7 @@ DROP TABLE IF EXISTS `role` ;
 
 CREATE TABLE IF NOT EXISTS `role` (
   `id` BIGINT NOT NULL COMMENT 'ID',
-  `application_name` VARCHAR(50) NOT NULL DEFAULT 'AccountManagement' COMMENT '所属服务(为不同服务定制不同角色)',
+  `application_name` VARCHAR(50) NOT NULL COMMENT '所属服务(为不同服务定制不同角色)',
   `role_name` VARCHAR(64) NOT NULL COMMENT '角色名',
   `description` VARCHAR(512) NULL COMMENT '角色描述',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

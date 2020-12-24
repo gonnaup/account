@@ -1,9 +1,14 @@
-package org.gonnaup.accountmanagement.web;
+package org.gonnaup.account.annotation;
+
+import java.lang.annotation.*;
 
 /** api需要某权限访问
  * @author gonnaup
  * @version 2020/12/20 11:29
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 public @interface RequirePermission {
 
     /**

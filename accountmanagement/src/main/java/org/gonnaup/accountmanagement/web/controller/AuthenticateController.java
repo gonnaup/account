@@ -65,7 +65,7 @@ public class AuthenticateController {
              * 匹配为邮箱
              * 先在authentication表中认证后查询账号
              */
-            Optional<Authentication> authentication = authenticationService.findOne(ApplicationName.APPNAME, AuthType.E.name(), identifier);
+            Optional<Authentication> authentication = Optional.ofNullable(authenticationService.findOne(ApplicationName.APPNAME, AuthType.E.name(), identifier));
             if (authentication.isPresent()) {
                 Authentication auth = authentication.get();
                 if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(auth.getCredential())) {
@@ -74,7 +74,7 @@ public class AuthenticateController {
                     login.setCredential(null);
                     login.setIdentifier(null);
 
-                    Optional<AccountHeader> headerOptional = accountService.findHeaderById(auth.getAccountId());// always exists
+                    Optional<AccountHeader> headerOptional = Optional.ofNullable(accountService.findHeaderById(auth.getAccountId()));// always exists
                     AccountHeader accountHeader = headerOptional.orElseThrow();
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
                     return Result.<AccountHeader>builder().code("200")
@@ -93,7 +93,7 @@ public class AuthenticateController {
              * 用户名
              * 先查询账号，再查询关联邮箱的密码是否匹配
              */
-            Optional<AccountHeader> accountHeaderOptional = accountService.findHeaderByAccountname(ApplicationName.APPNAME, identifier);
+            Optional<AccountHeader> accountHeaderOptional = Optional.ofNullable(accountService.findHeaderByAccountname(ApplicationName.APPNAME, identifier));
             if (accountHeaderOptional.isPresent()) {
                 AccountHeader accountHeader = accountHeaderOptional.get();
                 //email认证信息

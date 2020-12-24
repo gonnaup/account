@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.StringJoiner;
 
 /**
  * 账户角色表(Role)表服务实现类
@@ -122,21 +121,11 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public boolean deleteById(Long id, Operater operater) {
-        //是否存在关联数据
+        //是否存在关联账户数据
         int relatedAccount = accountRoleDao.countRoleRelated(id);
-        int relatedPermission = rolePermissionDao.countRoleRelated(id);
-        StringJoiner joiner = new StringJoiner(",", "[", "]"); //拼接 [账户,权限]
-        joiner.setEmptyValue("");//设置空值, 没有添加值则为"",不设置此值则为"[]"
-        if (relatedAccount > 0) {
-            joiner.add("账户");//账户关联
-        }
-        if (relatedPermission > 0) {
-            joiner.add("权限");
-        }
-        String related = joiner.toString();
-        if (!related.isEmpty()) {//至少有一种关联数据
-            String message = "角色[id=" + id + "]和" + related + "存在关联数据，请先删除关联数据!";
-            throw new RelatedDataExistsException(message);
+        if (relatedAccount > 0) {//存在账户数据关联
+            log.warn("角色id[{}]存在[{}]个账户与之关联，无法删除此角色", id, relatedAccount);
+            throw new RelatedDataExistsException("角色存在账户关联数据，请先删除关联数据!");
         }
         //删除逻辑
         Role origin = findById(id);
@@ -145,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
             log.info("[{}] 删除角色信息 {}", operater.getOperaterId(), origin);
             operationLogService.insert(OperationLog.of(operater, OperateType.D, "删除角色：" + origin));
             //删除关联的权限
-            rolePermissionService.deleteByRoleId(id, operater);
+            rolePermissionService.deleteByRoleId(id, origin.getApplicationName(), operater);
             return count > 0;
         }
         return false;
