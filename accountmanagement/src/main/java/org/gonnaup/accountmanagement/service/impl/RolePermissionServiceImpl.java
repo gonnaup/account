@@ -99,7 +99,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#roleId"),
             @CacheEvict(key = "'permissionName' + #roleId"),
-            @CacheEvict(cacheNames = "roleTree", allEntries = true, condition = "#result")})
+            @CacheEvict(cacheNames = "roleTree", key = "#appName + '$*'", condition = "#result")/*删除此app下所有角色树缓存*/})
     public boolean deleteByRoleId(Long roleId, String appName, Operater operater) {
         //所有权限名
         List<String> permissionnames = findPermissionsByRoleId(roleId).stream()
@@ -126,10 +126,9 @@ public class RolePermissionServiceImpl implements RolePermissionService {
      */
     @Override
     @Transactional
-    //todo 自定义实现 key支持"*"来删除某app下的角色树cache
     @Caching(evict = {@CacheEvict(key = "#roleId"),
             @CacheEvict(key = "'permissionName' + #roleId", condition = "#result > 0"),
-            @CacheEvict(cacheNames = "roleTree", allEntries = true, condition = "#result > 0")})
+            @CacheEvict(cacheNames = "roleTree", key = "#appName + '$*'", condition = "#result > 0")})
     public int deleteMany(Long roleId, List<Long> permissionIds, String appName, Operater operater) {
         if (CollectionUtils.isNotEmpty(permissionIds)) {
             List<String> permissionNameList = permissionIds.parallelStream().map(permissionId -> {

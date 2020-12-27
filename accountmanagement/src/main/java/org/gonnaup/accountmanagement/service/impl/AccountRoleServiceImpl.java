@@ -92,7 +92,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     @Cacheable(cacheNames = "roleTree", key = "#appName + '$' +#accountId")
     public List<RoleTree> findRoleTreesByAccountId(Long accountId, String appName) {
         List<Role> roleList = accountRoleDao.queryRolesByAccountId(accountId);
-        return roleList.parallelStream()
+        return roleList.stream()
                 .map(role -> {
                     RoleTree roleTree = new RoleTree();
                     roleTree.setRoleName(role.getRoleName());
@@ -158,7 +158,6 @@ public class AccountRoleServiceImpl implements AccountRoleService {
      */
     @Override
     @Transactional
-    @CacheEvict(cacheNames = {"accountRole", "roleTree"}, allEntries = true, condition = "#result > 0")
     @Caching(evict = {@CacheEvict(key = "#accountId", condition = "#result > 0"),
             @CacheEvict(key = "'roleName' + #accountId", condition = "#result > 0"),
             @CacheEvict(cacheNames = "roleTree", key = "#appName + '$' +#accountId", condition = "#result > 0")})

@@ -16,7 +16,7 @@ import java.io.IOException;
 @SpringBootApplication
 @MapperScan(value = "org.gonnaup.accountmanagement.dao", annotationClass = Repository.class)
 @Controller
-@EnableCaching(proxyTargetClass = true)
+@EnableCaching
 public class AccountManagementApplication {
 
     @GetMapping("/")
