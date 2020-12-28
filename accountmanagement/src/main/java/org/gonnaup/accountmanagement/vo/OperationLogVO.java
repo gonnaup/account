@@ -8,7 +8,7 @@ import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.springframework.beans.BeanUtils;
 
 /** 操作日志view object
- * @author hy
+ * @author gonnaup
  * @version 1.0
  * @Created on 2020/12/4 13:04
  */

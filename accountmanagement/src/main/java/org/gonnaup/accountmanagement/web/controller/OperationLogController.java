@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import org.gonnaup.account.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.service.OperationLogService;
@@ -16,12 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**操作日志controller
- * @author hy
+ * @author gonnaup
  * @version 1.0
  * @Created on 2020/12/4 11:37
  */
 @RestController
 @RequestMapping("/api/operationlog")
+@RequireLogin
 public class OperationLogController {
 
     @Autowired

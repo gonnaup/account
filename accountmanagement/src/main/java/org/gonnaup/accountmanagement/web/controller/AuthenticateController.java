@@ -28,12 +28,12 @@ import java.util.regex.Pattern;
 /**
  * 认证controller
  *
- * @author hy
+ * @author gonnaup
  * @version 2020/12/11 11:12
  */
 @Slf4j
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/api/authenticate")
 public class AuthenticateController {
 
     /**

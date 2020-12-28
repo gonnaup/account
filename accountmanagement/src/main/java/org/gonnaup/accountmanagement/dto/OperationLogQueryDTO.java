@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**操作日志查询dto
- * @author hy
+ * @author gonnaup
  * @version 2020/12/11 10:53
  */
 @Data
