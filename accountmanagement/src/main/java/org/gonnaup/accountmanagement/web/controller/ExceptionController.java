@@ -8,8 +8,8 @@ import org.gonnaup.accountmanagement.constant.ResultCode;
 import org.gonnaup.common.domain.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * @version 2020/12/28 12:02
  */
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionController {
 
     /**
@@ -29,8 +29,9 @@ public class ExceptionController {
      * @return
      */
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity<Result<String>> loginExceptionHandler(LoginException e) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Result.<String>builder().code(ResultCode.LOGIN_ERROR.code()).fail().data(e.getMessage()).build());
+    public Result<String> loginExceptionHandler(HttpServletResponse response, LoginException e) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return Result.code(ResultCode.LOGIN_ERROR.code()).fail().data(e.getMessage());
     }
 
     /**
@@ -40,8 +41,8 @@ public class ExceptionController {
      */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Result<String>> authenticationExceptionHandler(HttpServletResponse response, AuthenticationException e) {
-        response.setStatus(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value());
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(Result.<String>builder().code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage()).build());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage()));
     }
 
     /**
@@ -50,15 +51,17 @@ public class ExceptionController {
      * @return
      */
     @ExceptionHandler(JwtInvalidException.class)
-    public ResponseEntity<Result<String>> jwtInvalidExceptionHandler(JwtInvalidException e) {
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(Result.<String>builder().code(ResultCode.LOGIN_ERROR.code()).fail().data(e.getMessage()).build());
+    public Result<String> jwtInvalidExceptionHandler(HttpServletResponse response, JwtInvalidException e) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage());
     }
 
 
     @ExceptionHandler
-    public ResponseEntity<Result<String>> otherHandler(Throwable e) {
+    public Result<String> otherHandler(HttpServletResponse response, Throwable e) {
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         log.error("未知异常信息 {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Result.<String>builder().code(ResultCode.SYSTEM_ERROR.code()).fail().data("系统异常，请联系管理员\n邮箱：gonnaup@yeah.net").build());
+        return Result.code(ResultCode.SYSTEM_ERROR.code()).fail().data("系统异常，请联系管理员\n邮箱：gonnaup@yeah.net");
     }
 
 }

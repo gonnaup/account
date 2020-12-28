@@ -6,6 +6,7 @@ import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
+import org.gonnaup.accountmanagement.constant.ResultCode;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.service.AccountService;
@@ -77,9 +78,9 @@ public class AuthenticateController {
                     Optional<AccountHeader> headerOptional = Optional.ofNullable(accountService.findHeaderById(auth.getAccountId()));// always exists
                     AccountHeader accountHeader = headerOptional.orElseThrow();
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
-                    return Result.<AccountHeader>builder().code("200")
+                    return Result.code(ResultCode.SUCCESS.code())
                             .message(JWTUtil.signJWT(accountHeader.getId(), new Date(Instant.now().getEpochSecond() + AuthenticateConst.JWT_EXPIRE_TIME)))
-                            .data(accountHeader).build();
+                            .data(accountHeader);
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
                     throw new LoginException("用户名或密码错误");
@@ -100,9 +101,9 @@ public class AuthenticateController {
                 Authentication authentication = authenticationService.findByAccountIdOfEmail(accountHeader.getId());
                 if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(authentication.getCredential())) {
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
-                    return Result.<AccountHeader>builder().code("200")
+                    return Result.code(ResultCode.SUCCESS.code())
                             .message(JWTUtil.signJWT(accountHeader.getId(), new Date(Instant.now().getEpochSecond() + AuthenticateConst.JWT_EXPIRE_TIME)))
-                            .data(accountHeader).build();
+                            .data(accountHeader);
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
                     throw new LoginException("用户名或密码错误");
