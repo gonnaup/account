@@ -6,7 +6,7 @@ package org.gonnaup.account.exception;
  * @author gonnaup
  * @version 2020/12/11 21:50
  */
-public class AuthenticationException extends RuntimeException {
+public class AuthenticationException extends Exception {
 
     private static final long serialVersionUID = -2620035268635469452L;
 

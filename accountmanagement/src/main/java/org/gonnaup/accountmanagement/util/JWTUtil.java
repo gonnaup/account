@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.domain.JwtData;
@@ -48,6 +49,9 @@ public class JWTUtil {
      * @return 账号ID
      */
     public static JwtData jwtVerified(String jwt) throws JwtInvalidException {
+        if (StringUtils.isBlank(jwt)) {
+            throw new JwtInvalidException("用户未登录");
+        }
         try {
             Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY)
                     .build()

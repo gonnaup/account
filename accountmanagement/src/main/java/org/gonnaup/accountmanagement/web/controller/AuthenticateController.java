@@ -3,7 +3,7 @@ package org.gonnaup.accountmanagement.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.enums.AuthType;
-import org.gonnaup.account.exception.AuthenticationException;
+import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
@@ -55,7 +55,7 @@ public class AuthenticateController {
      * @return
      */
     @PostMapping("/login")
-    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login) {
+    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login) throws LoginException {
         //todo 登录次数控制
         //是否是email
         String identifier = login.getIdentifier();
@@ -82,11 +82,11 @@ public class AuthenticateController {
                             .data(accountHeader).build();
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
-                    throw new AuthenticationException("用户名或密码错误");
+                    throw new LoginException("用户名或密码错误");
                 }
             } else {
                 log.info("登录标的[{}]不存在，登录失败", identifier);
-                throw new AuthenticationException("用户名或密码错误");
+                throw new LoginException("用户名或密码错误");
             }
         } else {
             /**
@@ -105,12 +105,12 @@ public class AuthenticateController {
                             .data(accountHeader).build();
                 } else {
                     log.info("登录标的[{}]密码错误，登录失败", identifier);
-                    throw new AuthenticationException("用户名或密码错误");
+                    throw new LoginException("用户名或密码错误");
                 }
             } else {
                 //账号不存在
                 log.info("登录标的[{}]不存在，登录失败", identifier);
-                throw new AuthenticationException("用户名或密码错误");
+                throw new LoginException("用户名或密码错误");
             }
         }
     }

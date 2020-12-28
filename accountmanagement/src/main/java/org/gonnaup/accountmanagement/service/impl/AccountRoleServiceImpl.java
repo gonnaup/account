@@ -92,7 +92,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     @Cacheable(cacheNames = "roleTree", key = "#appName + '$' +#accountId")
     public List<RoleTree> findRoleTreesByAccountId(Long accountId, String appName) {
         List<Role> roleList = accountRoleDao.queryRolesByAccountId(accountId);
-        return roleList.stream()
+        return roleList.parallelStream()
                 .map(role -> {
                     RoleTree roleTree = new RoleTree();
                     roleTree.setRoleName(role.getRoleName());
