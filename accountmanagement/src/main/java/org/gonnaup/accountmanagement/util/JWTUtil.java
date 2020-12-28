@@ -50,6 +50,7 @@ public class JWTUtil {
      */
     public static JwtData jwtVerified(String jwt) throws JwtInvalidException {
         if (StringUtils.isBlank(jwt)) {
+            log.warn("jwt为空，用户未登录!");
             throw new JwtInvalidException("用户未登录");
         }
         try {
@@ -61,16 +62,16 @@ public class JWTUtil {
             String appName = claims.getIssuer();
             return JwtData.of(subject, appName);
         } catch (ExpiredJwtException e) {
-            log.error("jwt {} 已过期", jwt);
+            log.warn("jwt {} 已过期", jwt);
             throw new JwtInvalidException("凭证已过期");
         } catch (UnsupportedJwtException | MalformedJwtException e) {
-            log.error("不支持的jwt {}", jwt);
+            log.warn("不支持的jwt {}", jwt);
             throw new JwtInvalidException("凭证错误");
         } catch (SignatureException e) {
-            log.error("jwt {} 签名错误", jwt);
+            log.warn("jwt {} 签名错误", jwt);
             throw new JwtInvalidException("凭证错误");
         } catch (IllegalArgumentException e) {
-            log.error("jwt {} 参数错误", jwt);
+            log.warn("jwt {} 参数错误", jwt);
             throw new JwtInvalidException("凭证错误");
         }
     }
