@@ -59,13 +59,14 @@
 <table id="oprationlogTable" lay-filter="oprationlog"></table>
 
 <script type="text/javascript">
-    layui.use(['element', 'table', 'form'], function () {
+    layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
         var table = layui.table;
         var operationlogTable = table.render({
             elem: '#oprationlogTable',
             url: '../api/operationlog/list',
+            headers: {token_jwt: localStorage.getItem(jwt_localStorageName) || ''},
             page: true,
             toolbar: true,
             title: '操作日志',
@@ -76,6 +77,9 @@
                     'count': data.total,
                     'data': data.data
                 }
+            },
+            done: function (res, curr, count) {
+              console.log("done")
             },
             cols: [[
                 {type: 'radio'},
@@ -88,7 +92,7 @@
                 {field: 'createtime', title: '操作时间', width: 140},
             ]]
         })
-
+        table.on('')
         var form = layui.form
         form.render('select')
         form.on('submit(operationlogQueryForm)', function (data) {

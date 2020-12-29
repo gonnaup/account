@@ -53,7 +53,7 @@ public class ExceptionController {
     @ExceptionHandler(JwtInvalidException.class)
     public Result<String> jwtInvalidExceptionHandler(HttpServletResponse response, JwtInvalidException e) {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        return Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage());
+        return Result.code(ResultCode.NOTLOGIN_ERROR.code()).fail().data(e.getMessage());
     }
 
 

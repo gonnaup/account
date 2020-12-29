@@ -1,12 +1,14 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import org.gonnaup.account.annotation.RequireLogin;
+import org.gonnaup.accountmanagement.constant.ResultCode;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.vo.OperationLogVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
+import org.gonnaup.common.domain.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,15 @@ public class OperationLogController {
 
     @Autowired
     private OperationLogService operationLogService;
+
+    /**
+     * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
+     * @return
+     */
+    @GetMapping("/display")
+    public Result<String> display() {
+        return Result.code(ResultCode.SUCCESS.code()).success().data("");
+    }
 
     @GetMapping("/list")
     public Page<OperationLogVO> listpage(OperationLogQueryDTO queryparam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {

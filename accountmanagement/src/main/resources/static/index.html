@@ -30,7 +30,7 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <img src="http://47.98.173.139/i/avatar/default_avatar.png" class="layui-nav-img" alt="">
-                    gonnaup
+                    请登录
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a href="">基本资料</a></dd>
@@ -83,12 +83,37 @@
     </div>
 </div>
 <script src="../layui/layui.js"></script>
-<script src="../axios/axios.min.js"></script>
 <script src="../js/router.js"></script>
+<script src="../js/api.js"></script>
 <script>
     //JavaScript代码区域
-    layui.use(['jquery', 'element'], function () {
+    layui.use(['jquery', 'element', 'layer'], function () {
         var $ = layui.jquery
+        $(document).ajaxError(function(event, xhr, options, exc){
+            //无权限
+            if (xhr.status == 401) {
+                var layer = layui.layer;
+                var code = xhr.responseJSON.code; //401:未登录，402：已登录但权限不够
+                console.warn(xhr.responseJSON.data)
+                if (code == '401') {//未登录
+                    layer.confirm('您还未登录，是否现在去登陆？', {
+                        icon: 3,
+                        btn: ['现在就去','等会再说'] //按钮
+                    }, function(index){
+                        layer.close(index)
+                        layer.open({
+                            type: 2,//iframe
+                            title: ['登录'],
+                            content: '../html/login.html'
+                        })
+                    });
+                } else if (code == '402') {//权限不够
+                    layer.alert('您的权限不够，请联系管理员')
+                } else {
+
+                }
+            }
+        });
         var element = layui.element
         element.init()
         $(document).ready(function () {
