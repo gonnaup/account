@@ -28,6 +28,6 @@ public class LoginDTO implements Serializable {
      */
     @NotNull(message = "密码不能为空")
     @Size(min = 6, message = "密码需大于6位")
-    private char[] credential;
+    private String credential;
 
 }

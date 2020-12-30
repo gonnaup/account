@@ -1,7 +1,6 @@
 package org.gonnaup.accountmanagement.util;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +8,8 @@ import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.domain.JwtData;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -24,7 +25,13 @@ public class JWTUtil {
     private JWTUtil() {
     }
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final String key = "GONNAUP_NNKDLSLKKI_19949930299904903940349309403949";
+
+    private static final Key SECRET_KEY;
+
+    static {
+        SECRET_KEY = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+    }
 
     /**
      * 签发jwt

@@ -89,7 +89,7 @@
     //JavaScript代码区域
     layui.use(['jquery', 'element', 'layer'], function () {
         var $ = layui.jquery
-        $(document).ajaxError(function(event, xhr, options, exc){
+        $(document).ajaxError(function (event, xhr, options, exc) {
             //无权限
             if (xhr.status == 401) {
                 var layer = layui.layer;
@@ -98,14 +98,25 @@
                 if (code == '401') {//未登录
                     layer.confirm('您还未登录，是否现在去登陆？', {
                         icon: 3,
-                        btn: ['现在就去','等会再说'] //按钮
-                    }, function(index){
-                        layer.close(index)
-                        layer.open({
-                            type: 2,//iframe
-                            title: ['登录'],
-                            content: '../html/login.html'
+                        btn: ['现在就去', '等会再说'] //按钮
+                    }, function (index) {
+                        layer.close(index)//关闭上层layler
+                        $.ajax({
+                            url: '../html/login.html',
+                            type: 'get',
+                            success: function (data) {
+                                layer.open({
+                                    type: 1,
+                                    area: '450px',
+                                    title: ['登录'],
+                                    content: data
+                                })
+                            },
+                            error: function () {
+                                layer.msg('获取登录页面失败!')
+                            }
                         })
+
                     });
                 } else if (code == '402') {//权限不够
                     layer.alert('您的权限不够，请联系管理员')
