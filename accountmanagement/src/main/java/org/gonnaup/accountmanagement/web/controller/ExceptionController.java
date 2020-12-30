@@ -41,7 +41,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<Result<String>> authenticationExceptionHandler(HttpServletResponse response, AuthenticationException e) {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage()));
     }
 
@@ -52,7 +52,7 @@ public class ExceptionController {
      */
     @ExceptionHandler(JwtInvalidException.class)
     public Result<String> jwtInvalidExceptionHandler(HttpServletResponse response, JwtInvalidException e) {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         return Result.code(ResultCode.NOTLOGIN_ERROR.code()).fail().data(e.getMessage());
     }
 

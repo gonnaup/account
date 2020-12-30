@@ -91,12 +91,12 @@
         var $ = layui.jquery
         $(document).ajaxError(function (event, xhr, options, exc) {
             //无权限
-            if (xhr.status == 401) {
+            if (xhr.status == 403) {
                 var layer = layui.layer;
                 var code = xhr.responseJSON.code; //401:未登录，402：已登录但权限不够
                 console.warn(xhr.responseJSON.data)
                 if (code == '401') {//未登录
-                    layer.confirm('您还未登录，是否现在去登陆？', {
+                    layer.confirm(xhr.responseJSON.data + '，是否现在登陆？', {
                         icon: 3,
                         btn: ['现在就去', '等会再说'] //按钮
                     }, function (index) {

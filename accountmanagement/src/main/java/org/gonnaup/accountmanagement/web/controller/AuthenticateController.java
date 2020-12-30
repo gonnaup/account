@@ -69,7 +69,7 @@ public class AuthenticateController {
             Optional<Authentication> authentication = Optional.ofNullable(authenticationService.findOne(ApplicationName.APPNAME, AuthType.E.name(), identifier));
             if (authentication.isPresent()) {
                 Authentication auth = authentication.get();
-                if (CryptUtil.md5Encode(login.getCredential(), AuthenticateConst.SALT).equals(auth.getCredential())) {
+                if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(auth.getCredential())) {
                     //登录成功
                     //gc
                     login.setCredential(null);
@@ -99,7 +99,7 @@ public class AuthenticateController {
                 AccountHeader accountHeader = accountHeaderOptional.get();
                 //email认证信息
                 Authentication authentication = authenticationService.findByAccountIdOfEmail(accountHeader.getId());
-                if (CryptUtil.md5Encode(login.getCredential(), AuthenticateConst.SALT).equals(authentication.getCredential())) {
+                if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(authentication.getCredential())) {
                     log.info("登录标的[{}]登录成功，账号信息 {}", identifier, accountHeader);
                     return Result.code(ResultCode.SUCCESS.code())
                             .message(JWTUtil.signJWT(accountHeader.getId(), new Date(Instant.now().toEpochMilli() + AuthenticateConst.JWT_EXPIRE_TIME)))

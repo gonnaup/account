@@ -1,7 +1,9 @@
 var pagepermission_urlMap = new Map()
 pagepermission_urlMap.set('../html/operationlog.html', '../api/operationlog/display')
+var current_page//当前页面缓存
 
 var routerTo = function (url) {
+    current_page = url
     var $ = layui.jquery;
     var pagepermission_url = pagepermission_urlMap.get(url)
     if (pagepermission_url != undefined) {

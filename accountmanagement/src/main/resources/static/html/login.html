@@ -51,6 +51,13 @@
                     contentType: 'application/json',
                     success: function (data) {
                         localStorage.setItem(jwt_localStorageName, data.message)
+                        layer.closeAll('page')//关闭layer
+                        layer.msg('登录成功!', {icon: 1})
+                        loadpage(current_page)
+                    },
+                    error: function (xhr) {
+                        var layer = layui.layer
+                        layer.msg(xhr.responseJSON.data, {icon: 5})
                     }
                 }
             )
