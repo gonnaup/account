@@ -15,7 +15,7 @@ var routerTo = function (url) {
                 loadpage(url)
             },
             error: function (reData) {
-                $("#content-container").html("<h1>NO PERMISSION</h1>");
+                loadpage('../html/403.html')
             }
         })
     } else {
