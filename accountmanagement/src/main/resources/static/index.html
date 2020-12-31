@@ -28,7 +28,7 @@
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li id="login_entrance" class="layui-nav-item">
-                <a href="javascript:;">
+                <a id="login_click_button" href="javascript:;">
                     <span id="login_entrance_logo">请登录</span>
                 </a>
             </li>
@@ -96,6 +96,11 @@
     layui.use(['jquery', 'element', 'layer'], function () {
         login_jwt()//尝试使用jwt登录
         var $ = layui.jquery
+        //监听登录按钮点击事件
+        $("#login_click_button").click(function (e) {
+            e.preventDefault()
+            openLoginPage()
+        })
         $(document).ajaxError(function (event, xhr, options, exc) {
             //无权限
             if (xhr.status == 403) {
@@ -108,22 +113,7 @@
                         btn: ['现在就去', '等会再说'] //按钮
                     }, function (index) {
                         layer.close(index)//关闭上层layler
-                        $.ajax({
-                            url: '../html/login.html',
-                            type: 'get',
-                            success: function (data) {
-                                layer.open({
-                                    type: 1,
-                                    area: '450px',
-                                    title: ['登录'],
-                                    content: data
-                                })
-                            },
-                            error: function () {
-                                layer.msg('获取登录页面失败!')
-                            }
-                        })
-
+                        openLoginPage()
                     });
                 } else if (code == '402') {//权限不够
                     layer.alert('您的权限不够，请联系管理员')
