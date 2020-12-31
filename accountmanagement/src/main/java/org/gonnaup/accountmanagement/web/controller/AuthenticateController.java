@@ -3,10 +3,12 @@ package org.gonnaup.accountmanagement.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.enums.AuthType;
+import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultCode;
+import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.service.AccountService;
@@ -16,11 +18,9 @@ import org.gonnaup.common.domain.Result;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -114,6 +114,24 @@ public class AuthenticateController {
                 throw new LoginException("用户名或密码错误");
             }
         }
+    }
+
+    @GetMapping("/authenticationJWT")
+    public Result<AccountHeader> authenticationJWT(HttpServletRequest request) {
+        JwtData jwtData = null;
+        String jwt = null;
+        try {
+            jwt = request.getHeader(AuthenticateConst.JWT_HEADER_NAME);
+            jwtData = JWTUtil.jwtVerified(jwt);
+        } catch (JwtInvalidException e) {
+            log.warn("jwt 错误， {}", e.getMessage());
+            return Result.code(ResultCode.LOGIN_ERROR.code()).message(e.getMessage()).data(null);
+        }
+        AccountHeader accountHeader = accountService.findHeaderById(jwtData.getAccountId());
+        if (log.isDebugEnabled()) {
+            log.debug("jwt {} 验证通过， 账号信息 {}", jwt, accountHeader);
+        }
+        return Result.code(ResultCode.SUCCESS.code()).success().data(accountHeader);
     }
 
 }
