@@ -49,7 +49,7 @@
                     data: JSON.stringify(data.field),
                     contentType: 'application/json',
                     success: function (data) {
-                        localStorage.setItem(jwt_localStorageName, data.message)
+                        localStorage.setItem(JWT_LOCALSTORAGENAME, data.message)
                         layer.closeAll('page')//关闭layer
                         layer.msg('登录成功!', {icon: 1})
                         fillAccountInformation(data.data)

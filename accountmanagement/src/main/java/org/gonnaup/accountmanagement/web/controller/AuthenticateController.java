@@ -17,10 +17,12 @@ import org.gonnaup.accountmanagement.util.JWTUtil;
 import org.gonnaup.common.domain.Result;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -47,6 +49,9 @@ public class AuthenticateController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 用户密码登录方式
@@ -116,12 +121,22 @@ public class AuthenticateController {
         }
     }
 
+    /**
+     * jwt登录
+     *
+     * @param request
+     * @return
+     */
     @GetMapping("/authenticationJWT")
     public Result<AccountHeader> authenticationJWT(HttpServletRequest request) {
         JwtData jwtData = null;
         String jwt = null;
         try {
-            jwt = request.getHeader(AuthenticateConst.JWT_HEADER_NAME);
+            jwt = JWTUtil.obtainJWT(request);
+            if (redisTemplate.opsForValue().get(AuthenticateConst.JWT_BLACKLIST_REDIS_PREFIX + jwt) != null) {
+                log.info("jwt {} 已被注销", jwt);
+                return Result.code(ResultCode.LOGIN_ERROR.code()).message("登录凭证已过期").data(null);
+            }
             jwtData = JWTUtil.jwtVerified(jwt);
         } catch (JwtInvalidException e) {
             log.warn("jwt 错误， {}", e.getMessage());
@@ -132,6 +147,26 @@ public class AuthenticateController {
             log.debug("jwt {} 验证通过， 账号信息 {}", jwt, accountHeader);
         }
         return Result.code(ResultCode.SUCCESS.code()).success().data(accountHeader);
+    }
+
+    /**
+     * 注销账户
+     *
+     * @param request
+     * @return
+     */
+    @DeleteMapping("/signout")
+    public Result<String> signout(HttpServletRequest request) {
+        String jwt = JWTUtil.obtainJWT(request);
+        try {
+            JwtData jwtData = JWTUtil.jwtVerified(jwt);
+            //设置过期时间为jwt过期剩余时间
+            redisTemplate.opsForValue().set(AuthenticateConst.JWT_BLACKLIST_REDIS_PREFIX + jwt, "", Duration.ofMillis(jwtData.getRemainder()));
+            log.info("jwt {} 注销成功", jwt);
+        } catch (JwtInvalidException e) {
+            log.info("jwt {} 已失效，无需注销", jwt);
+        }
+        return Result.code(ResultCode.SUCCESS.code()).success().data("");
     }
 
 }

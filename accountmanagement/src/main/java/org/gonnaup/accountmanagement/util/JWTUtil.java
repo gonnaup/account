@@ -6,12 +6,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
+import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * jwt生成和验证工具类
@@ -67,7 +70,8 @@ public class JWTUtil {
                     .getBody();
             Long subject = Long.valueOf(claims.getSubject());
             String appName = claims.getIssuer();
-            return JwtData.of(subject, appName);
+            Long remainder = claims.getExpiration().getTime() - System.currentTimeMillis();//到期时间 - 现在时间 = 剩余毫秒数
+            return JwtData.of(subject, appName, remainder);
         } catch (ExpiredJwtException e) {
             log.warn("jwt {} 已过期", jwt);
             throw new JwtInvalidException("登录凭证已过期");
@@ -81,6 +85,16 @@ public class JWTUtil {
             log.warn("jwt {} 参数错误", jwt);
             throw new JwtInvalidException("登录凭证错误");
         }
+    }
+
+    /**
+     * 从http request中获取jwt值
+     * @param request
+     * @return jwt值
+     */
+    public static String obtainJWT(HttpServletRequest request) {
+        Objects.requireNonNull(request);
+        return request.getHeader(AuthenticateConst.JWT_HEADER_NAME);
     }
 
 }

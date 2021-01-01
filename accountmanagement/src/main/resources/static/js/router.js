@@ -10,7 +10,7 @@ var routerTo = function (url) {
         $.ajax({
             url: pagepermission_url,
             type: 'get',
-            headers: {token_jwt: localStorage.getItem(jwt_localStorageName)},
+            headers: {token_jwt: localStorage.getItem(JWT_LOCALSTORAGENAME)},
             success: function (reData) {
                 loadpage(url)
             },

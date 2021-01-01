@@ -16,11 +16,16 @@ public class JwtData {
     /**
      * 账号id
      */
-    private Long accountId;
+    private final Long accountId;
 
     /**
      * 账号所属app名称
      */
-    private String appName;
+    private final String appName;
+
+    /**
+     * jwt剩余时间
+     */
+    private final Long remainder;
 
 }

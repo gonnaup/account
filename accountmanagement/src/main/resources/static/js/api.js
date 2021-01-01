@@ -1,5 +1,5 @@
-var jwt_headerName = 'token_jwt'
-var jwt_localStorageName = 'authentication_token'
+var JWT_HEADERNAME = 'token_jwt'
+var JWT_LOCALSTORAGENAME = 'authentication_token'
 var SUCCESS = '200';//成功
 var FAIL = '400';//失败
 var NOTLOGIN_ERROR = '401';//未登录
@@ -7,8 +7,10 @@ var AUTH_ERROR = '402';//鉴权失败
 var LOGIN_ERROR = '403';//登录失败
 var SYSTEM_ERROR = '500';//服务器异常
 
+var openLoginTipsPage = true//是否打开登录提示layer，用于注销重新加载页面时不显示此页面
+
 function login_jwt() {
-    var jwt = localStorage.getItem(jwt_localStorageName)
+    var jwt = localStorage.getItem(JWT_LOCALSTORAGENAME)
     //存在jwt
     if (jwt != undefined) {
         var $ = layui.jquery;
@@ -78,4 +80,30 @@ function openLoginPage() {
             layer.msg('获取登录页面失败!')
         }
     })
+}
+
+function signout() {
+    var jwt = localStorage.getItem(JWT_LOCALSTORAGENAME);
+    if (jwt != undefined) {
+        var layer = layui.layer
+        var $ = layui.jquery
+        $.ajax({
+            url: '../api/authenticate/signout',
+            type: 'delete',
+            headers: {token_jwt: jwt},
+            success: function (data) {
+                //当有加载的页面时重新加载页面
+                if (current_page != undefined) {
+                    openLoginTipsPage = false;//不打开提示登录layer
+                    routerTo(current_page)
+                }
+                localStorage.removeItem(JWT_LOCALSTORAGENAME)//移除jwt
+                layer.msg('账号注销成功!', {icon: 1})
+                cleanAccountInformation()//清除登录账号信息
+            },
+            error: function (xhr) {
+
+            }
+        })
+    }
 }

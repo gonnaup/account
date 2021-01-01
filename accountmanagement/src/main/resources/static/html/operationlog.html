@@ -66,7 +66,7 @@
         var operationlogTable = table.render({
             elem: '#oprationlogTable',
             url: '../api/operationlog/list',
-            headers: {token_jwt: localStorage.getItem(jwt_localStorageName) || ''},
+            headers: {token_jwt: localStorage.getItem(JWT_LOCALSTORAGENAME) || ''},
             page: true,
             toolbar: true,
             title: '操作日志',

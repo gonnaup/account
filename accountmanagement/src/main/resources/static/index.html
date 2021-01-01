@@ -34,7 +34,8 @@
             </li>
             <li id="account_information" class="layui-nav-item" style="display: none">
                 <a href="javascript:;">
-                    <img id="account_avatar" src="http://47.98.173.139/i/avatar/default_avatar.png" class="layui-nav-img" alt="">
+                    <img id="account_avatar" src=""
+                         class="layui-nav-img" alt="">
                     <span id="account_nickname"></span>
                 </a>
                 <dl class="layui-nav-child">
@@ -42,7 +43,7 @@
                     <dd><a href="">安全设置</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="javascript:;">退出</a></li>
+            <li id="signout_entrance" class="layui-nav-item"><a href="javascript:;">退出</a></li>
         </ul>
     </div>
 
@@ -96,18 +97,31 @@
     layui.use(['jquery', 'element', 'layer'], function () {
         login_jwt()//尝试使用jwt登录
         var $ = layui.jquery
+        var layer = layui.layer;
+
         //监听登录按钮点击事件
         $("#login_click_button").click(function (e) {
             e.preventDefault()
             openLoginPage()
         })
+
+        //退出按钮监听
+        $("#signout_entrance").click(function (e) {
+            e.preventDefault()
+            layer.confirm('是否注销登录？', {
+                    icon: 3,
+                    btn: ['注销', '点错了']
+                }, function (index) {
+                    signout()
+                }
+            )
+        })
+
         $(document).ajaxError(function (event, xhr, options, exc) {
             //无权限
             if (xhr.status == 403) {
-                var layer = layui.layer;
                 var code = xhr.responseJSON.code; //401:未登录，402：已登录但权限不够
-                console.warn(xhr.responseJSON.data)
-                if (code == '401') {//未登录
+                if (code == '401' && openLoginTipsPage) {//未登录
                     layer.confirm(xhr.responseJSON.data + '，是否现在登陆？', {
                         icon: 3,
                         btn: ['现在就去', '等会再说'] //按钮
@@ -115,13 +129,14 @@
                         layer.close(index)//关闭上层layler
                         openLoginPage()
                     });
-                } else if (code == '402') {//权限不够
+                } else if (code == '402' && openLoginTipsPage) {//权限不够
                     layer.alert('您的权限不够，请联系管理员')
                 } else {
-
+                    openLoginTipsPage = true//当此值为false时赋值为true，只打断一次提示
                 }
             }
         });
+
         var element = layui.element
         element.init()
         $(document).ready(function () {

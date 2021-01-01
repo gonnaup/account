@@ -13,6 +13,7 @@ import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -38,6 +39,9 @@ public class AccountInterceptor implements HandlerInterceptor {
 
     @Autowired
     private AccountRoleService accountRoleService;
+
+    @Autowired
+    private StringRedisTemplate  redisTemplate;
 
     /**
      * 账户角色权限控制拦截
@@ -175,7 +179,12 @@ public class AccountInterceptor implements HandlerInterceptor {
      * @throws JwtInvalidException 验证不通过抛出
      */
     protected JwtData obtainValidJwt(HttpServletRequest request) throws JwtInvalidException {
-        return JWTUtil.jwtVerified(request.getHeader(AuthenticateConst.JWT_HEADER_NAME));
+        String jwt = JWTUtil.obtainJWT(request);
+        if (redisTemplate.opsForValue().get(AuthenticateConst.JWT_BLACKLIST_REDIS_PREFIX + jwt) != null) {
+            log.info("jwt {} 已被注销", jwt);
+            throw new JwtInvalidException("登录凭证已过期");
+        }
+        return JWTUtil.jwtVerified(jwt);
     }
 
 }
