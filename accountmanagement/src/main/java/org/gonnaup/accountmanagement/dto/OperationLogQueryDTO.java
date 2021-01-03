@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
+import org.gonnaup.accountmanagement.entity.OperationLog;
 
 import java.io.Serializable;
 
@@ -36,5 +37,17 @@ public class OperationLogQueryDTO implements Serializable {
      * 操作内容细节
      */
     private String operateDetail;
+
+    /**
+     * 从dto构建查询对象
+     */
+    public OperationLog toOperationLog() {
+        OperationLog operationLog = new OperationLog();
+        operationLog.setOperaterType(getOperaterType());
+        operationLog.setOperaterName(getOperaterName());
+        operationLog.setOperateType(getOperateType());
+        operationLog.setOperateDetail(getOperateDetail());
+        return operationLog;
+    }
 
 }

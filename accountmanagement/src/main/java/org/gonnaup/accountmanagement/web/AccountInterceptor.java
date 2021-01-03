@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.web.interceptor;
+package org.gonnaup.accountmanagement.web;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.util.JWTUtil;
+import org.gonnaup.accountmanagement.util.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,11 @@ public class AccountInterceptor implements HandlerInterceptor {
 
     @Autowired
     private StringRedisTemplate  redisTemplate;
+
+    /**
+     * JwtData threadLocal，可防止重复验证jwt
+     */
+    private final ThreadLocal<JwtData> jwtDataThreadLocal = new ThreadLocal<>();
 
     /**
      * 账户角色权限控制拦截
@@ -79,6 +85,13 @@ public class AccountInterceptor implements HandlerInterceptor {
             if ((requirePermission = obtainRequireLogin(handlerMethod, RequirePermission.class)) != null) {
                 handleRequirePermission(request, requirePermission);
             }
+
+            //将用户所属appName存入request中
+            JwtData jwtData = jwtDataThreadLocal.get();
+            if (jwtData != null) {
+                request.setAttribute(AuthenticateConst.REQUEST_ATTR_APPNAME, jwtData.getAppName());
+                jwtDataThreadLocal.remove();//移除jwt数据
+            }
         }
         return true;
     }
@@ -107,7 +120,7 @@ public class AccountInterceptor implements HandlerInterceptor {
      * @throws JwtInvalidException 登录状态验证失败
      */
     protected void handleRequireLogin(HttpServletRequest request) throws JwtInvalidException {
-        obtainValidJwt(request);
+        jwtDataThreadLocal.set(obtainValidJwt(request));
     }
 
     /**
@@ -120,7 +133,10 @@ public class AccountInterceptor implements HandlerInterceptor {
      * @throws AuthenticationException 角色权限验证失败
      */
     protected void handleRequireRole(HttpServletRequest request, RequireRole requireRole) throws JwtInvalidException, AuthenticationException {
-        JwtData jwtData = obtainValidJwt(request);//获取jwt账户信息
+        JwtData jwtData = jwtDataThreadLocal.get();
+        if (jwtData == null) {
+            jwtDataThreadLocal.set(jwtData = obtainValidJwt(request));//获取jwt账户信息
+        }
         List<String> rolesRequired = Arrays.asList(requireRole.value());//需要的角色
         Long accountId = jwtData.getAccountId();
         Set<String> rolesOwned = Sets.newHashSet(accountRoleService.findRoleNamesByAccountId(accountId));//账户拥有的角色列表
@@ -151,7 +167,10 @@ public class AccountInterceptor implements HandlerInterceptor {
      * @throws AuthenticationException 角色权限验证失败
      */
     protected void handleRequirePermission(HttpServletRequest request, RequirePermission requirePermission) throws JwtInvalidException, AuthenticationException {
-        JwtData jwtData = obtainValidJwt(request);
+        JwtData jwtData = jwtDataThreadLocal.get();
+        if (jwtData == null) {
+            jwtDataThreadLocal.set(jwtData = obtainValidJwt(request));//获取jwt账户信息
+        }
         List<String> permissionRequired = Arrays.asList(requirePermission.value());
         Long accountId = jwtData.getAccountId();
         List<RoleTree> roleTrees = accountRoleService.findRoleTreesByAccountId(accountId, jwtData.getAppName());
@@ -179,7 +198,7 @@ public class AccountInterceptor implements HandlerInterceptor {
      * @throws JwtInvalidException 验证不通过抛出
      */
     protected JwtData obtainValidJwt(HttpServletRequest request) throws JwtInvalidException {
-        String jwt = JWTUtil.obtainJWT(request);
+        String jwt = RequestUtil.obtainJWT(request);
         if (redisTemplate.opsForValue().get(AuthenticateConst.JWT_BLACKLIST_REDIS_PREFIX + jwt) != null) {
             log.info("jwt {} 已被注销", jwt);
             throw new JwtInvalidException("登录凭证已过期");

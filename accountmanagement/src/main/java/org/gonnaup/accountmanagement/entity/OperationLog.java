@@ -1,9 +1,7 @@
 package org.gonnaup.accountmanagement.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.gonnaup.accountmanagement.domain.Operater;
-import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.enums.OperaterType;
 
@@ -22,7 +20,6 @@ public class OperationLog implements Serializable {
     /**
      * ID
      */
-    @JsonIgnore
     private Long id;
     /**
      * 操作人员类型 {@link org.gonnaup.accountmanagement.enums.OperaterType}
@@ -81,22 +78,5 @@ public class OperationLog implements Serializable {
     public static OperationLog of(Operater operater, OperateType operateType, String operateDetail) {
         return of(operater.getOperaterName(), operater.getOperaterId(), operater.getOperaterType(), operateType, operateDetail);
     }
-
-    /**
-     * 从dto构建查询对象
-     * @param dto
-     */
-    public static OperationLog fromDTO(OperationLogQueryDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        OperationLog operationLog = new OperationLog();
-        operationLog.setOperaterType(dto.getOperaterType());
-        operationLog.setOperaterName(dto.getOperaterName());
-        operationLog.setOperateType(dto.getOperateType());
-        operationLog.setOperateDetail(dto.getOperateDetail());
-        return operationLog;
-    }
-
 
 }

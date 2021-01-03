@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.constant;
+package org.gonnaup.accountmanagement.enums;
 
 /**
  * 返回码

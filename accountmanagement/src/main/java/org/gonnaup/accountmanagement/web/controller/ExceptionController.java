@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
-import org.gonnaup.accountmanagement.constant.ResultCode;
+import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.common.domain.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

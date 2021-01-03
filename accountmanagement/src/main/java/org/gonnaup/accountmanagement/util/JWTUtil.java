@@ -6,15 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
-import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * jwt生成和验证工具类
@@ -85,16 +82,6 @@ public class JWTUtil {
             log.warn("jwt {} 参数错误", jwt);
             throw new JwtInvalidException("登录凭证错误");
         }
-    }
-
-    /**
-     * 从http request中获取jwt值
-     * @param request
-     * @return jwt值
-     */
-    public static String obtainJWT(HttpServletRequest request) {
-        Objects.requireNonNull(request);
-        return request.getHeader(AuthenticateConst.JWT_HEADER_NAME);
     }
 
 }

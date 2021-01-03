@@ -7,13 +7,14 @@ import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
-import org.gonnaup.accountmanagement.constant.ResultCode;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.entity.Authentication;
+import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
 import org.gonnaup.accountmanagement.util.JWTUtil;
+import org.gonnaup.accountmanagement.util.RequestUtil;
 import org.gonnaup.common.domain.Result;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,8 @@ public class AuthenticateController {
      * @return
      */
     @PostMapping("/login")
-    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login) throws LoginException {
+    public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login, HttpServletRequest request) throws LoginException {
+        String ipAddr = RequestUtil.obtainRealIpAddr(request);
         //todo 登录次数控制
         //是否是email
         String identifier = login.getIdentifier();
@@ -132,7 +134,7 @@ public class AuthenticateController {
         JwtData jwtData = null;
         String jwt = null;
         try {
-            jwt = JWTUtil.obtainJWT(request);
+            jwt = RequestUtil.obtainJWT(request);
             if (redisTemplate.opsForValue().get(AuthenticateConst.JWT_BLACKLIST_REDIS_PREFIX + jwt) != null) {
                 log.info("jwt {} 已被注销", jwt);
                 return Result.code(ResultCode.LOGIN_ERROR.code()).message("登录凭证已过期").data(null);
@@ -157,7 +159,7 @@ public class AuthenticateController {
      */
     @DeleteMapping("/signout")
     public Result<String> signout(HttpServletRequest request) {
-        String jwt = JWTUtil.obtainJWT(request);
+        String jwt = RequestUtil.obtainJWT(request);
         try {
             JwtData jwtData = JWTUtil.jwtVerified(jwt);
             //设置过期时间为jwt过期剩余时间
@@ -168,5 +170,7 @@ public class AuthenticateController {
         }
         return Result.code(ResultCode.SUCCESS.code()).success().data("");
     }
+
+
 
 }
