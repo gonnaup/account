@@ -5,21 +5,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
+import org.gonnaup.accountmanagement.annotation.AccountID;
 import org.gonnaup.accountmanagement.annotation.ApplicationName;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
-import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.ApplicationNameValidationService;
+import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 账户controller
@@ -38,6 +37,9 @@ public class AccountController {
 
     @Autowired
     private ApplicationNameValidationService applicationNameValidationService;
+
+    @Autowired
+    private RolePermissionConfirmService rolePermissionConfirmService;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -59,10 +61,11 @@ public class AccountController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page<Account>> list(HttpServletRequest request, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
-        String appName = (String) request.getAttribute(AuthenticateConst.REQUEST_ATTR_APPNAME);
-        //todo ADMIN可查询所有账户列表
-        queryParam.setApplicationName(appName);
+    public Result<Page<Account>> list(@ApplicationName String app, @AccountID Long accountId, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+        //ADMIN可查询所有账户列表
+        if (!rolePermissionConfirmService.isAdmin(accountId)) {
+            queryParam.setApplicationName(app);
+        }
         Account account = queryParam.toAccount();
         if (log.isDebugEnabled()) {
             log.debug("查询账户列表， 参数 {}， page: {}, size {}", account, page, size);
@@ -74,7 +77,7 @@ public class AccountController {
     /**
      * 手动添加一个账号
      *
-     * @param app 应用名
+     * @param app     应用名
      * @param account 账号信息
      * @return
      */
@@ -90,7 +93,7 @@ public class AccountController {
     /**
      * 禁用账号
      *
-     * @param app 应用名
+     * @param app       应用名
      * @param accountId 账号ID
      * @return
      */

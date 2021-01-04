@@ -6,7 +6,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.RoleTree;
-import org.gonnaup.accountmanagement.enums.PermissionType;
+import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
@@ -59,7 +59,7 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      */
     @Override
     public boolean isAdmin(Long accountId) {
-        return hasRole(accountId, PermissionType.ALL.name());
+        return hasRole(accountId, RoleType.ADMIN.name());
     }
 
     /**
@@ -70,7 +70,7 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      */
     @Override
     public boolean isAppAdmin(Long accountId) {
-        return hasRole(accountId, PermissionType.APP_ALL.name());
+        return hasRole(accountId, RoleType.APPALL.name());
     }
 
     /**
