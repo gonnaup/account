@@ -2,11 +2,11 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.gonnaup.account.annotation.ApplicationNameParam;
-import org.gonnaup.account.annotation.RequireLogin;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
+import org.gonnaup.accountmanagement.annotation.ApplicationNameParam;
+import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;

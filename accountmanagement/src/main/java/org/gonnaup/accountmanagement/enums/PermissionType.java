@@ -8,11 +8,11 @@ package org.gonnaup.accountmanagement.enums;
 public enum PermissionType {
 
     ALL("系统所有权限"),
-    APP_ALL("应用所有权限，可以对应用数据进行所有类型操作"),
-    APP_RW("应用写权限，包括新增、修改、删除"),
-    APP_RA("应用新增权限"),
-    APP_RU("应用修改权限"),
-    APP_RD("应用删除权限"),
+    APP_ALL("应用级别所有权限"),
+    APP_RW("应用写权限，包括读、新增、修改、删除"),
+    APP_RA("应用读、新增权限"),
+    APP_RU("应用读、修改权限"),
+    APP_RD("应用读、删除权限"),
     APP_R("应用只读权限");
 
     private final String description;

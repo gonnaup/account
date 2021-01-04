@@ -16,8 +16,9 @@ public enum RoleType {
 
     ADMIN("系统管理员", ALL),
     APPALL("应用管理员", APP_ALL),
-    APPRW("应用读写角色", APP_RW),
-    APPRAU("应用读、新增、修改权限", APP_R, APP_RA, APP_RU),
+    APPRAUD("应用读、新增、修改、删除权限", APP_RW),
+    APPRAU("应用读、新增、修改权限", APP_RA, APP_RU),
+    APPRUD("应用读、修改、删除权限", APP_RU, APP_RD),
     APPR("应用只读角色", APP_R);
 
 

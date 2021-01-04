@@ -1,6 +1,6 @@
 package org.gonnaup.accountmanagement.web.controller;
 
-import org.gonnaup.account.annotation.RequireLogin;
+import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.enums.ResultCode;

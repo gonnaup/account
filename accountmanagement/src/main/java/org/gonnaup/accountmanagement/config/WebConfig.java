@@ -1,6 +1,6 @@
 package org.gonnaup.accountmanagement.config;
 
-import org.gonnaup.account.annotation.ApplicationNameParam;
+import org.gonnaup.accountmanagement.annotation.ApplicationNameParam;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.web.AccountInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

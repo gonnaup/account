@@ -1,4 +1,4 @@
-package org.gonnaup.account.annotation;
+package org.gonnaup.accountmanagement.annotation;
 
 import java.lang.annotation.*;
 
@@ -12,12 +12,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RequireLogin {
-
-    /**
-     * 是否需要登录，默认需要登录
-     *
-     * @return
-     */
-    boolean value() default true;
-
 }

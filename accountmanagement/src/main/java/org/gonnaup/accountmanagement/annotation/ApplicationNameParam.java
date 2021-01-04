@@ -1,4 +1,4 @@
-package org.gonnaup.account.annotation;
+package org.gonnaup.accountmanagement.annotation;
 
 import java.lang.annotation.*;
 
