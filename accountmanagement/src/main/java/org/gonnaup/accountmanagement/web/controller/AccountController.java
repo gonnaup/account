@@ -8,17 +8,23 @@ import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.annotation.AccountID;
 import org.gonnaup.accountmanagement.annotation.ApplicationName;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
+import org.gonnaup.accountmanagement.annotation.RequireRole;
 import org.gonnaup.accountmanagement.constant.ResultConst;
+import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
+import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.enums.ResultCode;
-import org.gonnaup.accountmanagement.service.AccountService;
-import org.gonnaup.accountmanagement.service.ApplicationNameValidationService;
-import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
+import org.gonnaup.accountmanagement.enums.RoleType;
+import org.gonnaup.accountmanagement.service.*;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.ValidationException;
 
 /**
  * 账户controller
@@ -36,10 +42,16 @@ public class AccountController {
     private AccountService accountService;
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
     private ApplicationNameValidationService applicationNameValidationService;
 
     @Autowired
     private RolePermissionConfirmService rolePermissionConfirmService;
+
+    @Autowired
+    private ApplicationCodeService applicationCodeService;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -75,18 +87,32 @@ public class AccountController {
     }
 
     /**
-     * 手动添加一个账号
+     * 手动添加一个账号，ADMIN用户可以为任何应用创建账号，其他有权限用户可以创建所属应用对应的账号
      *
      * @param app     应用名
      * @param account 账号信息
      * @return
      */
     @PostMapping("/new")
-    public Result<Void> newAccount(@ApplicationName String app, Account account) {
-        //应用处理
-        if (StringUtils.isNotBlank(account.getApplicationName())) {
-
+    @RequireRole(or = {RoleType.ADMIN, RoleType.APPALL, RoleType.APPRAU, RoleType.APPRAUD})
+    @Transactional
+    public Result<Void> newAccount(@ApplicationName String app, @AccountID Long accountId, @Validated AccountDTO accountDTO) {
+        //应用名处理
+        if (rolePermissionConfirmService.isAdmin(accountId)) {//admin角色
+            //应用名验证
+            if (StringUtils.isBlank(accountDTO.getApplicationName()) || applicationCodeService.findByPrimarykey(accountDTO.getApplicationName()) == null) {
+                log.warn("系统管理员新增账号时应用名[{}]为空或不存在", accountDTO.getApplicationName());
+                throw new ValidationException("应用名参数错误!");
+            }
+        } else {
+            //非admin角色设置应用名为账号所属应用名
+            accountDTO.setApplicationName(app);
         }
+
+        Account account = accountDTO.toAccount();
+        Account inserted = accountService.insert(account);//添加账号信息
+        Authentication authentication = accountDTO.createAuthentication(inserted.getId());//设置认证信息账号ID
+        authenticationService.insert(authentication);//添加账号认证信息
         return ResultConst.SUCCESS_NULL;
     }
 
