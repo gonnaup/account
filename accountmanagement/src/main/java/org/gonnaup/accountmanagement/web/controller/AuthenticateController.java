@@ -5,8 +5,7 @@ import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
-import org.gonnaup.accountmanagement.annotation.ApplicationNameParam;
-import org.gonnaup.accountmanagement.constant.ApplicationName;
+import org.gonnaup.accountmanagement.annotation.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
@@ -76,7 +75,7 @@ public class AuthenticateController {
              * 匹配为邮箱
              * 先在authentication表中认证后查询账号
              */
-            Optional<Authentication> authentication = Optional.ofNullable(authenticationService.findOne(ApplicationName.APPNAME, AuthType.E.name(), identifier));
+            Optional<Authentication> authentication = Optional.ofNullable(authenticationService.findOne(org.gonnaup.accountmanagement.constant.ApplicationName.APPNAME, AuthType.E.name(), identifier));
             if (authentication.isPresent()) {
                 Authentication auth = authentication.get();
                 if (CryptUtil.md5Encode(new String(login.getCredential()), AuthenticateConst.SALT).equals(auth.getCredential())) {
@@ -104,7 +103,7 @@ public class AuthenticateController {
              * 用户名
              * 先查询账号，再查询关联邮箱的密码是否匹配
              */
-            Optional<AccountHeader> accountHeaderOptional = Optional.ofNullable(accountService.findHeaderByAccountname(ApplicationName.APPNAME, identifier));
+            Optional<AccountHeader> accountHeaderOptional = Optional.ofNullable(accountService.findHeaderByAccountname(org.gonnaup.accountmanagement.constant.ApplicationName.APPNAME, identifier));
             if (accountHeaderOptional.isPresent()) {
                 AccountHeader accountHeader = accountHeaderOptional.get();
                 //email认证信息
@@ -182,7 +181,7 @@ public class AuthenticateController {
      * @return
      */
     @PostMapping("/register")
-    public Result<Void> registerAccount(@ApplicationNameParam String app, RegisterDTO register) {
+    public Result<Void> registerAccount(@ApplicationName String app, RegisterDTO register) {
 
 
         return ResultConst.SUCCESS_NULL;

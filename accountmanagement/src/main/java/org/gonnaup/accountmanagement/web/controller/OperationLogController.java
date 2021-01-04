@@ -1,9 +1,10 @@
 package org.gonnaup.accountmanagement.web.controller;
 
-import org.gonnaup.accountmanagement.annotation.RequireLogin;
+import org.gonnaup.accountmanagement.annotation.RequireRole;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.enums.ResultCode;
+import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.vo.OperationLogVO;
 import org.gonnaup.common.domain.Page;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/operationlog")
-@RequireLogin
+@RequireRole(RoleType.ADMIN)//ADMIN角色才能访问此controller
 public class OperationLogController {
 
     @Autowired

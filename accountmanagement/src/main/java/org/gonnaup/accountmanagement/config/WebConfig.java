@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.config;
 
-import org.gonnaup.accountmanagement.annotation.ApplicationNameParam;
+import org.gonnaup.accountmanagement.annotation.AccountID;
+import org.gonnaup.accountmanagement.annotation.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.web.AccountInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +37,18 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new AppNameHandlerMethodArgumentResolver());
+        resolvers.add(new AccountIDHandlerMethodArgumentResolver());
     }
 
     /**
-     * controller AppName 参数解析<br/>
-     * 参数带{@link ApplicationNameParam}并且类型为{@link String}
+     * controller 应用名：AppName 参数解析<br/>
+     * 参数带{@link ApplicationName}并且类型为{@link String}
      */
     public static class AppNameHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
         @Override
         public boolean supportsParameter(MethodParameter parameter) {
-            ApplicationNameParam annotation = parameter.getParameterAnnotation(ApplicationNameParam.class);
+            ApplicationName annotation = parameter.getParameterAnnotation(ApplicationName.class);
             return annotation != null && String.class.isAssignableFrom(parameter.nestedIfOptional().getParameterType());
         }
 
@@ -54,6 +56,25 @@ public class WebConfig implements WebMvcConfigurer {
         public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
             HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
             return Objects.requireNonNull(request).getAttribute(AuthenticateConst.REQUEST_ATTR_APPNAME);
+        }
+    }
+
+    /**
+     * controller 账号ID：accountID 参数解析<br/>
+     * 参数带{@link AccountID}并且类型为{@link Long}
+     */
+    public static class AccountIDHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+
+        @Override
+        public boolean supportsParameter(MethodParameter parameter) {
+            AccountID annotation = parameter.getParameterAnnotation(AccountID.class);
+            return annotation != null && Long.class.isAssignableFrom(parameter.nestedIfOptional().getParameterType());
+        }
+
+        @Override
+        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+            HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+            return Objects.requireNonNull(request).getAttribute(AuthenticateConst.REQUEST_ATTR_ACCOUNTID);
         }
     }
 

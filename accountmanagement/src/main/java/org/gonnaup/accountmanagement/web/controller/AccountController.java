@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
-import org.gonnaup.accountmanagement.annotation.ApplicationNameParam;
+import org.gonnaup.accountmanagement.annotation.ApplicationName;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
@@ -79,7 +79,7 @@ public class AccountController {
      * @return
      */
     @PostMapping("/new")
-    public Result<Void> newAccount(@ApplicationNameParam String app, Account account) {
+    public Result<Void> newAccount(@ApplicationName String app, Account account) {
         //应用处理
         if (StringUtils.isNotBlank(account.getApplicationName())) {
 
@@ -95,7 +95,7 @@ public class AccountController {
      * @return
      */
     @DeleteMapping("/disable/{accountId}")
-    public Result<Void> disableAccount(@ApplicationNameParam String app, @PathVariable Long accountId) throws AuthenticationException {
+    public Result<Void> disableAccount(@ApplicationName String app, @PathVariable Long accountId) throws AuthenticationException {
         applicationNameValidationService.checkApplicationNameOrigin(app, accountId);
         accountService.updateState(accountId, AccountState.F.name());//修改账户状态
         return ResultConst.SUCCESS_NULL;

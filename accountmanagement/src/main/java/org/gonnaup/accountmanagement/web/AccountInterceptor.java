@@ -90,8 +90,10 @@ public class AccountInterceptor implements HandlerInterceptor {
 
             //将用户所属appName存入request中
             JwtData jwtData = jwtDataThreadLocal.get();
+            //TODO 判断jwt的剩余时间，达到一定阀值之后返回重签信息
             if (jwtData != null) {
-                request.setAttribute(AuthenticateConst.REQUEST_ATTR_APPNAME, jwtData.getAppName());
+                request.setAttribute(AuthenticateConst.REQUEST_ATTR_APPNAME, jwtData.getAppName());//缓存应用名
+                request.setAttribute(AuthenticateConst.REQUEST_ATTR_ACCOUNTID, jwtData.getAccountId());//缓存账户ID
                 jwtDataThreadLocal.remove();//移除jwt数据
             }
         }
