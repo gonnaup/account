@@ -85,6 +85,13 @@ public interface AccountService {
     Account update(Account account);
 
     /**
+     * 禁用账号
+     * @param accountId
+     * @return <code>true</code>：成功；<code>false</code>：失败
+     */
+    boolean updateState(Long accountId, String state);
+
+    /**
      * 通过主键删除数据
      *
      * @param id 主键

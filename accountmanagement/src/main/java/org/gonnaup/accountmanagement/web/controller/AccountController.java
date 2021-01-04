@@ -1,14 +1,18 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.gonnaup.account.annotation.ApplicationNameParam;
 import org.gonnaup.account.annotation.RequireLogin;
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.account.enums.AccountState;
+import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
-import org.gonnaup.accountmanagement.dto.RegisterDTO;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
+import org.gonnaup.accountmanagement.service.ApplicationNameValidationService;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
@@ -30,7 +34,10 @@ import javax.servlet.http.HttpServletRequest;
 public class AccountController {
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
+
+    @Autowired
+    private ApplicationNameValidationService applicationNameValidationService;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -44,6 +51,7 @@ public class AccountController {
 
     /**
      * 分页查询
+     *
      * @param request
      * @param queryParam
      * @param page
@@ -65,32 +73,31 @@ public class AccountController {
 
     /**
      * 手动添加一个账号
-     * @param request
-     * @param account
+     *
+     * @param app 应用名
+     * @param account 账号信息
      * @return
      */
     @PostMapping("/new")
-    public Result<Void> newAccount(HttpServletRequest request, Account account) {
+    public Result<Void> newAccount(@ApplicationNameParam String app, Account account) {
+        //应用处理
+        if (StringUtils.isNotBlank(account.getApplicationName())) {
 
+        }
         return ResultConst.SUCCESS_NULL;
     }
 
     /**
-     * 账号注册
-     * @param request
-     * @param account
+     * 禁用账号
+     *
+     * @param app 应用名
+     * @param accountId 账号ID
      * @return
      */
-    @PostMapping("/register")
-    public Result<Void> registerAccount(HttpServletRequest request, RegisterDTO register) {
-
-
-        return ResultConst.SUCCESS_NULL;
-    }
-
-    @DeleteMapping("/disable/{id}")
-    public Result<Void> disableAccount(HttpServletRequest request) {
-
+    @DeleteMapping("/disable/{accountId}")
+    public Result<Void> disableAccount(@ApplicationNameParam String app, @PathVariable Long accountId) throws AuthenticationException {
+        applicationNameValidationService.checkApplicationNameOrigin(app, accountId);
+        accountService.updateState(accountId, AccountState.F.name());//修改账户状态
         return ResultConst.SUCCESS_NULL;
     }
 

@@ -11,6 +11,7 @@ import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +102,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 实例对象
      */
     @Override
+    @Transactional
     public Account insert(Account account) {
         long id = applicationSequenceService.produceSequence(AppSequenceKey.ACCOUNT);
         account.setId(id);
@@ -116,9 +118,22 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     @Caching(put = {@CachePut(key = "#account.id"), @CachePut(key = "'accountheader::'+#account.id")})
+    @Transactional
     public Account update(Account account) {
         this.accountDao.update(account);
         return this.findById(account.getId());
+    }
+
+    /**
+     * 禁用账号
+     *
+     * @param accountId
+     * @return <code>true</code>：成功；<code>false</code>：失败
+     */
+    @Override
+    @Caching(put = {@CachePut(key = "#accountId"), @CachePut(key = "'accountheader::'+#accountId")})
+    public boolean updateState(Long accountId, String state) {
+        return accountDao.updateAccountStateById(accountId, state) > 0;
     }
 
     /**
