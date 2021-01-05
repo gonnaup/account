@@ -2,13 +2,12 @@ package org.gonnaup.accountmanagement.annotation;
 
 import java.lang.annotation.*;
 
-/**
- * 账户ID参数
+/** 标注{@link org.gonnaup.accountmanagement.domain.JwtData} 参数并自动复制
  * @author gonnaup
- * @version 2021/1/4 21:45
+ * @version 2021/1/5 10:49
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface AccountID {
+public @interface JwtDataParam {
 }

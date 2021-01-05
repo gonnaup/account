@@ -5,7 +5,7 @@ import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
-import org.gonnaup.accountmanagement.annotation.ApplicationName;
+import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
@@ -65,7 +65,7 @@ public class AuthenticateController {
      */
     @PostMapping("/login")
     public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login, HttpServletRequest request) throws LoginException {
-        String ipAddr = RequestUtil.obtainRealIpAddr(request);
+//        String ipAddr = RequestUtil.obtainRealIpAddr(request);
         //todo 登录次数控制
         //是否是email
         String identifier = login.getIdentifier();
@@ -181,7 +181,7 @@ public class AuthenticateController {
      * @return
      */
     @PostMapping("/register")
-    public Result<Void> registerAccount(@ApplicationName String app, RegisterDTO register) {
+    public Result<Void> registerAccount(@JwtDataParam JwtData jwtData, RegisterDTO register) {
 
 
         return ResultConst.SUCCESS_NULL;

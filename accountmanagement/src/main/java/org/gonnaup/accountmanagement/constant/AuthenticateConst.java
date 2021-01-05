@@ -22,10 +22,7 @@ public class AuthenticateConst {
     public static final String JWT_HEADER_NAME = "token_jwt";
 
     //缓存在HttpServletRequest应用名属性中的属性名
-    public static final String REQUEST_ATTR_APPNAME = "APPNAME";
-
-    //缓存在HttpServletRequest账户ID属性中的属性名
-    public static final String REQUEST_ATTR_ACCOUNTID = "ACCOUNTID";
+    public static final String REQUEST_ATTR_JWTDATA = "JWTDATA";
 
     //jwt过期时间 7天
     public static final Long JWT_EXPIRE_TIME = 7 * 24 * 60 * 60L;

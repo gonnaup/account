@@ -1,9 +1,12 @@
 package org.gonnaup.accountmanagement.entity;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.StringJoiner;
 
 /**
  * 账户认证信息(Authentication)实体类
@@ -11,7 +14,9 @@ import java.time.LocalDateTime;
  * @author gonnaup
  * @since 2020-10-29 10:53:25
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Authentication implements Serializable {
     private static final long serialVersionUID = -97124320447210920L;
     /**
@@ -68,4 +73,14 @@ public class Authentication implements Serializable {
     private LocalDateTime updatetime;
 
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Authentication.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("accountId=" + accountId)
+                .add("applicationName='" + applicationName + "'")
+                .add("authType='" + authType + "'")
+                .add("identifier='" + identifier + "'")
+                .toString();
+    }
 }

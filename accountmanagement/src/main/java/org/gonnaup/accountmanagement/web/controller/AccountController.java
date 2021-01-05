@@ -5,11 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
-import org.gonnaup.accountmanagement.annotation.AccountID;
-import org.gonnaup.accountmanagement.annotation.ApplicationName;
+import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequireRole;
 import org.gonnaup.accountmanagement.constant.ResultConst;
+import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.entity.Authentication;
@@ -73,10 +73,10 @@ public class AccountController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page<Account>> list(@ApplicationName String app, @AccountID Long accountId, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+    public Result<Page<Account>> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //ADMIN可查询所有账户列表
-        if (!rolePermissionConfirmService.isAdmin(accountId)) {
-            queryParam.setApplicationName(app);
+        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
+            queryParam.setApplicationName(jwtData.getAppName());
         }
         Account account = queryParam.toAccount();
         if (log.isDebugEnabled()) {
@@ -96,8 +96,9 @@ public class AccountController {
     @PostMapping("/new")
     @RequireRole(or = {RoleType.ADMIN, RoleType.APPALL, RoleType.APPRAU, RoleType.APPRAUD})
     @Transactional
-    public Result<Void> newAccount(@ApplicationName String app, @AccountID Long accountId, @Validated AccountDTO accountDTO) {
+    public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @Validated AccountDTO accountDTO) {
         //应用名处理
+        final Long accountId = jwtData.getAccountId();
         if (rolePermissionConfirmService.isAdmin(accountId)) {//admin角色
             //应用名验证
             if (StringUtils.isBlank(accountDTO.getApplicationName()) || applicationCodeService.findByPrimarykey(accountDTO.getApplicationName()) == null) {
@@ -106,13 +107,15 @@ public class AccountController {
             }
         } else {
             //非admin角色设置应用名为账号所属应用名
-            accountDTO.setApplicationName(app);
+            accountDTO.setApplicationName(jwtData.getAppName());
         }
 
         Account account = accountDTO.toAccount();
         Account inserted = accountService.insert(account);//添加账号信息
         Authentication authentication = accountDTO.createAuthentication(inserted.getId());//设置认证信息账号ID
         authenticationService.insert(authentication);//添加账号认证信息
+        authentication.setCredential(null);//help gc
+        log.info("账号[{}]添加账户 {} 认证信息 {}", accountId, account, authentication);
         return ResultConst.SUCCESS_NULL;
     }
 
@@ -124,9 +127,18 @@ public class AccountController {
      * @return
      */
     @DeleteMapping("/disable/{accountId}")
-    public Result<Void> disableAccount(@ApplicationName String app, @PathVariable Long accountId) throws AuthenticationException {
-        applicationNameValidationService.checkApplicationNameOrigin(app, accountId);
+    @RequireRole(or = {RoleType.ADMIN, RoleType.APPALL, RoleType.APPRAUD, RoleType.APPRUD})
+    public Result<Void> disableAccount(@JwtDataParam JwtData jwtData, @PathVariable Long accountId) throws AuthenticationException {
+        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {//如果不是ADMIN角色则需验证appName
+            applicationNameValidationService.checkApplicationNameOrigin(jwtData.getAppName(), accountId);
+        }
         accountService.updateState(accountId, AccountState.F.name());//修改账户状态
+        return ResultConst.SUCCESS_NULL;
+    }
+
+    @PutMapping("/update")
+    public Result<Void> updateAccount(@JwtDataParam JwtData jwtData) {
+
         return ResultConst.SUCCESS_NULL;
     }
 
