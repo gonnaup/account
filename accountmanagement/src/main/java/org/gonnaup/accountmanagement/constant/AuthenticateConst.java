@@ -24,8 +24,8 @@ public class AuthenticateConst {
     //缓存在HttpServletRequest应用名属性中的属性名
     public static final String REQUEST_ATTR_JWTDATA = "JWTDATA";
 
-    //jwt过期时间 7天
-    public static final Long JWT_EXPIRE_TIME = 7 * 24 * 60 * 60L;
+    //jwt过期时间
+    public static final Long JWT_EXPIRE_TIME = 60 * 60 * 1000L;
 
     //手动失效的jwt在redis中的key前缀值
     public static final String JWT_BLACKLIST_REDIS_PREFIX = ApplicationName.APPNAME + "::jwt_blacklist::";

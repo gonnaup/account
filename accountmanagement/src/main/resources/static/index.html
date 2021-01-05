@@ -7,6 +7,7 @@
     <base href="accountmanagement/">
     <link rel="stylesheet" href="../layui/css/layui.css">
     <link rel="stylesheet" href="../index.css">
+    <link rel="stylesheet" href="../icon/iconfont.css">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -14,10 +15,18 @@
         <div class="layui-logo">账号管理系统</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="javascript:;">控制台</a></li>
-            <li class="layui-nav-item"><a href="javascript:;">商品管理</a></li>
-            <li class="layui-nav-item"><a href="javascript:;">用户</a></li>
-            <li class="layui-nav-item">
+            <li class="layui-nav-item layadmin-flexible" lay-unselect="">
+                <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                    <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                </a>
+            </li>
+            <li class="layui-nav-item" lay-unselect="">
+                <a href="javascript:;">控制台</a>
+            </li>
+            <li class="layui-nav-item" lay-unselect="">
+                <a href="javascript:;">用户</a>
+            </li>
+            <li class="layui-nav-item" lay-unselect="">
                 <a href="javascript:;">其它系统</a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">邮件管理</a></dd>
@@ -27,12 +36,12 @@
             </li>
         </ul>
         <ul class="layui-nav layui-layout-right">
-            <li id="login_entrance" class="layui-nav-item">
+            <li id="login_entrance" class="layui-nav-item" lay-unselect="">
                 <a id="login_click_button" href="javascript:;">
                     <span id="login_entrance_logo">请登录</span>
                 </a>
             </li>
-            <li id="account_information" class="layui-nav-item" style="display: none">
+            <li id="account_information" class="layui-nav-item" lay-unselect="" style="display: none">
                 <a href="javascript:;">
                     <img id="account_avatar" src=""
                          class="layui-nav-img" alt="">
@@ -43,35 +52,64 @@
                     <dd><a href="">安全设置</a></dd>
                 </dl>
             </li>
-            <li id="signout_entrance" class="layui-nav-item"><a href="javascript:;">退出</a></li>
+            <li id="signout_entrance" class="layui-nav-item" lay-unselect=""><a href="javascript:;">退出</a></li>
         </ul>
     </div>
 
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a href="javascript:;" router-url="../html/account.html">账号管理</a>
+            <ul class="layui-nav layui-nav-tree" lay-filter="main-nav">
+                <li class="layui-nav-item">
+                    <a href="javascript:;" router-url="../html/account.html">
+                        <i class="layui-icon layui-icon-user"></i>
+                        <span>账号管理</span>
+                    </a>
+
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;" router-url="../html/authentication.html">认证管理</a>
+                    <a href="javascript:;" router-url="../html/authentication.html">
+                        <i class="layui-icon layui-icon-password"></i>
+                        <span>认证管理</span>
+                    </a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;">角色和权限</a>
+                    <a href="javascript:;">
+                        <i class="layui-icon layui-icon-auz"></i>
+                        <span>角色和权限</span>
+                    </a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;" router-url="../html/role.html">角色管理</a></dd>
-                        <dd><a href="javascript:;" router-url="../html/permission.html">权限管理</a></dd>
+                        <dd>
+                            <a href="javascript:;" router-url="../html/role.html">
+                                <i class="iconfont icon-jiaoseguanlirole"></i>
+                                <span>角色管理</span>
+                            </a>
+                        </dd>
+                        <dd>
+                            <a href="javascript:;" router-url="../html/permission.html">
+                                <i class="iconfont icon-permission-manage"></i>
+                                <span>权限管理</span>
+                            </a>
+                        </dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;" router-url="../html/applicationcode.html">应用代码</a>
+                    <a href="javascript:;" router-url="../html/applicationcode.html">
+                        <i class="layui-icon layui-icon-code-circle"></i>
+                        <span>应用代码</span>
+                    </a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;" router-url="../html/applicationsequence.html">应用序列</a>
+                    <a href="javascript:;" router-url="../html/applicationsequence.html">
+                        <i class="iconfont icon-icon_sequence"></i>
+                        <span>应用序列</span>
+                    </a>
                 </li>
                 <li class="layui-nav-item">
-                    <a href="javascript:;" router-url="../html/operationlog.html">操作日志</a>
+                    <a href="javascript:;" router-url="../html/operationlog.html">
+                        <i class="iconfont icon-log"></i>
+                        <span>操作日志</span>
+                    </a>
                 </li>
             </ul>
         </div>

@@ -16,6 +16,7 @@ import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.*;
+import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
@@ -25,6 +26,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ValidationException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 账户controller
@@ -73,7 +76,7 @@ public class AccountController {
      * @return
      */
     @GetMapping("/list")
-    public Result<Page<Account>> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+    public Page<AccountVO> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //ADMIN可查询所有账户列表
         if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
             queryParam.setApplicationName(jwtData.getAppName());
@@ -83,7 +86,8 @@ public class AccountController {
             log.debug("查询账户列表， 参数 {}， page: {}, size {}", account, page, size);
         }
         Page<Account> accountPage = accountService.findAllConditionalPaged(account, Pageable.of(page, size));
-        return Result.code(ResultCode.SUCCESS.code()).success().data(accountPage);
+        List<AccountVO> accountVOList = accountPage.getData().stream().map(AccountVO::fromAccount).collect(Collectors.toUnmodifiableList());
+        return Page.of(accountVOList, accountPage.getTotal());
     }
 
     /**

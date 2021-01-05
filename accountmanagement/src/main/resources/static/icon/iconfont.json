@@ -1,0 +1,37 @@
+{
+  "id": "2310796",
+  "name": "AccountManagement",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1625010",
+      "name": "icon_sequence",
+      "font_class": "icon_sequence",
+      "unicode": "e6ab",
+      "unicode_decimal": 59051
+    },
+    {
+      "icon_id": "16880999",
+      "name": "log",
+      "font_class": "log",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "14629222",
+      "name": "permission-manage",
+      "font_class": "permission-manage",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "18437477",
+      "name": "角色管理role",
+      "font_class": "jiaoseguanlirole",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    }
+  ]
+}

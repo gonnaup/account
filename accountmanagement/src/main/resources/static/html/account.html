@@ -1,84 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<header>
+    <meta charset="utf-8">
+</header>
 <body>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
-account<br/>
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h3 class="layui-colla-title"><i class="layui-icon layui-icon-search"></i>查询</h3>
+        <div class="layui-colla-content">
+            <div class="layui-container" style="margin-left: 0">
+                <form class="layui-form">
+                    <div class="layui-row">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">账号ID：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="id" placeholder="账号ID">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">账号名：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="accountName" placeholder="账号名称">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">账号昵称：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="accountNickname" placeholder="账号昵称">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-row main-marginTop10">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">应用名称：</label>
+                            <div class="layui-input-block">
+                                <select name="applicationName">
+                                    <!-- todo 根据用户角色动态显示此项 -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">用户状态：</label>
+                            <div class="layui-input-block">
+                                <select name="accountState">
+                                    <option value="">全部</option>
+                                    <option value="N">正常</option>
+                                    <option value="F">禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">用户标记：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="tag" placeholder="用户标记">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="accountQueryForm">查询</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="accountTable" lay-filter="account"></table>
+
+<script type="text/javascript">
+    layui.use(['element', 'table', 'form', 'layer'], function () {
+        var element = layui.element
+        element.init()
+        var table = layui.table;
+        var operationlogTable = table.render({
+            elem: '#accountTable',
+            url: '../api/account/list',
+            headers: {token_jwt: localStorage.getItem(JWT_LOCALSTORAGENAME) || ''},
+            page: true,
+            toolbar: true,
+            title: '操作日志',
+            parseData: function (data) {
+                return {
+                    'code': 0,
+                    "msg": '',
+                    'count': data.total,
+                    'data': data.data
+                }
+            },
+            done: function (res, curr, count) {
+            },
+            cols: [[
+                {type: 'radio'},
+                {field: 'id', title: 'ID', width: 180},
+                {field: 'accountName', title: '用户名', width: 100},
+                {field: 'accountNickname', title: '用户昵称', width: 120},
+                {field: 'accountAvatar', title: '头像', width: 100},
+                {field: 'accountState', title: '用户状态', width: 100},
+                {field: 'applicationName', title: '应用名称', width: 180},
+                {field: 'lastLogintime', title: '最近登录时间', width: 180},
+                {field: 'tag', title: '用户标记', width: 180},
+                {field: 'createtime', title: '创建时间', width: 140},
+                {field: 'updatetime', title: '更新时间', width: 140},
+            ]]
+        })
+        table.on('')
+        var form = layui.form
+        form.render('select')
+        form.on('submit(accountQueryForm)', function (data) {
+            operationlogTable.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false
+        })
+    })
+
+
+</script>
 </body>
 </html>
