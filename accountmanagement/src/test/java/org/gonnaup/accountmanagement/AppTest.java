@@ -2,9 +2,12 @@ package org.gonnaup.accountmanagement;
 
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.enums.OperaterType;
+import org.gonnaup.accountmanagement.enums.PermissionType;
+import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.common.util.CryptUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.annotation.Testable;
@@ -70,6 +73,13 @@ public class AppTest {
 
     public static void main(String[] args) {
         System.out.println(CryptUtil.md5Encode("admin", AuthenticateConst.SALT));
+        System.out.println(0xffff);
+        /**
+         * 模拟权限
+         */
+        System.out.println((PermissionType.ALL.weight() & PermissionType.APP_A.weight()) == PermissionType.APP_A.weight());
+        System.out.println(StringUtils.leftPad(Integer.toHexString(RoleType.APPRDAU.score()).toUpperCase(), 8, '0'));
+        System.out.println(Integer.valueOf("0000F000", 16));
     }
 
 }

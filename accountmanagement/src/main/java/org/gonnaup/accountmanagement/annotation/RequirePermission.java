@@ -22,11 +22,4 @@ public @interface RequirePermission {
      */
     PermissionType[] value() default {};
 
-    /**
-     * 包含权限列表，此列表为权限更高的权限，只需包含其中的一个就通过验证
-     *
-     * @return
-     */
-    PermissionType[] or() default {PermissionType.ALL, PermissionType.APP_ALL};
-
 }

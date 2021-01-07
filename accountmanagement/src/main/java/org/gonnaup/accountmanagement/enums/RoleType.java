@@ -1,13 +1,11 @@
 package org.gonnaup.accountmanagement.enums;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.gonnaup.accountmanagement.enums.PermissionType.*;
 
 /**
- * 系统角色
+ * 系统角色及对应权限列表
  *
  * @author gonnaup
  * @version 2021/1/4 11:02
@@ -16,26 +14,27 @@ public enum RoleType {
 
     ADMIN("系统管理员", ALL),
     APPALL("应用管理员", APP_ALL),
-    APPRAUD("应用读、新增、修改、删除权限", APP_RW),
-    APPRAU("应用读、新增、修改权限", APP_RA, APP_RU),
-    APPRUD("应用读、修改、删除权限", APP_RU, APP_RD),
+    APPRDAU("应用读取、删除、新增、修改权限", APP_D, APP_A, APP_U, APP_R),
+    APPRAU("应用读取、新增、修改权限", APP_R, APP_A, APP_U),
+    APPRUD("应用读取、修改、删除权限", APP_R, APP_U, APP_D),
     APPR("应用只读角色", APP_R);
 
 
     private final String description;
 
-    private final List<String> permissionList;
+    private final int score;
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private RoleType(String description, PermissionType... permissionTypes) {
         this.description = description;
-        permissionList = Arrays.stream(permissionTypes).map(PermissionType::name).collect(Collectors.toUnmodifiableList());
+        score = Arrays.stream(permissionTypes).mapToInt(PermissionType::weight).reduce((left, right) -> left | right).getAsInt();
     }
 
     public String description() {
         return description;
     }
 
-    public List<String> permissionList() {
-        return permissionList;
+    public int score() {
+        return score;
     }
 }

@@ -27,6 +27,10 @@ public class Permission implements Serializable {
      */
     private String permissionName;
     /**
+     * 权重
+     */
+    private String weight;
+    /**
      * 权限描述
      */
     private String description;

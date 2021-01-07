@@ -7,14 +7,12 @@ import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
-import org.gonnaup.accountmanagement.annotation.RequireRole;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.enums.ResultCode;
-import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.*;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
@@ -98,7 +96,6 @@ public class AccountController {
      * @return
      */
     @PostMapping("/new")
-    @RequireRole(or = {RoleType.ADMIN, RoleType.APPALL, RoleType.APPRAU, RoleType.APPRAUD})
     @Transactional
     public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @Validated AccountDTO accountDTO) {
         //应用名处理
@@ -131,7 +128,6 @@ public class AccountController {
      * @return
      */
     @DeleteMapping("/disable/{accountId}")
-    @RequireRole(or = {RoleType.ADMIN, RoleType.APPALL, RoleType.APPRAUD, RoleType.APPRUD})
     public Result<Void> disableAccount(@JwtDataParam JwtData jwtData, @PathVariable Long accountId) throws AuthenticationException {
         if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {//如果不是ADMIN角色则需验证appName
             applicationNameValidationService.checkApplicationNameOrigin(jwtData.getAppName(), accountId);

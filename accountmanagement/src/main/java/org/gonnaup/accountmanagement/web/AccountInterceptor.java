@@ -75,7 +75,7 @@ public class AccountInterceptor implements HandlerInterceptor {
             if (obtainRequireLogin(handlerMethod, RequireLogin.class) != null) {
                 handleRequireLogin(request);
             }
-
+    //TODO 重写权限验证逻辑
             //需要某角色才能访问
             RequireRole requireRole = null;
             if ((requireRole = obtainRequireLogin(handlerMethod, RequireRole.class)) != null) {
@@ -143,9 +143,8 @@ public class AccountInterceptor implements HandlerInterceptor {
         List<String> rolesRequired = Arrays.stream(requireRole.value()).map(RoleType::name).collect(Collectors.toUnmodifiableList());//必需角色
         Long accountId = jwtData.getAccountId();
         final Set<String> rolesOwned = Sets.newHashSet(accountRoleService.findRoleNamesByAccountId(accountId));//账户拥有的角色列表
-        List<String> roleOR = Arrays.stream(requireRole.or()).map(RoleType::name).collect(Collectors.toUnmodifiableList());//高级角色
         //账号包含任意的一个高级角色或包含所有必需角色
-        if ((!roleOR.isEmpty() && roleOR.stream().anyMatch(rolesOwned::contains)) || rolesOwned.containsAll(rolesRequired)) {
+        if (rolesOwned.containsAll(rolesRequired)) {
             //包含所有需要的角色，验证通过
             if (log.isDebugEnabled()) {
                 log.debug("账户[{}] 角色验证通过，需要{}，拥有{}", accountId, rolesRequired, rolesOwned);
@@ -180,9 +179,8 @@ public class AccountInterceptor implements HandlerInterceptor {
         Long accountId = jwtData.getAccountId();
         List<RoleTree> roleTrees = accountRoleService.findRoleTreesByAccountId(accountId, jwtData.getAppName());
         Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionNameSet().stream()).collect(Collectors.toSet());//账号拥有的权限
-        List<String> permissionOR = Arrays.stream(requirePermission.or()).map(PermissionType::name).collect(Collectors.toUnmodifiableList());//高级权限列表
         //包含其中任意一个高级权限或包含所有必需权限
-        if ((!permissionOR.isEmpty() && permissionOR.stream().anyMatch(permissionOwned::contains)) || permissionOwned.containsAll(permissionRequired)) {
+        if (permissionOwned.containsAll(permissionRequired)) {
             //包含所有需要的权限
             if (log.isDebugEnabled()) {
                 log.debug("账户[{}]权限验证通过，需要{}，拥有{}", accountId, permissionRequired, permissionOwned);

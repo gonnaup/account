@@ -6,9 +6,10 @@ import java.lang.annotation.*;
 
 /**
  * api需要某角色访问，支持类级别和方法级别
- *
+ * 建议使用{@link  RequirePermission}
  * @author gonnaup
  * @version 2020/12/20 11:28
+ * @see RequirePermission
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,16 +17,9 @@ import java.lang.annotation.*;
 public @interface RequireRole {
 
     /**
-     * 至少需要的角色列表
+     * 需要的角色列表
      *
      * @return
      */
     RoleType[] value() default {};
-
-    /**
-     * 包含角色列表，此列表为权限更高的角色，只需包含其中的一个就通过验证
-     *
-     * @return
-     */
-    RoleType[] or() default {RoleType.ADMIN, RoleType.APPALL};
 }

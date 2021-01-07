@@ -27,6 +27,10 @@ public class Role implements Serializable {
      */
     private String roleName;
     /**
+     * 权限分数
+     */
+    private String score;
+    /**
      * 角色描述
      */
     private String description;

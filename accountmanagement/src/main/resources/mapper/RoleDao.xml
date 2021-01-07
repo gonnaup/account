@@ -6,6 +6,7 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="applicationName" column="application_name" jdbcType="VARCHAR"/>
         <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
         <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
@@ -14,13 +15,13 @@
     <!--查询单个-->
     <select id="queryById" resultMap="RoleMap">
         select
-          id, application_name, role_name, description, createtime, updatetime
+          id, application_name, role_name, score, description, createtime, updatetime
         from role
         where id = #{id}
     </select>
 
     <select id="queryByAccountId" resultMap="RoleMap">
-        select id, application_name, role_name, description, createtime, updatetime
+        select id, application_name, role_name, score, description, createtime, updatetime
         from role
         join account_role ar on role.id = ar.role_id
         and ar.account_id = #{accountId}
@@ -71,15 +72,15 @@
 
     <!--新增所有列-->
     <insert id="insert">
-        insert into role(id, application_name, role_name, description)
-        values (#{id}, #{applicationName}, #{roleName}, #{description})
+        insert into role(id, application_name, role_name, score, description)
+        values (#{id}, #{applicationName}, #{roleName}, #{score}, #{description})
     </insert>
 
     <insert id="insertBatch">
-        insert into role(id, application_name, role_name, description)
+        insert into role(id, application_name, role_name, score, description)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.applicationName}, #{entity.roleName}, #{entity.description})
+            (#{entity.applicationName}, #{entity.roleName}, #{entity.score}, #{entity.description})
         </foreach>
     </insert>
 
@@ -92,6 +93,9 @@
             </if>
             <if test="roleName != null and roleName != ''">
                 role_name = #{roleName},
+            </if>
+            <if test="score != null and score != ''">
+                score = #{score},
             </if>
             <if test="description != null and description != ''">
                 description = #{description},
