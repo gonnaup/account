@@ -20,6 +20,14 @@ public interface PermissionService {
     Permission findById(Long id);
 
     /**
+     * 根据应用名和权限名查询权限对象
+     * @param applicationName 应用名
+     * @param permissionName 权限名
+     * @return 权限对象
+     */
+    Permission findByApplicationNameAndPermissionName(String applicationName, String permissionName);
+
+    /**
      * 新增数据
      *
      * @param permission 实例对象
@@ -29,7 +37,7 @@ public interface PermissionService {
     Permission insert(Permission permission, Operater operater);
 
     /**
-     * 修改数据
+     * 修改数据，只能修改weight和description
      *
      * @param permission 实例对象
      * @param operater 操作者
@@ -42,7 +50,7 @@ public interface PermissionService {
      *
      * @param id 主键
      * @param operater 操作者
-     * @return 是否成功
+     * @return 删除的对象
      */
-    boolean deleteById(Long id, Operater operater);
+    Permission deleteById(Long id, Operater operater);
 }

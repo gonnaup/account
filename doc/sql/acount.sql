@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '账户信息';
 
 CREATE UNIQUE INDEX `account_application_account_name` ON `account` (`application_name` ASC, `account_name` ASC);
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `authentication` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '账户认证信息';
 CREATE UNIQUE INDEX `auth_unique_index` ON `authentication`(`application_name` ASC, `auth_type` ASC, `identifier` ASC);
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '账户角色表';
 
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '角色权限表';
 
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '角色权限关联表';
 
 CREATE INDEX `fk_role_permission_2_idx` ON `role_permission` (`permission_id` ASC);
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `account_role` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '账户权限表';
 
 CREATE INDEX `fk_acount_role_2_idx` ON `account_role` (`role_id` ASC);
@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `operation_log` (
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '系统操作日志';
 
 CREATE INDEX `operation_log_name_type` ON `operation_log` (`operater_name` ASC, `operate_type` ASC);
@@ -186,6 +186,7 @@ CREATE TABLE IF NOT EXISTS `application_code` (
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`application_name`))
 ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '应用代码';
 
 
@@ -201,6 +202,7 @@ CREATE TABLE IF NOT EXISTS `application_sequence` (
   `step` INT NOT NULL DEFAULT 100 COMMENT '序列号间隔',
   PRIMARY KEY (`application_name`, `sequence_type`))
 ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs
 COMMENT = '应用序列';
 
 

@@ -23,6 +23,14 @@ public interface PermissionDao {
      */
     Permission queryById(Long id);
 
+    /**
+     * 查询应用中某个名称的权限
+     * @param applicationName 应用名
+     * @param permissionName 权限名
+     * @return 权限对象
+     */
+    Permission queryByPermissionName(@Param("applicationName") String applicationName, @Param("permissionName") String permissionName);
+
 
     /**
      * 通过实体作为筛选条件查询
@@ -49,7 +57,7 @@ public interface PermissionDao {
     int insertBatch(@Param("entities") List<Permission> entities);
 
     /**
-     * 修改数据
+     * 修改数据，只能修改weight和description
      *
      * @param permission 实例对象
      * @return 影响行数

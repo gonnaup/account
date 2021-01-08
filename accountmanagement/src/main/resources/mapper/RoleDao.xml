@@ -27,6 +27,14 @@
         and ar.account_id = #{accountId}
     </select>
 
+    <select id="queryByAccountName" resultMap="RoleMap">
+        select
+            id, application_name, role_name, score, description, createtime, updatetime
+        from role
+        where application_name = #{applicationName}
+        and role_name = #{roleName}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditionalByLimit" resultMap="RoleMap">
         select
@@ -88,12 +96,6 @@
     <update id="update">
         update role
         <set>
-            <if test="applicationName != null and applicationName != ''">
-                application_name = #{applicationName},
-            </if>
-            <if test="roleName != null and roleName != ''">
-                role_name = #{roleName},
-            </if>
             <if test="score != null and score != ''">
                 score = #{score},
             </if>

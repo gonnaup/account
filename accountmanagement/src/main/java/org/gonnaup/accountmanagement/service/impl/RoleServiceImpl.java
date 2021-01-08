@@ -5,7 +5,6 @@ import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.AccountRoleDao;
 import org.gonnaup.accountmanagement.dao.RoleDao;
-import org.gonnaup.accountmanagement.dao.RolePermissionDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.OperationLog;
 import org.gonnaup.accountmanagement.entity.Role;
@@ -17,6 +16,7 @@ import org.gonnaup.accountmanagement.service.RoleService;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,17 +29,15 @@ import java.util.Optional;
  * @author gonnaup
  * @since 2020-10-29 10:53:30
  */
-@Service("roleService")
 @Slf4j
+@Service("roleService")
+@CacheConfig(cacheNames = {"role"})
 public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleDao roleDao;
 
     @Autowired
     private AccountRoleDao accountRoleDao;
-
-    @Autowired
-    private RolePermissionDao rolePermissionDao;
 
     @Autowired
     private ApplicationSequenceService applicationSequenceService;
@@ -57,8 +55,22 @@ public class RoleServiceImpl implements RoleService {
      * @return 实例对象
      */
     @Override
+    @Cacheable(key = "#id")
     public Role findById(Long id) {
         return this.roleDao.queryById(id);
+    }
+
+    /**
+     * 根据应用名和角色名查询角色信息
+     *
+     * @param applicationName 应用名
+     * @param roleName        角色名
+     * @return
+     */
+    @Override
+    @Cacheable(key = "'app&roleName' + #applicationName + '_' + #roleName")
+    public Role findByApplicationNameAndRoleName(String applicationName, String roleName) {
+        return roleDao.queryByAccountName(applicationName, roleName);
     }
 
     /**
@@ -99,16 +111,22 @@ public class RoleServiceImpl implements RoleService {
      *
      * @param role     实例对象
      * @param operater 操作者
-     * @return 实例对象
+     * @return 实例后对象
      */
     @Override
     @Transactional
+    @Caching(put = {@CachePut(key = "#result.id", condition = "#result != null "),
+            @CachePut(key = "'app&roleName' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
     public Role update(Role role, Operater operater) {
         Role origin = findById(role.getId());
+        if (origin == null) {
+            log.error("要更新的角色 {} 不存在", role);
+            return null;
+        }
         this.roleDao.update(role);
         Role after = findById(role.getId());
-        log.info("[{}] 修改角色信息 {} => {}", operater.getOperaterId(), origin, after);
         operationLogService.insert(OperationLog.of(operater, OperateType.U, String.format("更新角色：%s => %s", origin, after)));
+        log.info("{}[{}] 修改角色信息 {} => {}", operater.getOperaterId(), operater.getOperaterName(), origin, after);
         return after;
     }
 
@@ -120,7 +138,10 @@ public class RoleServiceImpl implements RoleService {
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Long id, Operater operater) {
+    @Transactional
+    @Caching(evict = {@CacheEvict(key = "#result.id", condition = "#result != null "),
+            @CacheEvict(key = "'app&roleName' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
+    public Role deleteById(Long id, Operater operater) {
         //是否存在关联账户数据
         int relatedAccount = accountRoleDao.countRoleRelated(id);
         if (relatedAccount > 0) {//存在账户数据关联
@@ -130,13 +151,13 @@ public class RoleServiceImpl implements RoleService {
         //删除逻辑
         Role origin = findById(id);
         if (origin != null) {
-            int count = roleDao.deleteById(id);
+            roleDao.deleteById(id);
             log.info("[{}] 删除角色信息 {}", operater.getOperaterId(), origin);
             operationLogService.insert(OperationLog.of(operater, OperateType.D, "删除角色：" + origin));
-            //删除关联的权限
+            //删除与权限的关联关系
             rolePermissionService.deleteByRoleId(id, origin.getApplicationName(), operater);
-            return count > 0;
+            return origin;
         }
-        return false;
+        return null;
     }
 }

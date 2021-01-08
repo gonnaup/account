@@ -30,6 +30,14 @@ public interface RoleDao {
      */
     List<Role> queryByAccountId(Long accountId);
 
+    /**
+     * 查询应用的某个角色
+     * @param applicationName 应用名
+     * @param roleName 角色名
+     * @return
+     */
+    Role queryByAccountName(@Param("applicationName") String applicationName, @Param("roleName") String roleName);
+
 
     /**
      * 通过实体作为筛选条件查询
@@ -63,7 +71,7 @@ public interface RoleDao {
     int insertBatch(@Param("entities") List<Role> entities);
 
     /**
-     * 修改数据
+     * 修改数据，只能修改score和description
      *
      * @param role 实例对象
      * @return 影响行数

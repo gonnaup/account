@@ -11,6 +11,7 @@ import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,12 @@ class AccountRoleServiceTest {
     @Autowired
     StringRedisTemplate redisTemplate;
 
+    String CACHE_PREFIX = "redisCache::$";
+
     @Test
     @Transactional
     @Rollback
+    @DisplayName("账号接口测试")
     void accountTest() {
         Account account = new Account();
         account.setAccountAvatar(null);
@@ -70,12 +74,13 @@ class AccountRoleServiceTest {
         accountService.findById(ID);//cache test
         Assertions.assertNotNull(accountService.findById(ID));
         Assertions.assertNotNull(accountService.findHeaderById(ID));
-//        accountService.deleteById(ID);
+        accountService.deleteById(ID);
     }
 
 
     @Test
     @Transactional
+    @DisplayName("账号角色接口测试")
     void accountRoleTest() {
         // 创建账号
         Account account = new Account();
@@ -130,6 +135,7 @@ class AccountRoleServiceTest {
     @Test
     @Transactional
     @SuppressWarnings("unchecked")
+    @DisplayName("角色树缓存测试")
     void roleTreeCacheTest() throws JsonProcessingException {
         //================== 账户
         Account account1 = new Account();
@@ -224,7 +230,6 @@ class AccountRoleServiceTest {
         //======================================= 查询 =======================================//
         List<RoleTree> roleTreesByAccountId1 = accountRoleService.findRoleTreesByAccountId(accountId1, account1.getApplicationName());
         log.info("账户1的角色树 {} => {}", roleTreesByAccountId1.size(), roleTreesByAccountId1);
-        String CACHE_PREFIX = "redisCache::$";
         assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + "roleTree::" + account1.getApplicationName() + "$" + accountId1.toString()));
 
         List<RoleTree> roleTreesByAccountId2 = accountRoleService.findRoleTreesByAccountId(accountId2, account2.getApplicationName());
@@ -246,6 +251,68 @@ class AccountRoleServiceTest {
 
         accountRoleService.deleteByAccountId(accountId2, account2.getApplicationName(), ADMIN);
         assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + "roleTree::" + account2.getApplicationName() + "$" + accountId2.toString()));
+
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("角色和权限接口及其缓存测试")
+    void rolePermissionAndCacheTest() throws JsonProcessingException {
+        String role_cachename = "role::";
+        String permission_cachename = "permission::";
+        //========================== 角色
+        Role role1 = new Role();
+        role1.setApplicationName("AccountManagement");
+        role1.setRoleName("admin_");
+        role1.setDescription("all");
+        Long roleId1 = roleService.insert(role1, ADMIN).getId();
+
+        //=========================  权限
+        Permission permission1 = new Permission();
+        permission1.setApplicationName("AccountManagement");
+        permission1.setPermissionName("ADD_");
+        permission1.setWeight("FFFFFFFF");
+        permission1.setDescription("add");
+        Long permissionId1 = permissionService.insert(permission1, ADMIN).getId();
+
+        //角色测试
+        Role byId = roleService.findById(roleId1);
+        assertNotNull(byId);
+        assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()));
+        Role byAppAndRoleName = roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName());
+        assertNotNull(byAppAndRoleName);
+        assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
+
+        role1.setDescription("admin");
+        roleService.update(role1, ADMIN);
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()), Role.class).getDescription(), "admin");
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename +  "app&roleName" + role1.getApplicationName() + "_" + role1.getRoleName()), Role.class).getDescription(), "admin");
+
+        roleService.deleteById(roleId1, ADMIN);
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()));
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
+        assertNull(roleService.findById(roleId1));
+        assertNull(roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName()));
+
+        //权限测试
+        Permission byId1 = permissionService.findById(permissionId1);
+        assertNotNull(byId1);
+        assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()));
+        Permission pByAppAndName = permissionService.findByApplicationNameAndPermissionName(byId1.getApplicationName(), byId1.getPermissionName());
+        assertNotNull(pByAppAndName);
+        assertNotNull(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()), Permission.class));
+
+        permission1.setWeight("00000000");
+        permissionService.update(permission1, ADMIN);
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()), Permission.class).getWeight(), "00000000");
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename +  "app&permissionName" + permission1.getApplicationName() + "_" + permission1.getPermissionName()), Permission.class).getWeight(), "00000000");
+
+        permissionService.deleteById(permissionId1, ADMIN);
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()));
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()));
+        assertNull(roleService.findById(roleId1));
+        assertNull(roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName()));
+
 
     }
 

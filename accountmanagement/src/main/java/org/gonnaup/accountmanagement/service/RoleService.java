@@ -22,6 +22,14 @@ public interface RoleService {
     Role findById(Long id);
 
     /**
+     * 根据应用名和角色名查询角色信息
+     * @param applicationName 应用名
+     * @param roleName 角色名
+     * @return
+     */
+    Role findByApplicationNameAndRoleName(String applicationName, String roleName);
+
+    /**
      * 查询多条数据
      * @param role 条件
      * @param pageable 分页条件
@@ -52,8 +60,8 @@ public interface RoleService {
      *
      * @param id 主键
      * @param operater 操作者
-     * @return 是否成功
+     * @return 删除的对象
      */
-    boolean deleteById(Long id, Operater operater);
+    Role deleteById(Long id, Operater operater);
 
 }

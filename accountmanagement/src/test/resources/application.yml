@@ -30,7 +30,6 @@ mybatis:
 logging:
   level:
     org.gonnaup.accountmanagement.dao: debug
-    org.springframework.cache: trace
 dubbo:
   application:
     name: dubbo-accountmanagement

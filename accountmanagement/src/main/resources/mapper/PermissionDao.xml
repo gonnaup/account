@@ -20,6 +20,14 @@
         where id = #{id}
     </select>
 
+    <select id="queryByPermissionName" resultMap="PermissionMap">
+        select
+            id, application_name, permission_name, weight, description, createtime, updatetime
+        from permission
+        where application_name = #{applicationName}
+        and permission_name = #{permissionName}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditionalByLimit" resultMap="PermissionMap">
         select
@@ -61,14 +69,8 @@
     <update id="update">
         update permission
         <set>
-            <if test="applicationName != null and applicationName != ''">
-                application_name = #{applicationName},
-            </if>
-            <if test="permissionName != null and permissionName != ''">
-                permission_name = #{permissionName},
-            </if>
             <if test="weight != null and weight != ''">
-                weight = #{weight}
+                weight = #{weight},
             </if>
             <if test="description != null and description != ''">
                 description = #{description},
