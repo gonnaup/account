@@ -2,9 +2,9 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
-import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.validation.annotation.Validated;
 

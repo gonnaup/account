@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
+import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
@@ -11,7 +12,6 @@ import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.dto.RegisterDTO;
-import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;

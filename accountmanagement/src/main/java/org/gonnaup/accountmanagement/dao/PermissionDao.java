@@ -1,7 +1,7 @@
 package org.gonnaup.accountmanagement.dao;
 
 import org.apache.ibatis.annotations.Param;
-import org.gonnaup.accountmanagement.entity.Permission;
+import org.gonnaup.account.domain.Permission;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

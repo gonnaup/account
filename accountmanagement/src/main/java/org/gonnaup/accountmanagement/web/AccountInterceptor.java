@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.web;
 
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.domain.RoleTree;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.account.exception.JwtInvalidException;
@@ -178,7 +179,7 @@ public class AccountInterceptor implements HandlerInterceptor {
         List<String> permissionRequired = Arrays.stream(requirePermission.value()).map(PermissionType::name).collect(Collectors.toUnmodifiableList());//必需包含的权限
         Long accountId = jwtData.getAccountId();
         List<RoleTree> roleTrees = accountRoleService.findRoleTreesByAccountId(accountId, jwtData.getAppName());
-        Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionNameSet().stream()).collect(Collectors.toSet());//账号拥有的权限
+        Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionList().stream()).map(Permission::getPermissionName).collect(Collectors.toSet());//账号拥有的权限
         //包含其中任意一个高级权限或包含所有必需权限
         if (permissionOwned.containsAll(permissionRequired)) {
             //包含所有需要的权限

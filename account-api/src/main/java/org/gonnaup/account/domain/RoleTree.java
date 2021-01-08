@@ -3,7 +3,7 @@ package org.gonnaup.account.domain;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /** 角色-权限树，
  * @author gonnaup
@@ -16,11 +16,11 @@ public class RoleTree implements Serializable {
     /**
      * 角色名
      */
-    private String roleName;
+    private Role role;
 
     /**
      * 权限列表
      */
-    private Set<String> permissionNameSet;
+    private List<Permission> permissionList;
 
 }

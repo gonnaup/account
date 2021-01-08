@@ -12,7 +12,7 @@
     <!--查询单个-->
     <select id="queryRolesByAccountId" resultMap="org.gonnaup.accountmanagement.dao.RoleDao.RoleMap">
         select
-          id, application_name, role_name, description, role.createtime as createtime, role.updatetime as updatetime
+          id, application_name, role_name, score, description, role.createtime as createtime, role.updatetime as updatetime
         from role
         inner join account_role ar
                 on role.id = ar.role_id

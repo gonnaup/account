@@ -1,7 +1,7 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.account.domain.Role;
 import org.gonnaup.accountmanagement.domain.Operater;
-import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 

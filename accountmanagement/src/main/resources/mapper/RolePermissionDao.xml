@@ -4,7 +4,7 @@
 
     <select id="queryPermissionsByRoleId" resultMap="org.gonnaup.accountmanagement.dao.PermissionDao.PermissionMap">
         select
-                t.id, t.application_name, t.permission_name, t.description, t.createtime, t.updatetime
+                t.id, t.application_name, t.permission_name, t.weight, t.description, t.createtime, t.updatetime
         from permission t, role_permission t1
         where t1.role_id = #{roleId}
           and t.id = t1.permission_id

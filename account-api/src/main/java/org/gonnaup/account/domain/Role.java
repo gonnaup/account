@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.entity;
+package org.gonnaup.account.domain;
 
 import lombok.Data;
 
@@ -6,14 +6,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 角色权限表(Permission)实体类
+ * 账户角色表(Role)实体类
  *
  * @author gonnaup
- * @since 2020-10-29 10:53:28
+ * @since 2020-10-29 10:53:30
  */
 @Data
-public class Permission implements Serializable {
-    private static final long serialVersionUID = 115683336132406994L;
+public class Role implements Serializable {
+    private static final long serialVersionUID = -71553339623120133L;
     /**
      * ID
      */
@@ -23,15 +23,15 @@ public class Permission implements Serializable {
      */
     private String applicationName;
     /**
-     * 权限名称
+     * 角色名
      */
-    private String permissionName;
+    private String roleName;
     /**
-     * 权重
+     * 权限分数
      */
-    private String weight;
+    private String score;
     /**
-     * 权限描述
+     * 角色描述
      */
     private String description;
     /**

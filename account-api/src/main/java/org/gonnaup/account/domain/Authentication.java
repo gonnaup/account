@@ -1,4 +1,4 @@
-package org.gonnaup.accountmanagement.entity;
+package org.gonnaup.account.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

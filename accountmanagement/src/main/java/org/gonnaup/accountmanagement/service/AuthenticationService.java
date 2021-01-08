@@ -1,7 +1,7 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
-import org.gonnaup.accountmanagement.entity.Authentication;
 
 /**
  * 账户认证信息(Authentication)表服务接口

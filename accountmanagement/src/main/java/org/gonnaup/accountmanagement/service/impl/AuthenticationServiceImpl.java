@@ -1,9 +1,9 @@
 package org.gonnaup.accountmanagement.service.impl;
 
+import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.AuthenticationDao;
-import org.gonnaup.accountmanagement.entity.Authentication;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

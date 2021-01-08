@@ -1,7 +1,7 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.domain.Operater;
-import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 
 import java.util.List;

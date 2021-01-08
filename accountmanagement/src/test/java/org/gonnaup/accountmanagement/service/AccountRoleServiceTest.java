@@ -3,12 +3,10 @@ package org.gonnaup.accountmanagement.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.gonnaup.account.domain.Account;
-import org.gonnaup.account.domain.RoleTree;
+import org.gonnaup.account.domain.*;
+import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.JsonUtil;
 import org.gonnaup.accountmanagement.entity.AccountRole;
-import org.gonnaup.accountmanagement.entity.Permission;
-import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static org.gonnaup.accountmanagement.constant.TestOperaters.ADMIN;
@@ -312,6 +311,13 @@ class AccountRoleServiceTest {
         assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName::" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()));
         assertNull(roleService.findById(roleId1));
         assertNull(roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName()));
+    }
+
+    @Test
+    void accountRoleScore() {
+        AccountHeader admin = accountService.findHeaderByAccountname(ApplicationName.APPNAME, "admin");
+        Integer integer = accountRoleService.calculateAccountPermissionScore(admin.getId());
+        log.info("admin的角色分为 {}", Integer.toHexString(integer).toUpperCase(Locale.ROOT));
     }
 
 

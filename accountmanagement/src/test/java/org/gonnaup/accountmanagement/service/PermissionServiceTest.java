@@ -1,9 +1,9 @@
 package org.gonnaup.accountmanagement.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.TestOperaters;
-import org.gonnaup.accountmanagement.entity.Permission;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

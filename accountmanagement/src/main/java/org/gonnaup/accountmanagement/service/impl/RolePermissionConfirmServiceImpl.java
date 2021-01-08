@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.domain.RoleTree;
 import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
+/**是否有某特定角色或权限的确认服务
  * @author gonnaup
  * @version 2021/1/4 10:38
  */
@@ -91,7 +92,7 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
             return true;
         }
         List<RoleTree> roleTrees = accountRoleService.findRoleTreesByAccountId(accountId, account.getApplicationName());
-        Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionNameSet().stream()).collect(Collectors.toSet());
+        Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionList().stream()).map(Permission::getPermissionName).collect(Collectors.toSet());
         return permissionOwned.containsAll(Arrays.asList(permissions));
     }
 }

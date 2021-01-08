@@ -1,9 +1,9 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.account.domain.Role;
 import org.gonnaup.account.domain.RoleTree;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.AccountRole;
-import org.gonnaup.accountmanagement.entity.Role;
 
 import java.util.List;
 
@@ -24,6 +24,14 @@ public interface AccountRoleService {
     List<Role> findRolesByAccountId(Long accountId);
 
     /**
+     * 计算账号的权限分
+     *
+     * @param accountId 账号ID
+     * @return 权限封
+     */
+    Integer calculateAccountPermissionScore(Long accountId);
+
+    /**
      * 查询账户所有角色名，用于鉴权
      *
      * @param accountId
@@ -35,7 +43,7 @@ public interface AccountRoleService {
      * 查询账户的角色树，用于鉴权
      *
      * @param accountId 账户ID
-     * @param appName 应用名称，用于控制缓存
+     * @param appName   应用名称，用于控制缓存
      * @return 角色树列表
      */
     List<RoleTree> findRoleTreesByAccountId(Long accountId, String appName);
@@ -54,7 +62,7 @@ public interface AccountRoleService {
      * 删除账户所有角色
      *
      * @param accountId 账户ID
-     * @param appName 账户所属app
+     * @param appName   账户所属app
      * @param operater  操作者
      * @return 是否成功
      */
@@ -65,7 +73,7 @@ public interface AccountRoleService {
      *
      * @param accountId 账户ID
      * @param roles     角色ID列表
-     * @param appName 账户所属app
+     * @param appName   账户所属app
      * @param operater  操作者
      * @return 删除个数
      */

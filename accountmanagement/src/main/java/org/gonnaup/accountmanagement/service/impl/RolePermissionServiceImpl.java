@@ -2,10 +2,10 @@ package org.gonnaup.accountmanagement.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.dao.RolePermissionDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.OperationLog;
-import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.OperationLogService;

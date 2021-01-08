@@ -2,12 +2,12 @@ package org.gonnaup.accountmanagement.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.gonnaup.account.domain.Role;
 import org.gonnaup.account.domain.RoleTree;
 import org.gonnaup.accountmanagement.dao.AccountRoleDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.AccountRole;
 import org.gonnaup.accountmanagement.entity.OperationLog;
-import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.service.OperationLogService;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,24 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     }
 
     /**
+     * 计算账号的权限分
+     *
+     * @param accountId 账号ID
+     * @return 权限封
+     */
+    @Override
+    @Cacheable(key = "'permissionScore::' + #accountId")
+    public Integer calculateAccountPermissionScore(Long accountId) {
+        List<Role> roleList = accountRoleDao.queryRolesByAccountId(accountId);
+        if (roleList.isEmpty()) {
+            return 0;
+        }
+        return roleList.stream()
+                .mapToInt(role -> Integer.valueOf(Optional.ofNullable(role.getScore()).orElse("0"), 16))//将score转换成十进制数
+                .reduce((left, right) -> left | right).orElse(0);//与运算合并权限位
+    }
+
+    /**
      * 查询账户所有角色名，用于鉴权
      *
      * @param accountId
@@ -95,8 +114,8 @@ public class AccountRoleServiceImpl implements AccountRoleService {
         return roleList.parallelStream()
                 .map(role -> {
                     RoleTree roleTree = new RoleTree();
-                    roleTree.setRoleName(role.getRoleName());
-                    roleTree.setPermissionNameSet(rolePermissionService.findPermissionNamesByRoleId(role.getId()));
+                    roleTree.setRole(role);
+                    roleTree.setPermissionList(rolePermissionService.findPermissionsByRoleId(role.getId()));
                     return roleTree;
                 }).collect(Collectors.toList());
     }
@@ -132,6 +151,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#accountId"),
             @CacheEvict(key = "'roleName' + #accountId"),
+            @CacheEvict(key = "'permissionScore::' + #accountId"),
             @CacheEvict(cacheNames = "roleTree", key = "#appName + '$' +#accountId")})
     public boolean deleteByAccountId(Long accountId, String appName, Operater operater) {
         //先查询出要删除的角色，用作操作日志记录
@@ -160,6 +180,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#accountId", condition = "#result > 0"),
             @CacheEvict(key = "'roleName' + #accountId", condition = "#result > 0"),
+            @CacheEvict(key = "'permissionScore::' + #accountId", condition = "#result > 0"),
             @CacheEvict(cacheNames = "roleTree", key = "#appName + '$' +#accountId", condition = "#result > 0")})
     public int deleteMany(Long accountId, List<Long> roles, String appName, Operater operater) {
         if (CollectionUtils.isNotEmpty(roles)) {

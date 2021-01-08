@@ -1,7 +1,7 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.domain.Operater;
-import org.gonnaup.accountmanagement.entity.Permission;
 
 /**
  * 角色权限表(Permission)表服务接口

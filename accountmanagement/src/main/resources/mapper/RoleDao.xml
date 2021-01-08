@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.gonnaup.accountmanagement.dao.RoleDao">
 
-    <resultMap type="org.gonnaup.accountmanagement.entity.Role" id="RoleMap">
+    <resultMap type="org.gonnaup.account.domain.Role" id="RoleMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="applicationName" column="application_name" jdbcType="VARCHAR"/>
         <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
@@ -38,7 +38,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditionalByLimit" resultMap="RoleMap">
         select
-        id, application_name, role_name, description, createtime, updatetime
+        id, application_name, role_name, score, description, createtime, updatetime
         from role
         <where>
             <if test="role.id != null">

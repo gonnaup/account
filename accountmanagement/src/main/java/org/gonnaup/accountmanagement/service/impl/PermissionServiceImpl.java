@@ -1,13 +1,13 @@
 package org.gonnaup.accountmanagement.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.PermissionDao;
 import org.gonnaup.accountmanagement.dao.RolePermissionDao;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.OperationLog;
-import org.gonnaup.accountmanagement.entity.Permission;
 import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.OperationLogService;

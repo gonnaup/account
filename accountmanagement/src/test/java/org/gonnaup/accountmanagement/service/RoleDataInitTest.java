@@ -2,11 +2,11 @@ package org.gonnaup.accountmanagement.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.gonnaup.account.domain.Permission;
+import org.gonnaup.account.domain.Role;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.TestOperaters;
 import org.gonnaup.accountmanagement.entity.AccountRole;
-import org.gonnaup.accountmanagement.entity.Permission;
-import org.gonnaup.accountmanagement.entity.Role;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.RoleType;
