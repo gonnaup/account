@@ -1,26 +1,17 @@
 package org.gonnaup.accountmanagement.service.impl;
 
-import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.gonnaup.account.domain.Account;
-import org.gonnaup.account.domain.Permission;
-import org.gonnaup.account.domain.RoleTree;
 import org.gonnaup.accountmanagement.enums.RoleType;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
-import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-/**是否有某特定角色或权限的确认服务
+/**
+ * 是否有某特定角色或权限的确认服务
+ *
  * @author gonnaup
  * @version 2021/1/4 10:38
  */
@@ -31,36 +22,17 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
     @Autowired
     private AccountRoleService accountRoleService;
 
-    @Autowired
-    private AccountService accountService;
-
-    /**
-     * 确认账号是否有某些权限
-     *
-     * @param accountId 账号ID
-     * @param roles     角色
-     * @return <code>true or false</code>
-     */
-    @Override
-    public boolean hasRole(Long accountId, String... roles) {
-        List<String> names = accountRoleService.findRoleNamesByAccountId(accountId);
-        if (CollectionUtils.isNotEmpty(names)) {
-            HashSet<String> nameSet = Sets.newHashSet(names);
-            return ArrayUtils.isEmpty(roles) || nameSet.containsAll(List.of(roles));
-        }
-        //账号和所给角色均为空时返回true
-        return ArrayUtils.isEmpty(roles);
-    }
-
     /**
      * 确认账号是否是系统管理员账号
      *
      * @param accountId 账号ID
      * @return <code>true or false</code>
+     * @see RoleType#ADMIN
      */
     @Override
     public boolean isAdmin(Long accountId) {
-        return hasRole(accountId, RoleType.ADMIN.name());
+        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
+        return (score | RoleType.ADMIN.score()) == score;
     }
 
     /**
@@ -68,31 +40,24 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      *
      * @param accountId 账号ID
      * @return <code>true or false</code>
+     * @see RoleType#APPALL
      */
     @Override
     public boolean isAppAdmin(Long accountId) {
-        return hasRole(accountId, RoleType.APPALL.name());
+        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
+        return (score | RoleType.APPALL.score()) == score;
     }
 
     /**
      * 确认账号是否有某些权限
      *
-     * @param accountId   账号ID
-     * @param permissions 权限
+     * @param accountId 账号ID
+     * @param score     权限分
      * @return <code>true or false</code>
      */
     @Override
-    public boolean hasPermission(Long accountId, String... permissions) {
-        Account account = accountService.findById(accountId);
-        if (account == null) {
-            log.warn("账号ID[{}]不存在!", accountId);
-            return false;
-        }
-        if (ArrayUtils.isEmpty(permissions)) {
-            return true;
-        }
-        List<RoleTree> roleTrees = accountRoleService.findRoleTreesByAccountId(accountId, account.getApplicationName());
-        Set<String> permissionOwned = roleTrees.stream().flatMap(roleTree -> roleTree.getPermissionList().stream()).map(Permission::getPermissionName).collect(Collectors.toSet());
-        return permissionOwned.containsAll(Arrays.asList(permissions));
+    public boolean hasPermission(Long accountId, Integer... scores) {
+        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
+        return score > 0 && scores.length == 0 || Arrays.stream(scores).allMatch(s -> (score | s) == score);
     }
 }

@@ -9,19 +9,11 @@ package org.gonnaup.accountmanagement.service;
 public interface RolePermissionConfirmService {
 
     /**
-     * 确认账号是否有某些权限
-     *
-     * @param accountId 账号ID
-     * @param roles     角色
-     * @return <code>true or false</code>
-     */
-    boolean hasRole(Long accountId, String... roles);
-
-    /**
      * 确认账号是否是系统管理员账号
      *
      * @param accountId 账号ID
      * @return <code>true or false</code>
+     * @see org.gonnaup.accountmanagement.enums.RoleType#ADMIN
      */
     boolean isAdmin(Long accountId);
 
@@ -29,16 +21,17 @@ public interface RolePermissionConfirmService {
      * 确认账号是否是应用管理员账号
      * @param accountId 账号ID
      * @return <code>true or false</code>
+     * @see org.gonnaup.accountmanagement.enums.RoleType#APPALL
      */
     boolean isAppAdmin(Long accountId);
 
     /**
      * 确认账号是否有某些权限
      * @param accountId 账号ID
-     * @param permissions 权限
+     * @param score 权限分
      * @return <code>true or false</code>
      */
-    boolean hasPermission(Long accountId, String... permissions);
+    boolean hasPermission(Long accountId, Integer... score);
 
 
 }
