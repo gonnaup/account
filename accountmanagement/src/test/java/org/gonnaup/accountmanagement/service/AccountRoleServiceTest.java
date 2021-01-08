@@ -281,16 +281,16 @@ class AccountRoleServiceTest {
         assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()));
         Role byAppAndRoleName = roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName());
         assertNotNull(byAppAndRoleName);
-        assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
+        assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName::" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
 
         role1.setDescription("admin");
         roleService.update(role1, ADMIN);
         assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()), Role.class).getDescription(), "admin");
-        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename +  "app&roleName" + role1.getApplicationName() + "_" + role1.getRoleName()), Role.class).getDescription(), "admin");
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename +  "app&roleName::" + role1.getApplicationName() + "_" + role1.getRoleName()), Role.class).getDescription(), "admin");
 
         roleService.deleteById(roleId1, ADMIN);
         assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + byId.getId()));
-        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + role_cachename + "app&roleName::" + byAppAndRoleName.getApplicationName() + "_" + byAppAndRoleName.getRoleName()));
         assertNull(roleService.findById(roleId1));
         assertNull(roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName()));
 
@@ -300,20 +300,18 @@ class AccountRoleServiceTest {
         assertNotNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()));
         Permission pByAppAndName = permissionService.findByApplicationNameAndPermissionName(byId1.getApplicationName(), byId1.getPermissionName());
         assertNotNull(pByAppAndName);
-        assertNotNull(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()), Permission.class));
+        assertNotNull(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName::" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()), Permission.class));
 
         permission1.setWeight("00000000");
         permissionService.update(permission1, ADMIN);
         assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()), Permission.class).getWeight(), "00000000");
-        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename +  "app&permissionName" + permission1.getApplicationName() + "_" + permission1.getPermissionName()), Permission.class).getWeight(), "00000000");
+        assertEquals(JsonUtil.objectMapper.readValue(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename +  "app&permissionName::" + permission1.getApplicationName() + "_" + permission1.getPermissionName()), Permission.class).getWeight(), "00000000");
 
         permissionService.deleteById(permissionId1, ADMIN);
         assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + byId1.getId()));
-        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()));
+        assertNull(redisTemplate.opsForValue().get(CACHE_PREFIX + permission_cachename + "app&permissionName::" + pByAppAndName.getApplicationName() + "_" + pByAppAndName.getPermissionName()));
         assertNull(roleService.findById(roleId1));
         assertNull(roleService.findByApplicationNameAndRoleName(role1.getApplicationName(), role1.getRoleName()));
-
-
     }
 
 

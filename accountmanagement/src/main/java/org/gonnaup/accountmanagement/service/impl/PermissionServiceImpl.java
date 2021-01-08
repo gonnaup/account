@@ -59,7 +59,7 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 权限对象
      */
     @Override
-    @Cacheable(key = "'app&permissionName' + #applicationName + '_' + #permissionName")
+    @Cacheable(key = "'app&permissionName::' + #applicationName + '_' + #permissionName")
     public Permission findByApplicationNameAndPermissionName(String applicationName, String permissionName) {
         return permissionDao.queryByPermissionName(applicationName, permissionName);
     }
@@ -90,7 +90,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     @Caching(put = {@CachePut(key = "#result.id", condition = "#result != null "),
-            @CachePut(key = "'app&permissionName' + #result.applicationName + '_' + #result.permissionName", condition = "#result != null ")})
+            @CachePut(key = "'app&permissionName::' + #result.applicationName + '_' + #result.permissionName", condition = "#result != null ")})
     public Permission update(Permission permission, Operater operater) {
         Permission origin = findById(permission.getId());
         if (origin == null) {
@@ -114,7 +114,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#result.id", condition = "#result != null "),
-            @CacheEvict(key = "'app&permissionName' + #result.applicationName + '_' + #result.permissionName", condition = "#result != null ")})
+            @CacheEvict(key = "'app&permissionName::' + #result.applicationName + '_' + #result.permissionName", condition = "#result != null ")})
     public Permission deleteById(Long id, Operater operater) {
         //先判断是否存在关联数据(角色关联数据)
         int relatedCount = rolePermissionDao.countPermissionRelated(id);

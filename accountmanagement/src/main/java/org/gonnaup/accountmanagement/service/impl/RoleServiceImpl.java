@@ -68,7 +68,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    @Cacheable(key = "'app&roleName' + #applicationName + '_' + #roleName")
+    @Cacheable(key = "'app&roleName::' + #applicationName + '_' + #roleName")
     public Role findByApplicationNameAndRoleName(String applicationName, String roleName) {
         return roleDao.queryByAccountName(applicationName, roleName);
     }
@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     @Caching(put = {@CachePut(key = "#result.id", condition = "#result != null "),
-            @CachePut(key = "'app&roleName' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
+            @CachePut(key = "'app&roleName::' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
     public Role update(Role role, Operater operater) {
         Role origin = findById(role.getId());
         if (origin == null) {
@@ -140,7 +140,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     @Caching(evict = {@CacheEvict(key = "#result.id", condition = "#result != null "),
-            @CacheEvict(key = "'app&roleName' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
+            @CacheEvict(key = "'app&roleName::' + #result.applicationName + '_' + #result.roleName", condition = "#result != null ")})
     public Role deleteById(Long id, Operater operater) {
         //是否存在关联账户数据
         int relatedAccount = accountRoleDao.countRoleRelated(id);
