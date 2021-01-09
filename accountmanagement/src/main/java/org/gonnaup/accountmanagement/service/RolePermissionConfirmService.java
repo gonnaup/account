@@ -31,7 +31,7 @@ public interface RolePermissionConfirmService {
      * @param score 权限分
      * @return <code>true or false</code>
      */
-    boolean hasPermission(Long accountId, Integer... score);
+    boolean hasPermission(Long accountId, int... score);
 
 
 }

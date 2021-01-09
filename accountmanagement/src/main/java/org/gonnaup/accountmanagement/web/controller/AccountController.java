@@ -7,11 +7,12 @@ import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AccountState;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
-import org.gonnaup.accountmanagement.annotation.RequireLogin;
+import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
+import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.*;
 import org.gonnaup.accountmanagement.vo.AccountVO;
@@ -36,7 +37,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("api/account")
-@RequireLogin
 public class AccountController {
 
     @Autowired
@@ -60,6 +60,7 @@ public class AccountController {
      * @return
      */
     @GetMapping("/display")
+    @RequirePermission(permissions = {PermissionType.APP_R})
     public Result<String> display() {
         return Result.code(ResultCode.SUCCESS.code()).success().data("");
     }
@@ -74,6 +75,7 @@ public class AccountController {
      * @return
      */
     @GetMapping("/list")
+    @RequirePermission(permissions = {PermissionType.APP_R})
     public Page<AccountVO> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //ADMIN可查询所有账户列表
         if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {

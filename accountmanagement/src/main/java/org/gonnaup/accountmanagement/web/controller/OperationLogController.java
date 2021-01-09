@@ -1,7 +1,9 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
+import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.vo.OperationLogVO;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/operationlog")
+@RequirePermission(permissions = {PermissionType.ALL})//需要管理员权限
 public class OperationLogController {
 
     @Autowired

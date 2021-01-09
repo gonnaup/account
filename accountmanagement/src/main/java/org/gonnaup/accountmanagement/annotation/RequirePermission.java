@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.annotation;
 
 import org.gonnaup.accountmanagement.enums.PermissionType;
+import org.gonnaup.accountmanagement.enums.RoleType;
 
 import java.lang.annotation.*;
 
@@ -12,7 +13,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface RequirePermission {
 
     /**
@@ -20,6 +21,18 @@ public @interface RequirePermission {
      *
      * @return
      */
-    PermissionType[] value() default {};
+    PermissionType[] permissions() default {};
+
+    /**
+     * 角色列表
+     * @return
+     */
+    RoleType[] roles() default {};
+
+    /**
+     * 权限分数
+     * @return
+     */
+    int[] scores() default {};
 
 }

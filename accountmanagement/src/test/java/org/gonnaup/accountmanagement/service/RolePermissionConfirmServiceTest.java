@@ -25,7 +25,7 @@ class RolePermissionConfirmServiceTest {
     void rolePermissionConfirmServiceTest() {
         assertTrue(rolePermissionConfirmService.isAdmin(102020121100000001L));
         assertTrue(rolePermissionConfirmService.isAppAdmin(102020121100000001L));
-        assertTrue(rolePermissionConfirmService.hasPermission(102020121100000001L, Arrays.stream(RoleType.values()).map(RoleType::score).toArray(Integer[]::new)));
+        assertTrue(rolePermissionConfirmService.hasPermission(102020121100000001L, Arrays.stream(RoleType.values()).mapToInt(RoleType::score).toArray()));
         assertTrue(rolePermissionConfirmService.hasPermission(102020121100000001L));
     }
 

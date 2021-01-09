@@ -1,5 +1,6 @@
 var pagepermission_urlMap = new Map()
 pagepermission_urlMap.set('../html/operationlog.html', '../api/operationlog/display')
+pagepermission_urlMap.set('../html/account.html', '../api/account/display')
 var current_page//当前页面缓存
 
 var routerTo = function (url) {
@@ -7,10 +8,11 @@ var routerTo = function (url) {
     var $ = layui.jquery;
     var pagepermission_url = pagepermission_urlMap.get(url)
     if (pagepermission_url != undefined) {
+        var jwt = localStorage.getItem(JWT_LOCALSTORAGENAME);
         $.ajax({
             url: pagepermission_url,
             type: 'get',
-            headers: {token_jwt: localStorage.getItem(JWT_LOCALSTORAGENAME)},
+            headers: {token_jwt: jwt == undefined ? '' : jwt},
             success: function (reData) {
                 loadpage(url)
             },

@@ -7,7 +7,6 @@ import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.common.domain.Result;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -40,9 +39,9 @@ public class ExceptionController {
      * @return
      */
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Result<String>> authenticationExceptionHandler(HttpServletResponse response, AuthenticationException e) {
+    public Result<String> authenticationExceptionHandler(HttpServletResponse response, AuthenticationException e) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION).body(Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage()));
+        return Result.code(ResultCode.AUTH_ERROR.code()).fail().data(e.getMessage());
     }
 
     /**

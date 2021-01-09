@@ -22,9 +22,15 @@ DELETE FROM permission;
 
 INSERT INTO account(id, application_name, account_name, account_nickname, account_avatar, tag)
 VALUES (102020121100000001, 'AccountManagement', 'admin', 'admin', NULL, 'admin account');
+INSERT INTO account(id, application_name, account_name, account_nickname, account_avatar, tag)
+VALUES (102020121100000002, 'AccountManagement', 'read', 'read-only', NULL, 'read only account');
 -- default admin account admin-123456
 INSERT INTO authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
 VALUES (102020121100000001, 102020121100000001, 'AccountManagement', 'E', 'gonnaup@yeah.net',
+        '401E07A0ECFD7A36091B3CCC194BAB65', 0);
+-- default read-only account read-123456
+INSERT INTO authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
+VALUES (102020121100000002, 102020121100000002, 'AccountManagement', 'E', 'gonnaup@qq.com',
         '401E07A0ECFD7A36091B3CCC194BAB65', 0);
 
 INSERT INTO role (id, application_name, role_name, description, score)
@@ -42,6 +48,8 @@ VALUES (102021010700000106, 'AccountManagement', 'APPR', '应用只读角色', '
 
 INSERT INTO account_role (account_id, role_id)
 VALUES (102020121100000001, 102021010700000101);
+INSERT INTO account_role (account_id, role_id)
+VALUES (102020121100000002, 102021010700000106);
 
 INSERT INTO permission (id, application_name, permission_name, description, weight)
 VALUES (102021010700000107, 'AccountManagement', 'ALL', '系统所有权限', '7FFFFFFF');

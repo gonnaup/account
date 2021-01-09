@@ -85,6 +85,7 @@ function listenEvents() {
                     openLoginPage()
                 });
             } else if (code == '402' && openLoginTipsPage) {//权限不够
+                // loadpage('../html/403.html')
                 layer.alert('您的权限不够，请联系管理员')
             } else {
                 openLoginTipsPage = true//当此值为false时赋值为true，只打断一次提示

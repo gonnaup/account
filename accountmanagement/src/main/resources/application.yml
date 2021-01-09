@@ -30,6 +30,7 @@ mybatis:
 logging:
   level:
     org.gonnaup.accountmanagement.dao: info
+    org.gonnaup.accountmanagement.web: debug
 dubbo:
   application:
     name: dubbo-accountmanagement
