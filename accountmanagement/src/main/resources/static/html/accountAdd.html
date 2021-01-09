@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>登录</title>
+    <title>account add</title>
 </head>
 <body>
 <div class="main-loginForm">
@@ -37,35 +37,5 @@
         </div>
     </form>
 </div>
-<script type="text/javascript">
-    layui.use(['form'], function () {
-        var form = layui.form
-        form.render('checkbox')
-        var $ = layui.jquery
-        form.on('submit(formLogin)', function (data) {
-            $.ajax({
-                    type: 'post',
-                    url: '../api/authenticate/login',
-                    data: JSON.stringify(data.field),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        localStorage.setItem(JWT_LOCALSTORAGENAME, data.message)
-                        layer.closeAll('page')//关闭layer
-                        layer.msg('登录成功!', {icon: 1})
-                        fillAccountInformation(data.data)
-                        if (current_page != undefined) {
-                            loadContentPage(current_page)
-                        }
-                    },
-                    error: function (xhr) {
-                        var layer = layui.layer
-                        layer.msg(xhr.responseJSON.data, {icon: 5})
-                    }
-                }
-            )
-            return false
-        })
-    })
-</script>
 </body>
 </html>

@@ -68,17 +68,26 @@
 
 <table id="accountTable" lay-filter="account"></table>
 
+<script type="text/html" id="toolbarAccount">
+    <div class="layui-btn-container">
+        <button id="accountbar_add" class="layui-btn layui-btn-sm" disabled lay-event="add">添加</button>
+        <button id="accountbar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button id="accountbar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+
 <script type="text/javascript">
     layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
         var table = layui.table;
+        accountOperateValidate()//toolbar按钮权限处理
         var operationlogTable = table.render({
             elem: '#accountTable',
             url: '../api/account/list',
-            headers: {token_jwt: localStorage.getItem(JWT_LOCALSTORAGENAME) || ''},
+            headers: {token_jwt: obtainJwt() || ''},
             page: true,
-            toolbar: true,
+            toolbar: '#toolbarAccount',
             title: '操作日志',
             parseData: function (data) {
                 return {
@@ -104,7 +113,21 @@
                 {field: 'updatetime', title: '更新时间', width: 140},
             ]]
         })
-        table.on('')
+        table.on('toolbar(account)', function (obj) {
+            switch(obj.event){
+                case 'add':
+                    accountAddClicked()
+                    break;
+                case 'delete':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountDeleteClicked(data)
+                    break;
+                case 'update':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountUpdateClicked(data)
+                    break;
+            };
+        })
         var form = layui.form
         form.render('select')
         form.on('submit(accountQueryForm)', function (data) {

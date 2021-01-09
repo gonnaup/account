@@ -7,14 +7,18 @@ import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
+import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.domain.SimplePermission;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.dto.RegisterDTO;
+import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
 import org.gonnaup.accountmanagement.util.JWTUtil;
 import org.gonnaup.accountmanagement.util.RequestUtil;
 import org.gonnaup.common.domain.Result;
@@ -54,13 +58,16 @@ public class AuthenticateController {
     private AuthenticationService authenticationService;
 
     @Autowired
+    private RolePermissionConfirmService rolePermissionConfirmService;
+
+    @Autowired
     private StringRedisTemplate redisTemplate;
 
     /**
      * 用户密码登录方式
      *
      * @param login   登录信息
-     * @param session
+     * @param request
      * @return
      */
     @PostMapping("/login")
@@ -103,7 +110,7 @@ public class AuthenticateController {
              * 用户名
              * 先查询账号，再查询关联邮箱的密码是否匹配
              */
-            Optional<AccountHeader> accountHeaderOptional = Optional.ofNullable(accountService.findHeaderByAccountname(org.gonnaup.accountmanagement.constant.ApplicationName.APPNAME, identifier));
+            Optional<AccountHeader> accountHeaderOptional = Optional.ofNullable(accountService.findHeaderByAccountname(ApplicationName.APPNAME, identifier));
             if (accountHeaderOptional.isPresent()) {
                 AccountHeader accountHeader = accountHeaderOptional.get();
                 //email认证信息
@@ -181,10 +188,30 @@ public class AuthenticateController {
      * @return
      */
     @PostMapping("/register")
-    public Result<Void> registerAccount(@JwtDataParam JwtData jwtData, RegisterDTO register) {
+    public Result<Void> registerAccount(RegisterDTO register) {
 
 
         return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
+     * 获取增删改查权限
+     * @param jwtData
+     * @return
+     * @see SimplePermission
+     */
+    @GetMapping("/permission")
+    public Result<SimplePermission> simplePermissionResult(@JwtDataParam JwtData jwtData) {
+        if (jwtData == null) {//无权限
+            return Result.code(ResultCode.SUCCESS.code()).success().data(SimplePermission.of(false, false, false));
+        }
+        Long accountId = jwtData.getAccountId();
+        return Result.code(ResultCode.SUCCESS.code()).success()
+                .data(SimplePermission.of(
+                        rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_A.weight()),
+                        rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_D.weight()),
+                        rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_U.weight())
+                ));
     }
 
 

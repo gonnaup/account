@@ -1,3 +1,7 @@
+/**
+ * 请求api
+ */
+
 var JWT_HEADERNAME = 'token_jwt'
 var JWT_LOCALSTORAGENAME = 'authentication_token'
 var SUCCESS = '200';//成功
@@ -9,8 +13,13 @@ var SYSTEM_ERROR = '500';//服务器异常
 
 var openLoginTipsPage = true//是否打开登录提示layer，用于注销重新加载页面时不显示此页面
 
+
+
+/**
+ * 进入系统尝试登陆
+ */
 function login_jwt() {
-    var jwt = localStorage.getItem(JWT_LOCALSTORAGENAME)
+    var jwt = obtainJwt()
     //存在jwt
     if (jwt != undefined) {
         var $ = layui.jquery;
@@ -63,27 +72,14 @@ function login_jwt() {
  * 打开登录页面
  */
 function openLoginPage() {
-    var $ = layui.jquery
-    var layer = layui.layer
-    $.ajax({
-        url: '../html/login.html',
-        type: 'get',
-        success: function (data) {
-            layer.open({
-                type: 1,
-                area: '450px',
-                title: ['登录'],
-                content: data
-            })
-        },
-        error: function () {
-            layer.msg('获取登录页面失败!')
-        }
-    })
+    openPage('../html/login.html')
 }
 
+/**
+ * 注销
+ */
 function signout() {
-    var jwt = localStorage.getItem(JWT_LOCALSTORAGENAME);
+    var jwt = obtainJwt()
     if (jwt != undefined) {
         var layer = layui.layer
         var $ = layui.jquery
@@ -106,4 +102,29 @@ function signout() {
             }
         })
     }
+}
+
+/**
+ * 对账户增删改操作验证，根据用户权限禁用按钮
+ */
+function accountOperateValidate() {
+    var $ = layui.jquery
+    var jwt = obtainJwt() || ''
+    $.ajax({
+        url: '../api/authenticate/permission',
+        type: 'get',
+        headers: {token_jwt: jwt},
+        success: function (data) {
+            var permission = data.data
+            if (!permission.add) {
+                disabeButton('#accountbar_add')
+            }
+            if (!permission.delete) {
+                disabeButton('#accountbar_delete')
+            }
+            if (!permission.update) {
+                disabeButton('#accountbar_update')
+            }
+        }
+    })
 }

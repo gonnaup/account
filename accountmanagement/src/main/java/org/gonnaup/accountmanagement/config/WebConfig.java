@@ -1,8 +1,12 @@
 package org.gonnaup.accountmanagement.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.util.JWTUtil;
+import org.gonnaup.accountmanagement.util.RequestUtil;
 import org.gonnaup.accountmanagement.web.AccountInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
      * controller 应用名：AppName 参数解析<br/>
      * 参数带{@link ApplicationName}并且类型为{@link String}
      */
+    @Slf4j
     public static class JwtDataHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
         @Override
@@ -54,7 +59,17 @@ public class WebConfig implements WebMvcConfigurer {
         @Override
         public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
             HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-            return Objects.requireNonNull(request).getAttribute(AuthenticateConst.REQUEST_ATTR_JWTDATA);
+            Object jwtData = Objects.requireNonNull(request).getAttribute(AuthenticateConst.REQUEST_ATTR_JWTDATA);
+            if (jwtData == null) {
+                log.info("JwtData不存在，尝试从HttpServletRequest中解析");
+                try {
+                    String jwt = RequestUtil.obtainJWT(request);
+                    jwtData = JWTUtil.jwtVerified(jwt);
+                } catch (JwtInvalidException e) {
+                    log.warn("获取jwtData参数失败");
+                }
+            }
+            return jwtData;
         }
     }
 

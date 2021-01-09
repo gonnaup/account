@@ -25,7 +25,7 @@ public class AuthenticateConst {
     public static final String REQUEST_ATTR_JWTDATA = "JWTDATA";
 
     //jwt过期时间
-    public static final Long JWT_EXPIRE_TIME = 60 * 60 * 1000L;
+    public static final Long JWT_EXPIRE_TIME = 24 * 60 * 60 * 1000L;
 
     //手动失效的jwt在redis中的key前缀值
     public static final String JWT_BLACKLIST_REDIS_PREFIX = ApplicationName.APPNAME + "::jwt_blacklist::";
