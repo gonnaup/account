@@ -100,7 +100,7 @@ public class RoleServiceImpl implements RoleService {
     public Role insert(Role role, Operater operater) {
         role.setId(applicationSequenceService.produceSequence(AppSequenceKey.ROLE_PERMISSION));
         this.roleDao.insert(role);
-        log.info("[{}] 新增角色 {}", operater.getOperaterId(), role);
+        log.info("{}[{}] 新增角色 {}", operater.getOperaterId(), operater.getOperaterName(), role);
         operationLogService.insert(OperationLog.of(operater, OperateType.A, "新增角色：" + role));
         return role;
     }
@@ -152,8 +152,8 @@ public class RoleServiceImpl implements RoleService {
         Role origin = findById(id);
         if (origin != null) {
             roleDao.deleteById(id);
-            log.info("[{}] 删除角色信息 {}", operater.getOperaterId(), origin);
             operationLogService.insert(OperationLog.of(operater, OperateType.D, "删除角色：" + origin));
+            log.info("{}[{}] 删除角色信息 {}", operater.getOperaterId(), operater.getOperaterName(), origin);
             //删除与权限的关联关系
             rolePermissionService.deleteByRoleId(id, origin.getApplicationName(), operater);
             return origin;

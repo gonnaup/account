@@ -29,7 +29,7 @@ public interface AccountRoleService {
      * @param accountId 账号ID
      * @return 权限封
      */
-    Integer calculateAccountPermissionScore(Long accountId);
+    int calculateAccountPermissionScore(Long accountId);
 
     /**
      * 查询账户所有角色名，用于鉴权

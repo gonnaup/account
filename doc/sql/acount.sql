@@ -182,6 +182,8 @@ DROP TABLE IF EXISTS `application_code` ;
 CREATE TABLE IF NOT EXISTS `application_code` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `application_code` INT NOT NULL COMMENT '应用代码 10~99的数字',
+  `url` VARCHAR(200) NULL  COMMENT '应用主页url',
+  `description` VARCHAR(512) COMMENT '应用描述',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`application_name`))

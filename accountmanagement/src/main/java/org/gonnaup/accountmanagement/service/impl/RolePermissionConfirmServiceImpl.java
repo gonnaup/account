@@ -32,7 +32,7 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      */
     @Override
     public boolean isAdmin(Long accountId) {
-        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
+        int score = accountRoleService.calculateAccountPermissionScore(accountId);
         return (score | PermissionType.ALL.weight()) == score;
     }
 
@@ -45,7 +45,7 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      */
     @Override
     public boolean isAppAdmin(Long accountId) {
-        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
+        int score = accountRoleService.calculateAccountPermissionScore(accountId);
         return (score | PermissionType.APP_ALL.weight()) == score;
     }
 
@@ -53,12 +53,17 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
      * 确认账号是否有某些权限
      *
      * @param accountId 账号ID
-     * @param scores     权限分
+     * @param scores    权限分
      * @return <code>true or false</code>
      */
     @Override
     public boolean hasPermission(Long accountId, int... scores) {
-        Integer score = accountRoleService.calculateAccountPermissionScore(accountId);
-        return score > 0 && scores.length == 0 || Arrays.stream(scores).allMatch(s -> (score | s) == score);
+        int accountScore = accountRoleService.calculateAccountPermissionScore(accountId);
+        if (scores.length == 0) {
+            return true;
+        }
+        int requrieScore = Arrays.stream(scores).reduce(0, (left, right) -> left | right);//合并所需的权限
+        //如果所需权限位只读权限，则只需账号权限分>只读权限分，其他情况按位与
+        return requrieScore == PermissionType.APP_R.weight() ? accountScore > requrieScore : (accountScore | requrieScore) == accountScore;
     }
 }

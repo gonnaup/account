@@ -1,12 +1,19 @@
 package org.gonnaup.accountmanagement.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.accountmanagement.dao.ApplicationCodeDao;
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
+import org.gonnaup.accountmanagement.entity.OperationLog;
+import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.ApplicationCodeService;
+import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 应用代码(ApplicationCode)表服务实现类
@@ -14,10 +21,15 @@ import java.util.List;
  * @author gonnaup
  * @since 2020-10-29 10:53:22
  */
-@Service("applicationCodeService")
+@Slf4j
+@Service
 public class ApplicationCodeServiceImpl implements ApplicationCodeService {
+
     @Autowired
     private ApplicationCodeDao applicationCodeDao;
+
+    @Autowired
+    private OperationLogService operationLogService;
 
     /**
      * 通过ID查询单条数据
@@ -26,54 +38,79 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      * @return 实例对象
      */
     @Override
-    public ApplicationCode findByPrimarykey(String applicationName) {
-        return this.applicationCodeDao.queryById(applicationName);
+    public ApplicationCode findByApplicationName(String applicationName) {
+        return applicationCodeDao.queryById(applicationName);
     }
 
     /**
      * 查询多条数据
      *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
+     * @param applicationCode
      * @return 对象列表
      */
     @Override
-    public List<ApplicationCode> findAllByLimit(int offset, int limit) {
-        return this.applicationCodeDao.queryAllByLimit(offset, limit);
+    public List<ApplicationCode> findAllConditional(ApplicationCode applicationCode) {
+        return applicationCodeDao.queryAllConditional(Optional.ofNullable(applicationCode).orElse(new ApplicationCode()));
     }
 
     /**
-     * 新增数据
+     * 新增应用数据，只有ADMIN才有权限
      *
      * @param applicationCode 实例对象
      * @return 实例对象
      */
     @Override
-    public ApplicationCode insert(ApplicationCode applicationCode) {
-        this.applicationCodeDao.insert(applicationCode);
+    @Transactional
+    public ApplicationCode insert(ApplicationCode applicationCode, Operater operater) {
+        applicationCodeDao.insert(applicationCode);
+        log.info("[{}] 新增应用代码 {}", operater.getOperaterId(), applicationCode);
+        operationLogService.insert(OperationLog.of(operater, OperateType.A, "新增应用编码：" + applicationCode));
         return applicationCode;
     }
 
     /**
-     * 修改数据
+     * 修改数据，只能更新code,url,description字段
      *
      * @param applicationCode 实例对象
+     * @param operater        操作者
      * @return 实例对象
      */
     @Override
-    public ApplicationCode update(ApplicationCode applicationCode) {
-        this.applicationCodeDao.update(applicationCode);
-        return this.findByPrimarykey(applicationCode.getApplicationName());
+    @Transactional
+    public ApplicationCode update(ApplicationCode applicationCode, Operater operater) {
+        ApplicationCode origin = findByApplicationName(applicationCode.getApplicationName());
+        if (origin == null) {
+            log.error("需要更新的应用编码 {} 不存在", applicationCode);
+            return null;
+        }
+        applicationCodeDao.update(applicationCode);
+        ApplicationCode after = findByApplicationName(applicationCode.getApplicationName());
+        operationLogService.insert(OperationLog.of(operater, OperateType.U, String.format("更新应用编码 %s => %s", origin, after)));
+        log.info("{}[{}] 修改应用编码 {} => {}", operater.getOperaterId(), operater.getOperaterName(), origin, after);
+        return applicationCode;
     }
 
     /**
      * 通过主键删除数据
      *
      * @param applicationName 主键
+     * @param operater        操作者
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(String applicationName) {
-        return this.applicationCodeDao.deleteById(applicationName) > 0;
+    @Transactional
+    public ApplicationCode deleteOne(String applicationName, Operater operater) {
+        ApplicationCode origin = findByApplicationName(applicationName);
+        if (origin == null) {
+            log.warn("要删除的应用编码 应用名={} 不存在", applicationName);
+            return null;
+        }
+        int count = applicationCodeDao.deleteById(applicationName);
+        if (count > 0) {
+            operationLogService.insert(OperationLog.of(operater, OperateType.D, "删除应用编码：" + origin));
+            log.info("{}[{}] 删除应用编码 {}", operater.getOperaterId(), operater.getOperaterName(), origin);
+            return origin;
+        }
+        return null;
     }
 }

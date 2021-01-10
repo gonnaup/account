@@ -51,7 +51,7 @@ public class SequenceServiceImpl implements SequenceService {
     private final LoadingCache<String, Integer> applicationCodeCache = CacheBuilder.newBuilder()
             .expireAfterWrite(Duration.ofMinutes(30))//失效时间30'
             .build(CacheLoader.from(applicationName -> {
-                ApplicationCode applicationCode = applicationCodeService.findByPrimarykey(applicationName);
+                ApplicationCode applicationCode = applicationCodeService.findByApplicationName(applicationName);
                 if (applicationCode == null) {
                     throw new DataNotInitialized("应用代码未初始化");
                 }

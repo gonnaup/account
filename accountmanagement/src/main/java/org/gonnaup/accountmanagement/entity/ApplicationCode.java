@@ -23,6 +23,14 @@ public class ApplicationCode implements Serializable {
      */
     private Integer applicationCode;
     /**
+     * 应用url
+     */
+    private String url;
+    /**
+     * 应用描述
+     */
+    private String description;
+    /**
      * 创建时间
      */
     private LocalDateTime createtime;

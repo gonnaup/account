@@ -111,7 +111,7 @@ function accountOperateValidate() {
     var $ = layui.jquery
     var jwt = obtainJwt() || ''
     $.ajax({
-        url: '../api/authenticate/permission',
+        url: '../api/authenticate/simplePermission',
         type: 'get',
         headers: {token_jwt: jwt},
         success: function (data) {

@@ -69,7 +69,7 @@ public class AccountRoleServiceImpl implements AccountRoleService {
      */
     @Override
     @Cacheable(key = "'permissionScore::' + #accountId")
-    public Integer calculateAccountPermissionScore(Long accountId) {
+    public int calculateAccountPermissionScore(Long accountId) {
         List<Role> roleList = accountRoleDao.queryRolesByAccountId(accountId);
         if (roleList.isEmpty()) {
             return 0;

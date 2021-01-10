@@ -13,7 +13,6 @@ import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
-import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.*;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
@@ -61,8 +60,8 @@ public class AccountController {
      */
     @GetMapping("/display")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Result<String> display() {
-        return Result.code(ResultCode.SUCCESS.code()).success().data("");
+    public Result<Void> display() {
+        return ResultConst.SUCCESS_NULL;
     }
 
     /**
@@ -104,7 +103,7 @@ public class AccountController {
         final Long accountId = jwtData.getAccountId();
         if (rolePermissionConfirmService.isAdmin(accountId)) {//admin角色
             //应用名验证
-            if (StringUtils.isBlank(accountDTO.getApplicationName()) || applicationCodeService.findByPrimarykey(accountDTO.getApplicationName()) == null) {
+            if (StringUtils.isBlank(accountDTO.getApplicationName()) || applicationCodeService.findByApplicationName(accountDTO.getApplicationName()) == null) {
                 log.warn("系统管理员新增账号时应用名[{}]为空或不存在", accountDTO.getApplicationName());
                 throw new ValidationException("应用名参数错误!");
             }

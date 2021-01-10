@@ -195,12 +195,12 @@ public class AuthenticateController {
     }
 
     /**
-     * 获取增删改查权限
+     * 获取普通操作增删改查权限
      * @param jwtData
      * @return
      * @see SimplePermission
      */
-    @GetMapping("/permission")
+    @GetMapping("/simplePermission")
     public Result<SimplePermission> simplePermissionResult(@JwtDataParam JwtData jwtData) {
         if (jwtData == null) {//无权限
             return Result.code(ResultCode.SUCCESS.code()).success().data(SimplePermission.of(false, false, false));

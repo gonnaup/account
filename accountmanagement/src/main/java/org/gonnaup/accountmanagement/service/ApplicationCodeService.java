@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.service;
 
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
 
 import java.util.List;
@@ -18,39 +19,40 @@ public interface ApplicationCodeService {
      * @param applicationName 主键
      * @return 实例对象
      */
-    ApplicationCode findByPrimarykey(String applicationName);
+    ApplicationCode findByApplicationName(String applicationName);
 
     /**
      * 查询多条数据
-     *
-     * @param offset 查询起始位置
-     * @param limit  查询条数
+     * @param applicationCode
      * @return 对象列表
      */
-    List<ApplicationCode> findAllByLimit(int offset, int limit);
+    List<ApplicationCode> findAllConditional(ApplicationCode applicationCode);
 
     /**
      * 新增数据
      *
      * @param applicationCode 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    ApplicationCode insert(ApplicationCode applicationCode);
+    ApplicationCode insert(ApplicationCode applicationCode, Operater operater);
 
     /**
-     * 修改数据
+     * 修改数据，只能更新code,url,description字段
      *
      * @param applicationCode 实例对象
+     * @param operater 操作者
      * @return 实例对象
      */
-    ApplicationCode update(ApplicationCode applicationCode);
+    ApplicationCode update(ApplicationCode applicationCode, Operater operater);
 
     /**
      * 通过主键删除数据
      *
      * @param applicationName 主键
+     * @param operater 操作者
      * @return 是否成功
      */
-    boolean deleteById(String applicationName);
+    ApplicationCode deleteOne(String applicationName, Operater operater);
 
 }

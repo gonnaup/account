@@ -5,6 +5,8 @@
     <resultMap type="org.gonnaup.accountmanagement.entity.ApplicationCode" id="ApplicationCodeMap">
         <result property="applicationName" column="application_name" jdbcType="VARCHAR"/>
         <result property="applicationCode" column="application_code" jdbcType="INTEGER"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
         <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -12,23 +14,15 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ApplicationCodeMap">
         select
-          application_name, application_code, createtime, updatetime
+          application_name, application_code, url, description, createtime, updatetime
         from application_code
         where application_name = #{applicationName}
     </select>
 
-    <!--查询指定行数据-->
-    <select id="queryAllByLimit" resultMap="ApplicationCodeMap">
-        select
-          application_name, application_code, createtime, updatetime
-        from application_code
-        limit #{offset}, #{limit}
-    </select>
-
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAll" resultMap="ApplicationCodeMap">
+    <select id="queryAllConditional" resultMap="ApplicationCodeMap">
         select
-        application_name, application_code, createtime, updatetime
+        application_name, application_code, url, description, createtime, updatetime
         from application_code
         <where>
             <if test="applicationName != null and applicationName != ''">
@@ -37,37 +31,19 @@
             <if test="applicationCode != null">
                 and application_code = #{applicationCode}
             </if>
-            <if test="createtime != null">
-                and createtime = #{createtime}
+            <if test="url != null and url != ''">
+                and url = #{url}
             </if>
-            <if test="updatetime != null">
-                and updatetime = #{updatetime}
+            <if test="description != null and description != ''">
+                and description like concat('%', #{description}, '%')
             </if>
         </where>
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_code(application_code, createtime, updatetime)
-        values (#{applicationCode}, #{createtime}, #{updatetime})
-    </insert>
-
-    <insert id="insertBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_code(application_code, createtime, updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.applicationCode}, #{entity.createtime}, #{entity.updatetime})
-        </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch" keyProperty="applicationName" useGeneratedKeys="true">
-        insert into application_code(application_code, createtime, updatetime)
-        values
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.applicationCode}, #{entity.createtime}, #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        application_code = values(application_code) , createtime = values(createtime) , updatetime = values(updatetime)
+    <insert id="insert">
+        insert into application_code(application_name, application_code, url, description)
+        values (#{applicationName}, #{applicationCode}, #{url}, #{description})
     </insert>
 
     <!--通过主键修改数据-->
@@ -77,13 +53,19 @@
             <if test="applicationCode != null">
                 t.application_code = #{applicationCode},
             </if>
+            <if test="url != null and url != ''">
+                t.url = #{url},
+            </if>
+            <if test="description != null and description != ''">
+                t.description = #{description},
+            </if>
         </set>
         where t.application_name = #{applicationName}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from application_code where application_name = #{applicationName}
+        delete from application_code where application_name = #{applicationName} limit 1
     </delete>
 
 </mapper>
