@@ -1,10 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<header>
+    <meta charset="utf-8">
+</header>
 <body>
-applicationcode
+<div class="layui-collapse" id="applicationCodeQueryBlock">
+    <div class="layui-colla-item">
+        <h3 class="layui-colla-title"><i class="layui-icon layui-icon-search"></i>查询</h3>
+        <div class="layui-colla-content">
+            <div class="layui-container" style="margin-left: 0">
+                <form class="layui-form">
+                    <div class="layui-row">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">应用名称：</label>
+                            <div class="layui-input-block">
+                                <select id="applicationCodeQueryForm_name" name="applicationName">
+                                    <option value="">全部</option>
+                                    <!-- todo 根据用户角色动态显示此项 -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">应用代码：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="accountName" placeholder="应用代码">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row main-marginTop10">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">应用地址：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="id" placeholder="应用url">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">应用描述：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="tag" placeholder="应用描述">
+                            </div>
+                        </div>
+                        <div class="layui-col-md1 main-marginLeft10">
+                            <button class="layui-btn" lay-submit lay-filter="applicationCodeQueryForm">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="applicationCodeTable" lay-filter="applicationCode"></table>
+
+<script type="text/html" id="toolbarApplicationCode">
+    <div class="layui-btn-container">
+        <button id="applicationCodebar_add" class="layui-btn layui-btn-sm" disabled lay-event="add">添加</button>
+        <button id="applicationCodebar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button id="applicationCodebar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    layui.use(['element', 'table', 'form', 'layer'], function () {
+        var element = layui.element
+        element.init()
+        if (isAdmin()) {
+            renderSelect('applicationCodeQueryForm_name', '../api/applicationCode/listAll')//渲染select
+        } else {
+            var $ = layui.jquery
+            $('#applicationCodeQueryBlock').css('display', 'none')
+        }
+        var table = layui.table;
+        ADUOperateValidate('applicationCodebar_add', 'applicationCodebar_delete', 'applicationCodebar_update', '../api/applicationCode/applicationCodePermission')//toolbar按钮权限处理
+        var operationlogTable = table.render({
+            elem: '#applicationCodeTable',
+            url: '../api/applicationCode/list',
+            headers: {token_jwt: obtainJwt() || ''},
+            toolbar: '#toolbarApplicationCode',
+            title: '操作日志',
+            parseData: function (data) {
+                return {
+                    'code': 0,
+                    "msg": '',
+                    'data': data.data
+                }
+            },
+            done: function (res, curr, count) {
+            },
+            cols: [[
+                {type: 'radio'},
+                {field: 'applicationName', title: '应用名称', width: 200},
+                {field: 'applicationCode', title: '应用代码', width: 160},
+                {field: 'url', title: '应用地址', width: 300},
+                {field: 'description', title: '应用描述', width: 200},
+                {field: 'createtime', title: '创建时间', width: 170},
+                {field: 'updatetime', title: '更新时间', width: 170},
+            ]]
+        })
+        table.on('toolbar(applicationCode)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    accountAddClicked()
+                    break;
+                case 'delete':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountDeleteClicked(data)
+                    break;
+                case 'update':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountUpdateClicked(data)
+                    break;
+            }
+            ;
+        })
+        var form = layui.form
+        form.render('select')
+        form.on('submit(applicationCodeQueryForm)', function (data) {
+            operationlogTable.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false
+        })
+    })
+
+
+</script>
 </body>
 </html>

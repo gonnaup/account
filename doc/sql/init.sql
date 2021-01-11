@@ -1,6 +1,6 @@
 DELETE FROM application_code;
-INSERT INTO application_code (application_name, application_code)
-VALUES ('AccountManagement', 10);
+INSERT INTO application_code (application_name, application_code, url, description)
+VALUES ('AccountManagement', 10, '/accountmanagement/index.html', '账号管理系统');
 
 delete
 from application_sequence;

@@ -6,6 +6,7 @@
 var pagepermission_urlMap = new Map()
 pagepermission_urlMap.set('../html/operationlog.html', '../api/operationlog/display')
 pagepermission_urlMap.set('../html/account.html', '../api/account/display')
+pagepermission_urlMap.set('../html/applicationcode.html', '../api/applicationCode/display')
 var current_page//当前页面缓存
 
 /**

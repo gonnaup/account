@@ -13,8 +13,6 @@ var SYSTEM_ERROR = '500';//服务器异常
 
 var openLoginTipsPage = true//是否打开登录提示layer，用于注销重新加载页面时不显示此页面
 
-
-
 /**
  * 进入系统尝试登陆
  */
@@ -106,25 +104,49 @@ function signout() {
 
 /**
  * 对账户增删改操作验证，根据用户权限禁用按钮
+ * @param addId 新增按钮id
+ * @param deleteId 删除按钮id
+ * @param updateId 更新按钮id
+ * @param url 认证信息url
  */
-function accountOperateValidate() {
+function ADUOperateValidate(addId, deleteId, updateId, url) {
+    var url = url || '../api/authenticate/simplePermission'
     var $ = layui.jquery
     var jwt = obtainJwt() || ''
     $.ajax({
-        url: '../api/authenticate/simplePermission',
+        url: url,
         type: 'get',
         headers: {token_jwt: jwt},
         success: function (data) {
             var permission = data.data
             if (!permission.add) {
-                disabeButton('#accountbar_add')
+                disabeButton('#' + addId)
             }
             if (!permission.delete) {
-                disabeButton('#accountbar_delete')
+                disabeButton('#' + deleteId)
             }
             if (!permission.update) {
-                disabeButton('#accountbar_update')
+                disabeButton('#' + updateId)
             }
+        }
+    })
+}
+
+/**
+ * 判断账号是否是系统管理员角色
+ */
+function isAdmin() {
+    var $ = layui.jquery
+    var jwt = obtainJwt() || ''
+    $.ajax({
+        url: '../api/authenticate/isAdminRole',
+        type: 'get',
+        headers: {token_jwt: jwt},
+        success: function (data) {
+            return data.data.admin
+        },
+        error: function () {
+            return false
         }
     })
 }

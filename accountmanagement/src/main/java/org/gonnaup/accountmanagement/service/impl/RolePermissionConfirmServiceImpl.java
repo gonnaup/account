@@ -64,6 +64,6 @@ public class RolePermissionConfirmServiceImpl implements RolePermissionConfirmSe
         }
         int requrieScore = Arrays.stream(scores).reduce(0, (left, right) -> left | right);//合并所需的权限
         //如果所需权限位只读权限，则只需账号权限分>只读权限分，其他情况按位与
-        return requrieScore == PermissionType.APP_R.weight() ? accountScore > requrieScore : (accountScore | requrieScore) == accountScore;
+        return requrieScore == PermissionType.APP_R.weight() ? accountScore >= requrieScore : (accountScore | requrieScore) == accountScore;
     }
 }

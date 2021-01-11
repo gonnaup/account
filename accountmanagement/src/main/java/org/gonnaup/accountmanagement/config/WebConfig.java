@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.exception.JwtInvalidException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
@@ -64,6 +65,10 @@ public class WebConfig implements WebMvcConfigurer {
                 log.info("JwtData不存在，尝试从HttpServletRequest中解析");
                 try {
                     String jwt = RequestUtil.obtainJWT(request);
+                    if (StringUtils.isBlank(jwt)) {
+                        log.info("Jwt 为空，用户未登录");
+                        return null;
+                    }
                     jwtData = JWTUtil.jwtVerified(jwt);
                 } catch (JwtInvalidException e) {
                     log.warn("获取jwtData参数失败");

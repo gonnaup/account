@@ -81,7 +81,7 @@
         var element = layui.element
         element.init()
         var table = layui.table;
-        accountOperateValidate()//toolbar按钮权限处理
+        ADUOperateValidate('accountbar_add', 'accountbar_delete', 'accountbar_update')//toolbar按钮权限处理
         var operationlogTable = table.render({
             elem: '#accountTable',
             url: '../api/account/list',

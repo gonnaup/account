@@ -1,5 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Authentication;
@@ -214,5 +216,23 @@ public class AuthenticateController {
                 ));
     }
 
+    /**
+     * 判断用户是否是系统管理员用户
+     * @param jwtData
+     * @return
+     */
+    @GetMapping("/isAdminRole")
+    public Result<SimpleBooleanShell> isAdminRole(@JwtDataParam JwtData jwtData) {
+        if (jwtData == null || !rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
+            return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(false));
+        } else {
+            return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(true));
+        }
+    }
 
+    @Data
+    @AllArgsConstructor(staticName = "of")
+    static class SimpleBooleanShell {
+        private boolean admin;
+    }
 }
