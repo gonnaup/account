@@ -5,6 +5,8 @@ import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 
+import java.util.List;
+
 /**
  * 角色权限表(Permission)表服务接口
  *
@@ -36,6 +38,13 @@ public interface PermissionService {
      * @return 对象页
      */
     Page<Permission> findAllConditionalPaged(Permission permission, Pageable pageable);
+
+    /**
+     * 查询某应用的所有权限对象
+     * @param appName
+     * @return
+     */
+    List<Permission> findByAppName(String appName);
 
     /**
      * 新增数据

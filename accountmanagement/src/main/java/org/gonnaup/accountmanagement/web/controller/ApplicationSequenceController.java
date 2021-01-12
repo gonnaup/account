@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.ApplicationSequenceKey;
 import org.gonnaup.account.exception.LogicValidationException;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import java.util.Objects;
 
 /**
@@ -92,14 +94,16 @@ public class ApplicationSequenceController {
      */
     @PostMapping("/add")
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> add(@JwtDataParam JwtData jwtData, @Validated ApplicationSequenceDTO applicationSequenceDTO) {
+    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationSequenceDTO applicationSequenceDTO) {
         OperaterType operaterType = null;
         Long accountId = jwtData.getAccountId();
-        if (!rolePermissionConfirmService.isAdmin(accountId)) {
-            applicationSequenceDTO.setApplicationName(jwtData.getAppName());//如果非admin设置应用名为账号所属应用名
+        if (rolePermissionConfirmService.isAdmin(accountId)) {
+            if (StringUtils.isBlank(applicationSequenceDTO.getApplicationName())) {
+                throw new ValidationException("请选择一个应用名称");
+            }
             operaterType = OperaterType.S;
         } else {
-            applicationSequenceDTO.setApplicationName(jwtData.getAppName());
+            applicationSequenceDTO.setApplicationName(jwtData.getAppName());//非admin将用户所在appName赋值
             operaterType = OperaterType.A;
         }
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
@@ -117,7 +121,7 @@ public class ApplicationSequenceController {
      */
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, @Validated ApplicationSequenceDTO applicationSequenceDTO) {
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationSequenceDTO applicationSequenceDTO) {
         Long accountId = jwtData.getAccountId();
         OperaterType operaterType;
         AccountHeader accountHeader = accountService.findHeaderById(accountId);

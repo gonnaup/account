@@ -55,6 +55,13 @@ public interface RoleDao {
     int countAllConditional(@Param("role") Role role);
 
     /**
+     * 查询某应用所有角色信息
+     * @param appName
+     * @return
+     */
+    List<Role> queryByAppName(@Param("appName") String appName);
+
+    /**
      * 新增数据
      *
      * @param role 实例对象

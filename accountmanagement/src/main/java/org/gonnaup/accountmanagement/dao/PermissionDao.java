@@ -48,6 +48,13 @@ public interface PermissionDao {
     int countAllConditional(@Param("permission") Permission permission);
 
     /**
+     * 查询某应用所有权限列表
+     * @param appName
+     * @return
+     */
+    List<Permission> queryByAppName(@Param("appName") String appName);
+
+    /**
      * 新增数据
      *
      * @param permission 实例对象

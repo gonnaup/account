@@ -78,6 +78,13 @@
         </where>
     </select>
 
+    <select id="queryByAppName" resultMap="RoleMap">
+        select
+            id, application_name, role_name, score, description, createtime, updatetime
+        from role
+        where application_name = #{appName}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into role(id, application_name, role_name, score, description)

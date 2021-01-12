@@ -85,6 +85,17 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
+     * 查询某应用的所有权限对象
+     *
+     * @param appName
+     * @return
+     */
+    @Override
+    public List<Permission> findByAppName(String appName) {
+        return permissionDao.queryByAppName(appName);
+    }
+
+    /**
      * 新增数据
      *
      * @param permission 实例对象

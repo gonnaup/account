@@ -5,6 +5,8 @@ import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 
+import java.util.List;
+
 /**
  * 账户角色表(Role)表服务接口
  *
@@ -36,6 +38,13 @@ public interface RoleService {
      * @return 对象页
      */
     Page<Role> findAllConditionalPaged(Role role, Pageable pageable);
+
+    /**
+     * 查询某应用中所有角色对象
+     * @param appName
+     * @return
+     */
+    List<Role> findByAppName(String appName);
 
     /**
      * 新增数据

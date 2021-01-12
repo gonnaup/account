@@ -105,7 +105,7 @@ public class ApplicationCodeController {
      */
     @PostMapping("/add")
     @RequirePermission(permissions = {PermissionType.ALL})//管理员权限
-    public Result<Void> add(@JwtDataParam JwtData jwtData, @Validated ApplicationCodeDTO applicationCodeDTO) {
+    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationCodeDTO applicationCodeDTO) {
         ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
         AccountHeader accountHeader = accountService.findHeaderById(jwtData.getAccountId());
         applicationCodeService.insert(applicationCode, Operater.of(OperaterType.A, accountHeader.getId(), accountHeader.getAccountName()));
@@ -122,7 +122,7 @@ public class ApplicationCodeController {
      */
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, ApplicationCodeDTO applicationCodeDTO) {
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationCodeDTO applicationCodeDTO) {
         Long accountId = jwtData.getAccountId();
         AccountHeader operaterAccount = accountService.findHeaderById(accountId);
         OperaterType operaterType = null;

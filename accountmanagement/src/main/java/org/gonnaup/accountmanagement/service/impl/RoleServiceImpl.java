@@ -89,6 +89,18 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
+     * 查询某应用中所有角色对象
+     *
+     * @param appName
+     * @return
+     */
+    @Override
+    public List<Role> findByAppName(String appName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
      * 新增数据
      *
      * @param role     实例对象

@@ -71,6 +71,13 @@
         </where>
     </select>
 
+    <select id="queryByAppName" resultMap="PermissionMap">
+        select
+            id, application_name, permission_name, weight, description, createtime, updatetime
+        from permission
+        where application_name = #{appName}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into permission(id, application_name, permission_name, weight, description)

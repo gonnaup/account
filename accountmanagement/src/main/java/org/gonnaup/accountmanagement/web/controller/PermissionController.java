@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.exception.LogicValidationException;
@@ -14,10 +15,12 @@ import org.gonnaup.accountmanagement.dto.PermissionDTO;
 import org.gonnaup.accountmanagement.dto.PermissionQueryDTO;
 import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
+import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.PermissionService;
 import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
 import org.gonnaup.accountmanagement.vo.PermissionVO;
+import org.gonnaup.accountmanagement.vo.SelectVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
@@ -25,8 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -87,6 +92,43 @@ public class PermissionController {
     }
 
     /**
+     * 查询某应用的所有的权限列表，前台下拉框使用
+     *
+     * @return
+     */
+    @GetMapping("/listAppAll")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<List<SelectVO>> listAppAll(@JwtDataParam JwtData jwtData, @RequestParam(name = "appName", required = false) String appName) {
+        if (rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
+            if (StringUtils.isBlank(appName)) {
+                throw new ValidationException("请选择一个应用名称");
+            }
+        } else {
+            appName = jwtData.getAppName();
+        }
+        return Result.code(ResultCode.SUCCESS.code()).success().data(
+                permissionService.findByAppName(appName).stream()
+                        .map(permission -> SelectVO.of(Long.toString(permission.getId()), permission.getPermissionName()))
+                        .collect(Collectors.toUnmodifiableList())
+        );
+    }
+
+    @GetMapping("/description/{permissionId}")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<String> description(@JwtDataParam JwtData jwtData, @PathVariable("permissionId") Long permissionId) {
+        Permission permission = permissionService.findById(permissionId);
+        if (permission == null) {
+            log.error("权限 id = {} 不存在", permissionId);
+            throw new LogicValidationException("权限信息不存在");
+        }
+        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId()) && !Objects.equals(jwtData.getAppName(), permission.getApplicationName())) {
+            log.info("账号 {} 所属 {} 不能查询应用 {} 的应用序列信息", jwtData.getAccountId(), jwtData.getAppName(), permission.getApplicationName());
+            throw new LogicValidationException("您不能查询其他应用的权限信息");
+        }
+        return Result.code(ResultCode.SUCCESS.code()).success().data(Optional.ofNullable(permission.getDescription()).orElse(""));
+    }
+
+    /**
      * 新增权限对象
      *
      * @param jwtData
@@ -95,10 +137,13 @@ public class PermissionController {
      */
     @PostMapping("/add")
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> add(@JwtDataParam JwtData jwtData, @Validated PermissionDTO permissionDTO) {
+    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
         Long accountId = jwtData.getAccountId();
         OperaterType operaterType = null;
         if (rolePermissionConfirmService.isAdmin(accountId)) {
+            if (StringUtils.isBlank(permissionDTO.getApplicationName())) {
+                throw new ValidationException("请选择一个应用名称");
+            }
             operaterType = OperaterType.A;
         } else {//非admin
             operaterType = OperaterType.S;
@@ -112,7 +157,7 @@ public class PermissionController {
 
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, @Validated PermissionDTO permissionDTO) {
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
         Long accountId = jwtData.getAccountId();
         OperaterType operaterType;
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
