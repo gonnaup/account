@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Permission;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
@@ -18,7 +19,7 @@ import java.io.Serializable;
  */
 @Data
 @Validated
-public class PermissionDTO implements Serializable {
+public class PermissionDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = 1779655911654906126L;
     /**

@@ -2,7 +2,6 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.domain.Role;
@@ -19,6 +18,7 @@ import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.service.*;
+import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.RoleVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +57,9 @@ public class RoleController {
     @Autowired
     private RolePermissionConfirmService rolePermissionConfirmService;
 
+    @Autowired
+    private ApplicationNameValidator applicationNameValidator;
+
     /**
      * 页面认证api
      *
@@ -81,10 +83,8 @@ public class RoleController {
     @GetMapping("/list")
     @RequirePermission(permissions = {PermissionType.APP_R})
     public Page<RoleVO> list(@JwtDataParam JwtData jwtData, RoleQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
-        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
-            //非ADMIN，设置应用名为账号所属用户名
-            queryParam.setApplicationName(jwtData.getAppName());
-        }
+        //appName deal
+        applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Role role = queryParam.toRole();
         if (log.isDebugEnabled()) {
             log.debug("查询权限列表， 参数 {}，page：{}， size： {}", role, page, size);
@@ -105,27 +105,23 @@ public class RoleController {
     @RequirePermission(permissions = {PermissionType.APP_A})
     public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated RoleDTO roleDTO) {
         //appName check
-        Long accountId = jwtData.getAccountId();
-        OperaterType operaterType;
-        if (rolePermissionConfirmService.isAdmin(accountId)) {
-            if (StringUtils.isBlank(roleDTO.getApplicationName())) {
-                throw new ValidationException("请选择一个应用名称");
-            }
-            operaterType = OperaterType.A;
-        } else {
-            roleDTO.setApplicationName(jwtData.getAppName());
-            operaterType = OperaterType.S;
-        }
+        OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, roleDTO);
+
         List<String> permissionIdList = roleDTO.getPermissionIdList();
         String addObj_appName = roleDTO.getApplicationName();
+
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
-        if (CollectionUtils.isNotEmpty(permissionIdList) && !permissionIdList.stream().allMatch(pId -> {
-            Permission permission = permissionService.findById(Long.parseLong(pId));
-            return permission != null && addObj_appName.equals(permission.getApplicationName());
-        })) {
+        if (CollectionUtils.isNotEmpty(permissionIdList) &&
+                !permissionIdList.stream().allMatch(pId -> {
+                            Permission permission = permissionService.findById(Long.parseLong(pId));
+                            return permission != null && addObj_appName.equals(permission.getApplicationName());
+                        }
+                )
+        ) {
             log.error("存在不属于新增角色 {} 所属应用 {} 中的权限信息 {}", roleDTO.toRole(), addObj_appName, roleDTO.getPermissionIdList());
             throw new LogicValidationException("存在不属于此角色应用的权限");
         }
+        Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
 
         //add

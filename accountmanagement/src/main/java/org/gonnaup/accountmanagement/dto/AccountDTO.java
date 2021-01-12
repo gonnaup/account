@@ -5,7 +5,9 @@ import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.common.util.CryptUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
@@ -19,7 +21,7 @@ import java.io.Serializable;
  */
 @Data
 @Validated
-public class AccountDTO implements Serializable {
+public class AccountDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = 8472465126440580678L;
 
@@ -79,12 +81,7 @@ public class AccountDTO implements Serializable {
      */
     public Account toAccount() {
         Account account = new Account();
-        account.setApplicationName(applicationName);
-        account.setAccountName(accountName);
-        account.setAccountNickname(accountNickname);
-        account.setAccountAvatar(accountAvatar);
-        account.setAccountState(accountState);
-        account.setTag(tag);
+        BeanUtils.copyProperties(this, account);
         return account;
     }
 

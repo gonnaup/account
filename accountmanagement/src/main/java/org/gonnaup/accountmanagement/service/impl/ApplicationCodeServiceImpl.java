@@ -9,6 +9,10 @@ import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.ApplicationCodeService;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
+@CacheConfig(cacheNames = "applicationCode")
 public class ApplicationCodeServiceImpl implements ApplicationCodeService {
 
     @Autowired
@@ -38,6 +43,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      * @return 实例对象
      */
     @Override
+    @Cacheable(key = "#applicationName")
     public ApplicationCode findByApplicationName(String applicationName) {
         return applicationCodeDao.queryById(applicationName);
     }
@@ -77,6 +83,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      */
     @Override
     @Transactional
+    @CachePut(key = "#applicationCode.applicationName", condition = "#result != null")
     public ApplicationCode update(ApplicationCode applicationCode, Operater operater) {
         ApplicationCode origin = findByApplicationName(applicationCode.getApplicationName());
         if (origin == null) {
@@ -87,7 +94,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
         ApplicationCode after = findByApplicationName(applicationCode.getApplicationName());
         operationLogService.insert(OperationLog.of(operater, OperateType.U, String.format("更新应用编码 %s => %s", origin, after)));
         log.info("{}[{}] 修改应用编码 {} => {}", operater.getOperaterId(), operater.getOperaterName(), origin, after);
-        return applicationCode;
+        return after;
     }
 
     /**
@@ -99,6 +106,7 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
      */
     @Override
     @Transactional
+    @CacheEvict(key = "#applicationName", condition = "#result != null")
     public ApplicationCode deleteOne(String applicationName, Operater operater) {
         ApplicationCode origin = findByApplicationName(applicationName);
         if (origin == null) {

@@ -1,11 +1,9 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AccountState;
-import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
@@ -13,7 +11,11 @@ import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
-import org.gonnaup.accountmanagement.service.*;
+import org.gonnaup.accountmanagement.service.AccountService;
+import org.gonnaup.accountmanagement.service.ApplicationCodeService;
+import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
+import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
@@ -45,13 +47,13 @@ public class AccountController {
     private AuthenticationService authenticationService;
 
     @Autowired
-    private ApplicationNameValidationService applicationNameValidationService;
-
-    @Autowired
     private RolePermissionConfirmService rolePermissionConfirmService;
 
     @Autowired
     private ApplicationCodeService applicationCodeService;
+
+    @Autowired
+    private ApplicationNameValidator applicationNameValidator;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -77,9 +79,7 @@ public class AccountController {
     @RequirePermission(permissions = {PermissionType.APP_R})
     public Page<AccountVO> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //ADMIN可查询所有账户列表
-        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
-            queryParam.setApplicationName(jwtData.getAppName());
-        }
+        applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Account account = queryParam.toAccount();
         if (log.isDebugEnabled()) {
             log.debug("查询账户列表， 参数 {}， page: {}, size {}", account, page, size);
@@ -98,26 +98,17 @@ public class AccountController {
      */
     @PostMapping("/new")
     @Transactional
+    @RequirePermission(permissions = {PermissionType.APP_A})
     public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @Validated AccountDTO accountDTO) {
         //应用名处理
-        final Long accountId = jwtData.getAccountId();
-        if (rolePermissionConfirmService.isAdmin(accountId)) {//admin角色
-            //应用名验证
-            if (StringUtils.isBlank(accountDTO.getApplicationName()) || applicationCodeService.findByApplicationName(accountDTO.getApplicationName()) == null) {
-                log.warn("系统管理员新增账号时应用名[{}]为空或不存在", accountDTO.getApplicationName());
-                throw new ValidationException("应用名参数错误!");
-            }
-        } else {
-            //非admin角色设置应用名为账号所属应用名
-            accountDTO.setApplicationName(jwtData.getAppName());
-        }
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
 
         Account account = accountDTO.toAccount();
         Account inserted = accountService.insert(account);//添加账号信息
         Authentication authentication = accountDTO.createAuthentication(inserted.getId());//设置认证信息账号ID
         authenticationService.insert(authentication);//添加账号认证信息
         authentication.setCredential(null);//help gc
-        log.info("账号[{}]添加账户 {} 认证信息 {}", accountId, account, authentication);
+        log.info("账号[{}]添加账户 {} 认证信息 {}", jwtData.getAccountId(), account, authentication);
         return ResultConst.SUCCESS_NULL;
     }
 
@@ -129,10 +120,14 @@ public class AccountController {
      * @return
      */
     @DeleteMapping("/disable/{accountId}")
-    public Result<Void> disableAccount(@JwtDataParam JwtData jwtData, @PathVariable Long accountId) throws AuthenticationException {
-        if (!rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {//如果不是ADMIN角色则需验证appName
-            applicationNameValidationService.checkApplicationNameOrigin(jwtData.getAppName(), accountId);
+    @RequirePermission(permissions = {PermissionType.APP_D})
+    public Result<Void> disableAccount(@JwtDataParam JwtData jwtData, @PathVariable Long accountId) {
+        Account account = accountService.findById(accountId);
+        if (account == null) {
+            log.error("账号id={} 不存在", accountId);
+            throw new ValidationException("不存在此账号，无法操作");
         }
+        applicationNameValidator.validateApplicationName(jwtData, account.getApplicationName());
         accountService.updateState(accountId, AccountState.F.name());//修改账户状态
         return ResultConst.SUCCESS_NULL;
     }

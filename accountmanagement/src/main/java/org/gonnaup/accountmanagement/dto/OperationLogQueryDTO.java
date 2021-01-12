@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.accountmanagement.entity.OperationLog;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -43,10 +44,7 @@ public class OperationLogQueryDTO implements Serializable {
      */
     public OperationLog toOperationLog() {
         OperationLog operationLog = new OperationLog();
-        operationLog.setOperaterType(getOperaterType());
-        operationLog.setOperaterName(getOperaterName());
-        operationLog.setOperateType(getOperateType());
-        operationLog.setOperateDetail(getOperateDetail());
+        BeanUtils.copyProperties(this, operationLog);
         return operationLog;
     }
 

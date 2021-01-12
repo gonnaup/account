@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Role;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ import java.util.List;
  * @version 2021/1/12 11:20
  */
 @Data
-public class RoleDTO implements Serializable {
+public class RoleDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = -2942742154740108870L;
     /**

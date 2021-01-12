@@ -2,7 +2,6 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
-import org.gonnaup.account.exception.LogicValidationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
@@ -18,6 +17,7 @@ import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.ApplicationCodeService;
 import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
+import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.SelectVO;
 import org.gonnaup.common.domain.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +47,9 @@ public class ApplicationCodeController {
 
     @Autowired
     private RolePermissionConfirmService rolePermissionConfirmService;
+
+    @Autowired
+    private ApplicationNameValidator applicationNameValidator;
 
     /**
      * 页面认证api
@@ -123,19 +125,11 @@ public class ApplicationCodeController {
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
     public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationCodeDTO applicationCodeDTO) {
+        //appName validate
+        OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, applicationCodeDTO);
+        ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
         Long accountId = jwtData.getAccountId();
         AccountHeader operaterAccount = accountService.findHeaderById(accountId);
-        OperaterType operaterType = null;
-        //操作者处理
-        if (rolePermissionConfirmService.isAdmin(accountId)) {
-            operaterType = OperaterType.A;
-        } else if (Objects.equals(jwtData.getAppName(), applicationCodeDTO.getApplicationName())) {
-            operaterType = OperaterType.S;
-        } else {
-            log.info("账号 {}[{}] 所属 {} 不能修改应用 {} 的应用序列信息", accountId, operaterAccount.getAccountName(), jwtData.getAppName(), applicationCodeDTO.getApplicationName());
-            throw new LogicValidationException("您不能修改其他应用的应用编码信息");
-        }
-        ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
         applicationCodeService.update(applicationCode, Operater.of(operaterType, operaterAccount.getId(), operaterAccount.getAccountName()));
         log.info("更新应用编码 [{}] 成功", applicationCode.getApplicationName());
         return ResultConst.SUCCESS_NULL;

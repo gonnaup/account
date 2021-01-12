@@ -2,6 +2,10 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
+import org.springframework.beans.BeanUtils;
+
+import java.io.Serializable;
 
 /**
  * 账户查询DTO
@@ -9,8 +13,9 @@ import org.gonnaup.account.domain.Account;
  * @version 2021/1/1 15:23
  */
 @Data
-public class AccountQueryDTO {
+public class AccountQueryDTO implements Serializable, ApplicationNameAccessor {
 
+    private static final long serialVersionUID = -1495379259264226616L;
     /**
      * ID
      */
@@ -49,12 +54,8 @@ public class AccountQueryDTO {
      */
     public Account toAccount() {
         Account account = new Account();
+        BeanUtils.copyProperties(this, account);
         account.setId(Long.parseLong(getId()));
-        account.setApplicationName(getApplicationName());
-        account.setAccountName(getAccountName());
-        account.setAccountNickname(getAccountNickname());
-        account.setAccountState(getAccountState());
-        account.setTag(getTag());
         return account;
     }
 

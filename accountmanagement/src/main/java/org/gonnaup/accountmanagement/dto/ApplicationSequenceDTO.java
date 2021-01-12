@@ -2,6 +2,8 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.accountmanagement.entity.ApplicationSequence;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
@@ -16,7 +18,7 @@ import java.io.Serializable;
  */
 @Data
 @Validated
-public class ApplicationSequenceDTO implements Serializable {
+public class ApplicationSequenceDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = 8560790995745241790L;
     /**
@@ -39,12 +41,11 @@ public class ApplicationSequenceDTO implements Serializable {
     @Min(value = 0, message = "序列号步幅不能小于0")
     private int step;
 
+
+
     public ApplicationSequence toApplicationSequence() {
         ApplicationSequence applicationSequence = new ApplicationSequence();
-        applicationSequence.setApplicationName(applicationName);
-        applicationSequence.setSequenceType(sequenceType);
-        applicationSequence.setSequence(sequence);
-        applicationSequence.setStep(step);
+        BeanUtils.copyProperties(this, applicationSequence);
         return applicationSequence;
     }
 

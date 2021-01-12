@@ -2,6 +2,8 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Max;
@@ -17,7 +19,7 @@ import java.io.Serializable;
  */
 @Data
 @Validated
-public class ApplicationCodeDTO implements Serializable {
+public class ApplicationCodeDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = 9183045205818641885L;
     /**
@@ -48,10 +50,7 @@ public class ApplicationCodeDTO implements Serializable {
      */
     public ApplicationCode toApplicationCode() {
         ApplicationCode applicationCode = new ApplicationCode();
-        applicationCode.setApplicationName(applicationName);
-        applicationCode.setApplicationCode(applicationCode.getApplicationCode());
-        applicationCode.setUrl(url);
-        applicationCode.setDescription(description);
+        BeanUtils.copyProperties(this, applicationCode);
         return applicationCode;
     }
 
