@@ -2,6 +2,8 @@ package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 
 /**
  * 角色权限表(Permission)表服务接口
@@ -26,6 +28,14 @@ public interface PermissionService {
      * @return 权限对象
      */
     Permission findByApplicationNameAndPermissionName(String applicationName, String permissionName);
+
+    /**
+     * 分页查询
+     * @param permission 条件
+     * @param pageable 分页条件
+     * @return 对象页
+     */
+    Page<Permission> findAllConditionalPaged(Permission permission, Pageable pageable);
 
     /**
      * 新增数据

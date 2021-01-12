@@ -12,10 +12,15 @@ import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.accountmanagement.service.PermissionService;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 角色权限表(Permission)表服务实现类
@@ -65,6 +70,21 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     /**
+     * 分页查询
+     *
+     * @param permission 条件
+     * @param pageable   分页条件
+     * @return 对象页
+     */
+    @Override
+    public Page<Permission> findAllConditionalPaged(Permission permission, Pageable pageable) {
+        permission = Optional.ofNullable(permission).orElse(new Permission());
+        List<Permission> permissionList = permissionDao.queryAllConditionalByLimit(permission, pageable.getOffset(), pageable.getSize());
+        int total = permissionDao.countAllConditional(permission);
+        return Page.of(permissionList, total);
+    }
+
+    /**
      * 新增数据
      *
      * @param permission 实例对象
@@ -72,10 +92,11 @@ public class PermissionServiceImpl implements PermissionService {
      * @return 实例对象
      */
     @Override
+    @Transactional
     public Permission insert(Permission permission, Operater operater) {
         permission.setId(applicationSequenceService.produceSequence(AppSequenceKey.ROLE_PERMISSION));
         permissionDao.insert(permission);
-        log.info("添加权限对象 {}", permission);
+        log.info("账户 {}[{}] 添加权限对象 {}", operater.getOperaterId(), operater.getOperaterName(), permission);
         operationLogService.insert(OperationLog.of(operater, OperateType.A, "添加权限对象：" + permission));
         return permission;
     }

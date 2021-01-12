@@ -51,6 +51,26 @@
         limit #{offset}, #{limit}
     </select>
 
+    <select id="countAllConditional" resultType="int">
+        select
+            count(1) as total
+        from permission
+        <where>
+            <if test="permission.id != null">
+                and id = #{permission.id}
+            </if>
+            <if test="permission.applicationName != null and permission.applicationName != ''">
+                and application_name = #{permission.applicationName}
+            </if>
+            <if test="permission.permissionName != null and permission.permissionName != ''">
+                and permission_name like concat('%', #{permission.permissionName} , '%')
+            </if>
+            <if test="permission.description != null and permission.description != ''">
+                and description like concat('%', #{permission.description} , '%')
+            </if>
+        </where>
+    </select>
+
     <!--新增所有列-->
     <insert id="insert">
         insert into permission(id, application_name, permission_name, weight, description)

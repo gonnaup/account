@@ -24,6 +24,13 @@ public interface ApplicationSequenceService {
     long produceSequence(ApplicationSequenceKey applicationSequenceKey) throws DataNotInitialized;
 
     /**
+     * 根据主键查询
+     * @param applicationSequenceKey
+     * @return 序列对象
+     */
+    ApplicationSequence findByKey(ApplicationSequenceKey applicationSequenceKey);
+
+    /**
      * 分页查询
      * @param applicationSequenceKey 条件对象
      * @param pageable 分页对象

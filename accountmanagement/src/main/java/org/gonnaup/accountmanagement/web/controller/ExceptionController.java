@@ -3,6 +3,7 @@ package org.gonnaup.accountmanagement.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.account.exception.JwtInvalidException;
+import org.gonnaup.account.exception.LogicValidationException;
 import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.common.domain.Result;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 
 /**
  * 异常处理controller
@@ -55,6 +57,29 @@ public class ExceptionController {
         return Result.code(ResultCode.NOTLOGIN_ERROR.code()).fail().data(e.getMessage());
     }
 
+    /**
+     * 逻辑验证异常处理
+     * @param response
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(LogicValidationException.class)
+    public Result<String> logicValidationExceptionHandler(HttpServletResponse response, LogicValidationException e) {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        return Result.code(ResultCode.LOGIN_ERROR.code()).fail().data(e.getMessage());
+    }
+
+    /**
+     * 数据验证异常处理
+     * @param response
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(ValidationException.class)
+    public Result<String> validationExceptionHandler(HttpServletResponse response, ValidationException e) {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        return Result.code(ResultCode.DATA_VALIDATE_ERROR.code()).fail().data(e.getMessage());
+    }
 
     @ExceptionHandler
     public Result<String> otherHandler(HttpServletResponse response, Throwable e) {

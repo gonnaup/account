@@ -14,7 +14,7 @@ public class AccountQueryDTO {
     /**
      * ID
      */
-    private Long id;
+    private String id;
 
     /**
      * 应用名称
@@ -49,7 +49,7 @@ public class AccountQueryDTO {
      */
     public Account toAccount() {
         Account account = new Account();
-        account.setId(getId());
+        account.setId(Long.parseLong(getId()));
         account.setApplicationName(getApplicationName());
         account.setAccountName(getAccountName());
         account.setAccountNickname(getAccountNickname());

@@ -41,6 +41,13 @@ public interface PermissionDao {
     List<Permission> queryAllConditionalByLimit(@Param("permission") Permission permission, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
+     * 分页查询总记录数
+     * @param permission
+     * @return
+     */
+    int countAllConditional(@Param("permission") Permission permission);
+
+    /**
      * 新增数据
      *
      * @param permission 实例对象

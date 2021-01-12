@@ -24,6 +24,14 @@
         for update
     </select>
 
+    <select id="queryById" resultMap="ApplicationSequenceMap">
+        select
+            application_name, sequence_type, sequence, step
+        from application_sequence
+        where application_name = #{applicationName}
+        and sequence_type = #{sequenceType}
+    </select>
+
     <!--通过主键修改数据-->
     <update id="updateSequence">
         update application_sequence

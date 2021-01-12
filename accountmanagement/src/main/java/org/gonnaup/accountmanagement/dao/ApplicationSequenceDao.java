@@ -27,6 +27,15 @@ public interface ApplicationSequenceDao {
     ApplicationSequenceHeader queryByIdForUpdate(@Param("applicationName") String applicationName, @Param("sequenceType") String sequenceType);
 
     /**
+     * 通过ID查询单条数据
+     *
+     * @param applicationName 应用名称
+     * @Param sequenceType 序列类型
+     * @return 实例对象
+     */
+    ApplicationSequence queryById(@Param("applicationName") String applicationName, @Param("sequenceType") String sequenceType);
+
+    /**
      * 修改sequence列
      *
      * @param applicationSequence 实例对象

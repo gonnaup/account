@@ -103,6 +103,17 @@ public class ApplicationSequenceServiceImpl implements ApplicationSequenceServic
     }
 
     /**
+     * 根据主键查询
+     *
+     * @param applicationSequenceKey
+     * @return 序列对象
+     */
+    @Override
+    public ApplicationSequence findByKey(ApplicationSequenceKey applicationSequenceKey) {
+        return applicationSequenceDao.queryById(applicationSequenceKey.getApplicationName(), applicationSequenceKey.getSequenceType());
+    }
+
+    /**
      * 分页查询
      *
      * @param applicationSequenceKey 条件对象

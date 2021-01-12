@@ -50,9 +50,6 @@
     <update id="update">
         update application_code t
         <set>
-            <if test="applicationCode != null">
-                t.application_code = #{applicationCode},
-            </if>
             <if test="url != null and url != ''">
                 t.url = #{url},
             </if>
