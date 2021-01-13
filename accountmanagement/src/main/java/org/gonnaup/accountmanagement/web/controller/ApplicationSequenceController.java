@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequireLogin
+@RequestMapping("/api/applicationSequence")
 public class ApplicationSequenceController {
 
     @Autowired
@@ -96,6 +97,7 @@ public class ApplicationSequenceController {
     public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationSequenceDTO applicationSequenceDTO) {
         //appName deal
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, applicationSequenceDTO);
+        applicationSequenceExistThrow(ApplicationSequenceKey.of(applicationSequenceDTO.getApplicationName(), applicationSequenceDTO.getSequenceType()));
         Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
         ApplicationSequence applicationSequence = applicationSequenceDTO.toApplicationSequence();
@@ -184,7 +186,7 @@ public class ApplicationSequenceController {
      * @param key
      * @throws RelatedDataExistsException 已存在抛出异常
      */
-    private void roleExistThrow(ApplicationSequenceKey key) {
+    private void applicationSequenceExistThrow(ApplicationSequenceKey key) {
         if (applicationSequenceService.findByKey(key) != null) {
             throw new RelatedDataExistsException("应用序列已存在已存在");
         }

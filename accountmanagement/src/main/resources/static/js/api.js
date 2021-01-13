@@ -138,15 +138,18 @@ function ADUOperateValidate(addId, deleteId, updateId, url) {
 function isAdmin() {
     var $ = layui.jquery
     var jwt = obtainJwt() || ''
+    var flag = false
     $.ajax({
         url: '../api/authenticate/isAdminRole',
         type: 'get',
         headers: {token_jwt: jwt},
+        async: false,//同步
         success: function (data) {
-            return data.data.flag
+            flag = data.data.flag
         },
         error: function () {
             return false
         }
     })
+    return flag
 }

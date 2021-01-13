@@ -48,7 +48,7 @@ public class PermissionVO implements Serializable {
     public static PermissionVO fromPermission(Permission permission) {
         PermissionVO permissionVO = new PermissionVO();
         permissionVO.setId(Long.toString(permission.getId()));
-        permissionVO.setApplicationName(permissionVO.getApplicationName());
+        permissionVO.setApplicationName(permission.getApplicationName());
         permissionVO.setPermissionName(permission.getPermissionName());
         permissionVO.setWeight(permission.getWeight());
         permissionVO.setDescription(permission.getDescription());

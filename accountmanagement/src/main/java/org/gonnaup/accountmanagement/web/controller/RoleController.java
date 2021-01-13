@@ -85,12 +85,13 @@ public class RoleController {
      */
     @GetMapping("/list")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Page<RoleVO> list(@JwtDataParam JwtData jwtData, RoleQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+    public Page<RoleVO> list(@JwtDataParam JwtData jwtData, @Validated RoleQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //appName deal
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Role role = queryParam.toRole();
+
         if (log.isDebugEnabled()) {
-            log.debug("查询权限列表， 参数 {}，page：{}， size： {}", role, page, size);
+            log.debug("查询角色列表， 参数 {}，page：{}， size： {}", role, page, size);
         }
         Page<Role> paged = roleService.findAllConditionalPaged(role, Pageable.of(page, size));
         List<RoleVO> roleVOList = paged.getData().stream().map(RoleVO::fromRole).collect(Collectors.toUnmodifiableList());
@@ -125,6 +126,7 @@ public class RoleController {
         //add
         Role role = roleDTO.toRole();
         Operater operater = Operater.of(operaterType, accountId, accountHeader.getAccountName());
+        //todo 计算权限分
         Long roleId = roleService.insert(role, operater).getId();//新增角色
         insertRolePermission(permissionIdList, operater, roleId);//新增权限关联关系
         return ResultConst.SUCCESS_NULL;
@@ -162,6 +164,7 @@ public class RoleController {
         Long roleId = role.getId();
         rolePermissionService.deleteByRoleId(roleId, roleDTO.getApplicationName(), operater);
         //update
+        //todo 计算权限分
         roleService.update(role, operater);
         //add related
         insertRolePermission(permissionIdList, operater, roleId);

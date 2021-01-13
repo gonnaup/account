@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.exception.AuthenticationException;
 import org.gonnaup.account.exception.JwtInvalidException;
@@ -8,11 +9,16 @@ import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.common.domain.Result;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ValidationException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 异常处理controller
@@ -59,6 +65,7 @@ public class ExceptionController {
 
     /**
      * 逻辑验证异常处理
+     *
      * @param response
      * @param e
      * @return
@@ -71,6 +78,7 @@ public class ExceptionController {
 
     /**
      * 数据验证异常处理
+     *
      * @param response
      * @param e
      * @return
@@ -79,6 +87,19 @@ public class ExceptionController {
     public Result<String> validationExceptionHandler(HttpServletResponse response, ValidationException e) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         return Result.code(ResultCode.DATA_VALIDATE_ERROR.code()).fail().data(e.getMessage());
+    }
+
+    /**
+     * 数据验证异常处理
+     *
+     * @param response
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(BindException.class)
+    public Result<String> bindExceptionHandler(HttpServletResponse response, BindingResult e) {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        return Result.code(ResultCode.DATA_VALIDATE_ERROR.code()).fail().data(Joiner.on(',').join(e.getAllErrors().stream().map(ObjectError::getDefaultMessage).filter(Objects::nonNull).collect(Collectors.toUnmodifiableList())));
     }
 
     @ExceptionHandler

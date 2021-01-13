@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +86,7 @@ public class PermissionController {
      */
     @GetMapping("/list")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Page<PermissionVO> list(@JwtDataParam JwtData jwtData, PermissionQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+    public Page<PermissionVO> list(@JwtDataParam JwtData jwtData, @Valid PermissionQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Permission permission = queryParam.toPermission();
         if (log.isDebugEnabled()) {

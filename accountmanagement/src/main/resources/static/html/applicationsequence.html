@@ -1,10 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<header>
+    <meta charset="utf-8">
+</header>
 <body>
-applicationsequence
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h3 class="layui-colla-title"><i class="layui-icon layui-icon-search"></i>查询</h3>
+        <div class="layui-colla-content">
+            <div class="layui-container" style="margin-left: 0">
+                <form class="layui-form">
+                    <div class="layui-row">
+                        <div class="layui-col-md3" id="sequenceQuery_appName">
+                            <label class="main-querylabel">应用名称：</label>
+                            <div class="layui-input-block">
+                                <select id="applicationSequenceQueryForm_name" name="applicationName">
+                                    <option value="">全部</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">序列类型：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="sequenceType" placeholder="序列类型">
+                            </div>
+                        </div>
+                        <div class="layui-col-md1 main-marginLeft10">
+                            <button class="layui-btn" lay-submit lay-filter="applicationSequenceQueryForm">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="applicationSequenceTable" lay-filter="applicationSequence"></table>
+
+<script type="text/html" id="toolbarapplicationSequence">
+    <div class="layui-btn-container">
+        <button id="applicationSequencebar_add" class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button id="applicationSequencebar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button id="applicationSequencebar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    layui.use(['element', 'table', 'form', 'layer'], function () {
+        var element = layui.element
+        element.init()
+        if (isAdmin()) {
+            renderSelect('applicationSequenceQueryForm_name', '../api/applicationCode/listAll')//渲染select
+        } else {
+            var $ = layui.jquery
+            $('#sequenceQuery_appName').css('display', 'none')
+        }
+        var table = layui.table;
+        ADUOperateValidate('applicationSequencebar_add', 'applicationSequencebar_delete', 'applicationSequencebar_update', '../api/applicationSequence/applicationSequencePermission')//toolbar按钮权限处理
+        var operationlogTable = table.render({
+            elem: '#applicationSequenceTable',
+            url: '../api/applicationSequence/list',
+            headers: {token_jwt: obtainJwt() || ''},
+            page: true,
+            toolbar: '#toolbarapplicationSequence',
+            title: '操作日志',
+            parseData: function (data) {
+                return {
+                    'code': 0,
+                    'msg': '',
+                    'count': data.total,
+                    'data': data.data
+                }
+            },
+            done: function (res, curr, count) {
+            },
+            cols: [[
+                {type: 'radio'},
+                {field: 'applicationName', title: '应用名称', width: 250},
+                {field: 'sequenceType', title: '序列类型', width: 250},
+                {field: 'sequence', title: '序列值', width: 300},
+                {field: 'step', title: '序列间隔', width: 200},
+            ]]
+        })
+        table.on('toolbar(applicationSequence)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    accountAddClicked()
+                    break;
+                case 'delete':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountDeleteClicked(data)
+                    break;
+                case 'update':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    accountUpdateClicked(data)
+                    break;
+            }
+            ;
+        })
+        var form = layui.form
+        form.render('select')
+        form.on('submit(applicationSequenceQueryForm)', function (data) {
+            operationlogTable.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false
+        })
+    })
+
+
+</script>
 </body>
 </html>

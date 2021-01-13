@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.springframework.beans.BeanUtils;
@@ -55,7 +56,9 @@ public class AccountQueryDTO implements Serializable, ApplicationNameAccessor {
     public Account toAccount() {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
-        account.setId(Long.parseLong(getId()));
+        if (StringUtils.isNotBlank(id)) {
+            account.setId(Long.parseLong(id));
+        }
         return account;
     }
 
