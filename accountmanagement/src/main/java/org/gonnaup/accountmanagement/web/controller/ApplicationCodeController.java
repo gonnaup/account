@@ -2,12 +2,14 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
+import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.domain.SimplePermission;
 import org.gonnaup.accountmanagement.dto.ApplicationCodeDTO;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
@@ -109,6 +111,9 @@ public class ApplicationCodeController {
     @RequirePermission(permissions = {PermissionType.ALL})//管理员权限
     public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated ApplicationCodeDTO applicationCodeDTO) {
         ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
+        //exist check
+        applicationCodeExistThrow(applicationCode.getApplicationName(), applicationCode.getApplicationCode());
+
         AccountHeader accountHeader = accountService.findHeaderById(jwtData.getAccountId());
         applicationCodeService.insert(applicationCode, Operater.of(OperaterType.A, accountHeader.getId(), accountHeader.getAccountName()));
         log.info("新增应用编码 [{}] 成功", applicationCode.getApplicationName());
@@ -128,6 +133,9 @@ public class ApplicationCodeController {
         //appName validate
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, applicationCodeDTO);
         ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
+        //exist check
+        applicationCodeExistThrow(applicationCode.getApplicationName(), applicationCode.getApplicationCode());
+
         Long accountId = jwtData.getAccountId();
         AccountHeader operaterAccount = accountService.findHeaderById(accountId);
         applicationCodeService.update(applicationCode, Operater.of(operaterType, operaterAccount.getId(), operaterAccount.getAccountName()));
@@ -164,6 +172,43 @@ public class ApplicationCodeController {
             }
             return Result.code(ResultCode.SUCCESS.code()).success().data(SimplePermission.of(false, false,
                     rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_U.weight())));
+        }
+    }
+
+    /**
+     * 应用名是否已存在
+     * @param appName
+     * @return
+     */
+    @GetMapping("/exist/{appName}")
+    @RequirePermission(permissions = {PermissionType.ALL})
+    public Result<SimpleBooleanShell> applicationCodeAppExist(@PathVariable("appName") String appName) {
+        //appName check
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(applicationCodeService.findByApplicationName(appName) != null));
+    }
+
+    /**
+     * 应用代码是否已存在
+     * @param appName
+     * @return
+     */
+    @GetMapping("/exist/{code}")
+    @RequirePermission(permissions = {PermissionType.ALL})
+    public Result<SimpleBooleanShell> applicationCodeCodeExist(@PathVariable("code") Integer code) {
+        //appName check
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(applicationCodeService.findByApplicationCode(code) != null));
+    }
+
+    /**
+     * 检查应用代码是否存在，如果已存在则抛出异常
+     *
+     * @param appName
+     * @param code
+     * @throws RelatedDataExistsException 已存在抛出异常
+     */
+    private void applicationCodeExistThrow(String appName, Integer code) {
+        if (applicationCodeService.findByApplicationName(appName) != null || applicationCodeService.findByApplicationCode(code) != null) {
+            throw new RelatedDataExistsException("应用编码信息已存在");
         }
     }
 

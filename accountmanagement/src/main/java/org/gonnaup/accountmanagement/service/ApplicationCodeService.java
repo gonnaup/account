@@ -22,6 +22,13 @@ public interface ApplicationCodeService {
     ApplicationCode findByApplicationName(String applicationName);
 
     /**
+     * 根据应用代码查询对象
+     * @param code
+     * @return
+     */
+    ApplicationCode findByApplicationCode(Integer code);
+
+    /**
      * 查询多条数据
      * @param applicationCode
      * @return 对象列表

@@ -103,6 +103,9 @@
     <update id="update">
         update role
         <set>
+            <if test="roleName != null and roleName != ''">
+                roleName = #{roleName},
+            </if>
             <if test="score != null and score != ''">
                 score = #{score},
             </if>

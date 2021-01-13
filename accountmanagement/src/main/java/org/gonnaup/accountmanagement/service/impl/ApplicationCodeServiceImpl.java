@@ -49,6 +49,17 @@ public class ApplicationCodeServiceImpl implements ApplicationCodeService {
     }
 
     /**
+     * 根据应用代码查询对象
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public ApplicationCode findByApplicationCode(Integer code) {
+        return applicationCodeDao.queryByApplicationCode(code);
+    }
+
+    /**
      * 查询多条数据
      *
      * @param applicationCode

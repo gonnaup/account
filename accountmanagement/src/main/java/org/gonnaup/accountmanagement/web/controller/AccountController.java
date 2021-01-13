@@ -8,13 +8,13 @@ import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
+import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
-import org.gonnaup.accountmanagement.service.ApplicationCodeService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
-import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
@@ -45,12 +45,6 @@ public class AccountController {
 
     @Autowired
     private AuthenticationService authenticationService;
-
-    @Autowired
-    private RolePermissionConfirmService rolePermissionConfirmService;
-
-    @Autowired
-    private ApplicationCodeService applicationCodeService;
 
     @Autowired
     private ApplicationNameValidator applicationNameValidator;
@@ -136,6 +130,34 @@ public class AccountController {
     public Result<Void> updateAccount(@JwtDataParam JwtData jwtData) {
 
         return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
+     * 账户名是否已被占用
+     *
+     * @param jwtData
+     * @param accountQueryDTO {@link AccountQueryDTO#accountName}
+     * @return
+     */
+    @GetMapping("/accountNameExist")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<SimpleBooleanShell> accountNameExist(@JwtDataParam JwtData jwtData, AccountQueryDTO accountQueryDTO) {
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accountQueryDTO);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(accountService.accountNameExist(accountQueryDTO.getApplicationName(), accountQueryDTO.getAccountName())));
+    }
+
+    /**
+     * 账户名是否已被占用
+     *
+     * @param jwtData
+     * @param accountQueryDTO {@link AccountQueryDTO#accountNickname}
+     * @return
+     */
+    @GetMapping("/accountNicknameExist")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<SimpleBooleanShell> accountNicknameExist(@JwtDataParam JwtData jwtData, AccountQueryDTO accountQueryDTO) {
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accountQueryDTO);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(accountService.accountNameExist(accountQueryDTO.getApplicationName(), accountQueryDTO.getAccountNickname())));
     }
 
 }

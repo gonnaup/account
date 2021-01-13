@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,12 @@ public interface ApplicationCodeDao {
      */
     ApplicationCode queryById(String applicationName);
 
+    /**
+     * 根据应用代码查询应用编码信息
+     * @param code
+     * @return
+     */
+    ApplicationCode queryByApplicationCode(@Param("code") Integer code);
 
     /**
      * 通过实体作为筛选条件查询

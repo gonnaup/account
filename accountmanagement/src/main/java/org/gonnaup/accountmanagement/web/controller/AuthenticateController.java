@@ -1,7 +1,5 @@
 package org.gonnaup.accountmanagement.web.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Authentication;
@@ -13,6 +11,7 @@ import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.domain.SimplePermission;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
 import org.gonnaup.accountmanagement.dto.RegisterDTO;
@@ -228,11 +227,5 @@ public class AuthenticateController {
         } else {
             return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(true));
         }
-    }
-
-    @Data
-    @AllArgsConstructor(staticName = "of")
-    static class SimpleBooleanShell {
-        private boolean admin;
     }
 }

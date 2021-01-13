@@ -3,12 +3,14 @@ package org.gonnaup.accountmanagement.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.ApplicationSequenceKey;
+import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.domain.SimplePermission;
 import org.gonnaup.accountmanagement.dto.ApplicationSequenceDTO;
 import org.gonnaup.accountmanagement.dto.ApplicationSequenceQueryDTO;
@@ -158,6 +160,34 @@ public class ApplicationSequenceController {
                         rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_ALL.weight()),
                         rolePermissionConfirmService.hasPermission(accountId, PermissionType.APP_U.weight())
                 ));
+    }
+
+    /**
+     * 判断应用中某个序列是否已经存在
+     * @param jwtData
+     * @param sequenceQueryDTO
+     * @return {@link SimpleBooleanShell} <code>true</code>已存在，<code>false</code>不存在
+     * @see SimpleBooleanShell
+     */
+    @GetMapping("/exist")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<SimpleBooleanShell> applicationSequenceExist(@JwtDataParam JwtData jwtData, ApplicationSequenceQueryDTO sequenceQueryDTO) {
+        //appName check
+        applicationNameValidator.validateApplicationName(jwtData, sequenceQueryDTO.getApplicationName());
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(applicationSequenceService.findByKey(sequenceQueryDTO.toApplicationSequenceKey()) != null));
+    }
+
+
+    /**
+     * 检查应用序列是否存在，如果已存在则抛出异常
+     *
+     * @param key
+     * @throws RelatedDataExistsException 已存在抛出异常
+     */
+    private void roleExistThrow(ApplicationSequenceKey key) {
+        if (applicationSequenceService.findByKey(key) != null) {
+            throw new RelatedDataExistsException("应用序列已存在已存在");
+        }
     }
 
 }

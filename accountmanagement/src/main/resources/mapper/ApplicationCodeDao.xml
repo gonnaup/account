@@ -19,6 +19,13 @@
         where application_name = #{applicationName}
     </select>
 
+    <select id="queryByApplicationCode" resultMap="ApplicationCodeMap">
+        select
+            application_name, application_code, url, description, createtime, updatetime
+        from application_code
+        where application_code = #{code}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAllConditional" resultMap="ApplicationCodeMap">
         select
@@ -64,5 +71,4 @@
     <delete id="deleteById">
         delete from application_code where application_name = #{applicationName} limit 1
     </delete>
-
 </mapper>

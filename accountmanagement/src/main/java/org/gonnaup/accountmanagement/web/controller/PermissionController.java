@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.exception.LogicValidationException;
+import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.dto.PermissionDTO;
 import org.gonnaup.accountmanagement.dto.PermissionQueryDTO;
 import org.gonnaup.accountmanagement.enums.OperaterType;
@@ -146,6 +148,9 @@ public class PermissionController {
     public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
         //appName deal
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, permissionDTO);
+        //exist check
+        permissionExistThrow(permissionDTO.getApplicationName(), permissionDTO.getPermissionName());
+
         Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
         permissionService.insert(permissionDTO.toPermission(), Operater.of(operaterType, accountId, accountHeader.getAccountName()));
@@ -158,6 +163,9 @@ public class PermissionController {
     public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
         //appName deal
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, permissionDTO);
+        //exist check
+        permissionExistThrow(permissionDTO.getApplicationName(), permissionDTO.getPermissionName());
+
         Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
         permissionService.update(permissionDTO.toPermission(), Operater.of(operaterType, accountId, accountHeader.getAccountName()));
@@ -170,6 +178,7 @@ public class PermissionController {
     public Result<Void> delete(@JwtDataParam JwtData jwtData, @PathVariable("permissionId") Long permissionId) {
         Permission origin = permissionService.findById(permissionId);
         if (origin == null) {
+            log.error("要删除的权限Id={}不存在", permissionId);
             throw new LogicValidationException("要删除的权限对象不存在");
         }
         //appName deal
@@ -178,6 +187,35 @@ public class PermissionController {
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
         permissionService.deleteById(permissionId, Operater.of(operaterType, accountId, accountHeader.getAccountName()));
         return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
+     * 判断应用中某个名称的权限是否已经存在
+     * @param jwtData
+     * @param appName
+     * @param permissionName
+     * @return {@link SimpleBooleanShell} <code>true</code>已存在，<code>false</code>不存在
+     * @see SimpleBooleanShell
+     */
+    @GetMapping("/exist/{appName}/{permissionName}")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<SimpleBooleanShell> permissionExist(@JwtDataParam JwtData jwtData, @PathVariable("appName") String appName, @PathVariable("permissionName") String permissionName) {
+        //appName check
+        applicationNameValidator.validateApplicationName(jwtData, appName);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(permissionService.findByApplicationNameAndPermissionName(appName, permissionName) != null));
+    }
+
+    /**
+     * 检查权限是否存在，如果已存在则抛出异常
+     *
+     * @param appName
+     * @param permissionName
+     * @throws RelatedDataExistsException 已存在抛出异常
+     */
+    private void permissionExistThrow(String appName, String permissionName) {
+        if (permissionService.findByApplicationNameAndPermissionName(appName, permissionName) != null) {
+            throw new RelatedDataExistsException("权限信息已存在");
+        }
     }
 
 

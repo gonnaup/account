@@ -143,7 +143,7 @@ function isAdmin() {
         type: 'get',
         headers: {token_jwt: jwt},
         success: function (data) {
-            return data.data.admin
+            return data.data.flag
         },
         error: function () {
             return false

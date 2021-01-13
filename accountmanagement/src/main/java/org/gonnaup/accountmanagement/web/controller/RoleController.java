@@ -6,18 +6,24 @@ import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.domain.Role;
 import org.gonnaup.account.exception.LogicValidationException;
+import org.gonnaup.account.exception.RelatedDataExistsException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.dto.RoleDTO;
 import org.gonnaup.accountmanagement.dto.RoleQueryDTO;
 import org.gonnaup.accountmanagement.entity.RolePermission;
 import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
-import org.gonnaup.accountmanagement.service.*;
+import org.gonnaup.accountmanagement.enums.ResultCode;
+import org.gonnaup.accountmanagement.service.AccountService;
+import org.gonnaup.accountmanagement.service.PermissionService;
+import org.gonnaup.accountmanagement.service.RolePermissionService;
+import org.gonnaup.accountmanagement.service.RoleService;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.RoleVO;
 import org.gonnaup.common.domain.Page;
@@ -53,9 +59,6 @@ public class RoleController {
 
     @Autowired
     private RolePermissionService rolePermissionService;
-
-    @Autowired
-    private RolePermissionConfirmService rolePermissionConfirmService;
 
     @Autowired
     private ApplicationNameValidator applicationNameValidator;
@@ -107,20 +110,15 @@ public class RoleController {
         //appName check
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, roleDTO);
 
+        roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
+
         List<String> permissionIdList = roleDTO.getPermissionIdList();
         String addObj_appName = roleDTO.getApplicationName();
 
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
-        if (CollectionUtils.isNotEmpty(permissionIdList) &&
-                !permissionIdList.stream().allMatch(pId -> {
-                            Permission permission = permissionService.findById(Long.parseLong(pId));
-                            return permission != null && addObj_appName.equals(permission.getApplicationName());
-                        }
-                )
-        ) {
-            log.error("存在不属于新增角色 {} 所属应用 {} 中的权限信息 {}", roleDTO.toRole(), addObj_appName, roleDTO.getPermissionIdList());
-            throw new LogicValidationException("存在不属于此角色应用的权限");
-        }
+        checkPermissionIdBelongApp(roleDTO, permissionIdList, addObj_appName);
+
+        //account info
         Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);
 
@@ -128,6 +126,127 @@ public class RoleController {
         Role role = roleDTO.toRole();
         Operater operater = Operater.of(operaterType, accountId, accountHeader.getAccountName());
         Long roleId = roleService.insert(role, operater).getId();//新增角色
+        insertRolePermission(permissionIdList, operater, roleId);//新增权限关联关系
+        return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
+     * 更新角色信息
+     *
+     * @param jwtData
+     * @param roleDTO
+     * @return
+     */
+    @PutMapping("/update")
+    @RequirePermission(permissions = {PermissionType.APP_U})
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated RoleDTO roleDTO) {
+        //appName deal
+        OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, roleDTO);
+
+        roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
+
+        List<String> permissionIdList = roleDTO.getPermissionIdList();
+        String updateObj_appName = roleDTO.getApplicationName();
+
+        //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
+        checkPermissionIdBelongApp(roleDTO, permissionIdList, updateObj_appName);
+
+        //account info
+        Long accountId = jwtData.getAccountId();
+        AccountHeader accountHeader = accountService.findHeaderById(accountId);
+
+        Operater operater = Operater.of(operaterType, accountId, accountHeader.getAccountName());
+        Role role = roleDTO.toRole();
+
+        //delete related
+        Long roleId = role.getId();
+        rolePermissionService.deleteByRoleId(roleId, roleDTO.getApplicationName(), operater);
+        //update
+        roleService.update(role, operater);
+        //add related
+        insertRolePermission(permissionIdList, operater, roleId);
+
+        return ResultConst.SUCCESS_NULL;
+    }
+
+
+    @DeleteMapping("/delete/{roleId}")
+    @RequirePermission(permissions = {PermissionType.APP_D})
+    public Result<Void> delete(@JwtDataParam JwtData jwtData, @PathVariable("roleId") Long roleId) {
+        Role origin = roleService.findById(roleId);
+        if (origin == null) {
+            log.error("要删除的角色Id={}不存在", roleId);
+            throw new LogicValidationException("要删除的角色对象不存在");
+        }
+        //appName check
+        OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, origin.getApplicationName());
+        Long accountId = jwtData.getAccountId();
+        AccountHeader accountHeader = accountService.findHeaderById(accountId);
+        Operater operater = Operater.of(operaterType, accountId, accountHeader.getAccountName());
+        //delete related
+        rolePermissionService.deleteByRoleId(roleId, origin.getApplicationName(), operater);
+        //delete role
+        roleService.deleteById(roleId, operater);
+        return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
+     * 判断应用中某个名称的角色是否已经存在
+     * @param jwtData
+     * @param appName
+     * @param roleName
+     * @return {@link SimpleBooleanShell} <code>true</code>已存在，<code>false</code>不存在
+     * @see SimpleBooleanShell
+     */
+    @GetMapping("/exist/{appName}/{roleName}")
+    @RequirePermission(permissions = {PermissionType.APP_R})
+    public Result<SimpleBooleanShell> roleExist(@JwtDataParam JwtData jwtData, @PathVariable("appName") String appName, @PathVariable("roleName") String roleName) {
+        //appName check
+        applicationNameValidator.validateApplicationName(jwtData, appName);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(roleService.findByApplicationNameAndRoleName(appName, roleName) != null));
+    }
+
+    /**
+     * 检查权限列表中是否有不属于角色所在应用的权限
+     *
+     * @param roleDTO
+     * @param permissionIdList
+     * @param addObj_appName
+     */
+    private void checkPermissionIdBelongApp(RoleDTO roleDTO, List<String> permissionIdList, String addObj_appName) {
+        if (CollectionUtils.isNotEmpty(permissionIdList) &&
+                !permissionIdList.stream().allMatch(pId -> {
+                            Permission permission = permissionService.findById(Long.parseLong(pId));
+                            return permission != null && addObj_appName.equals(permission.getApplicationName());
+                        }
+                )
+        ) {
+            log.error("存在不属于角色 {} 所属应用 {} 中的权限信息 {}", roleDTO.toRole(), addObj_appName, roleDTO.getPermissionIdList());
+            throw new LogicValidationException("存在不属于此角色应用的权限");
+        }
+    }
+
+    /**
+     * 检查角色是否存在，如果已存在则抛出异常
+     *
+     * @param appName
+     * @param roleName
+     * @throws RelatedDataExistsException 已存在抛出异常
+     */
+    private void roleExistThrow(String appName, String roleName) {
+        if (roleService.findByApplicationNameAndRoleName(appName, roleName) != null) {
+            throw new RelatedDataExistsException("角色信息已存在");
+        }
+    }
+
+    /**
+     * 新增角色权限关联关系
+     *
+     * @param permissionIdList
+     * @param operater
+     * @param roleId
+     */
+    private void insertRolePermission(List<String> permissionIdList, Operater operater, Long roleId) {
         if (CollectionUtils.isNotEmpty(permissionIdList)) {
             List<RolePermission> rolePermissionList = permissionIdList.stream().map(permissionId -> {
                 RolePermission rolePermission = new RolePermission();
@@ -137,23 +256,6 @@ public class RoleController {
             }).collect(Collectors.toUnmodifiableList());
             rolePermissionService.insertBatch(rolePermissionList, operater);//新增和权限的关联关系
         }
-        return ResultConst.SUCCESS_NULL;
-    }
-
-
-    @PutMapping("/update")
-    @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated RoleDTO roleDTO) {
-
-        return ResultConst.SUCCESS_NULL;
-    }
-
-
-    @DeleteMapping("/delete/{roleId}")
-    @RequirePermission(permissions = {PermissionType.APP_D})
-    public Result<Void> delete(@JwtDataParam JwtData jwtData, @PathVariable("roleId") Long roleId) {
-
-        return ResultConst.SUCCESS_NULL;
     }
 
 }
