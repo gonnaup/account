@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS `authentication` ;
 
 CREATE TABLE IF NOT EXISTS `authentication` (
   `id` BIGINT NOT NULL COMMENT 'ID',
-  `account_id` BIGINT NOT NULL,
+  `account_id` BIGINT NOT NULL COMMENT '账号ID',
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `auth_type` CHAR(1) NOT NULL COMMENT '认证类型\nP-密码\nE-邮箱\nW-微信\nQ-QQ\nB-微博',
   `identifier` VARCHAR(255) NOT NULL COMMENT '唯一标识(用户名，\n邮箱或第三方应用\n的唯一标识)',
@@ -86,7 +86,7 @@ DROP TABLE IF EXISTS `permission` ;
 CREATE TABLE IF NOT EXISTS `permission` (
   `id` BIGINT NOT NULL COMMENT 'ID',
   `application_name` VARCHAR(50) NOT NULL COMMENT '所属服务(为不同服务定制不同角色)',
-  `permission_name` VARCHAR(30) NOT NULL,
+  `permission_name` VARCHAR(30) NOT NULL COMMENT '权限名称',
   `weight` VARCHAR(30) NULL COMMENT '权重，用来计算权限，可选用作扩展',
   `description` VARCHAR(512) NULL COMMENT '权限描述',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `account_role` ;
 
 CREATE TABLE IF NOT EXISTS `account_role` (
   `account_id` BIGINT NOT NULL COMMENT 'ID',
-  `role_id` BIGINT NOT NULL,
+  `role_id` BIGINT NOT NULL COMMENT '角色ID',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`account_id`, `role_id`),
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `application_code` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `application_code` INT NOT NULL COMMENT '应用代码 10~99的数字',
   `url` VARCHAR(200) NULL  COMMENT '应用主页url',
-  `description` VARCHAR(512) COMMENT '应用描述',
+  `description` VARCHAR(512) NULL COMMENT '应用描述',
   `createtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updatetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`application_name`))
@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `application_sequence` (
   `application_name` VARCHAR(50) NOT NULL COMMENT '应用名称',
   `sequence_type` VARCHAR(20) NOT NULL COMMENT '序列类型',
   `sequence` INT NOT NULL COMMENT '序列号',
-  `step` INT NOT NULL DEFAULT 100 COMMENT '序列号间隔',
+  `step` INT NOT NULL DEFAULT 100 COMMENT '序列号步幅',
   PRIMARY KEY (`application_name`, `sequence_type`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4 COLLATE utf8mb4_0900_as_cs

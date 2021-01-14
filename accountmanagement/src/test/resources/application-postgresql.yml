@@ -1,0 +1,40 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /accountmanagement
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    hikari:
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: 121314
+      maximum-pool-size: 8
+  redis:
+    host: my.ali.com
+    port: 8379
+    password: 121314
+  mail:
+    host: smtp.yeah.net
+    username: weimohun@yeah.net
+    password: YBVBDZQGLIRGVDFU
+    default-encoding: UTF-8
+    protocol: smtp
+  cache:
+    redis:
+      key-prefix: redisCache::$
+      time-to-live: 60000
+mybatis:
+  mapper-locations: mapper/*.xml
+  lazy-initialization: true
+logging:
+  level:
+    org.gonnaup.accountmanagement.dao: debug
+dubbo:
+  application:
+    name: dubbo-accountmanagement
+  protocol:
+    port: 20880
+    name: dubbo
+  registry:
+    address: multicast://224.5.6.7:1234
