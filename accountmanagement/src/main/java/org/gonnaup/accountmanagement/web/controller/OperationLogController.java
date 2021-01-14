@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.dto.OperationLogQueryDTO;
 import org.gonnaup.accountmanagement.entity.OperationLog;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @Created on 2020/12/4 11:37
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/operationlog")
 @RequirePermission(permissions = {PermissionType.ALL})//需要管理员权限
@@ -45,8 +47,11 @@ public class OperationLogController {
     }
 
     @GetMapping("/list")
-    public Page<OperationLogVO> listpage(OperationLogQueryDTO queryparam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
-        Page<OperationLog> pagedData = operationLogService.findAllConditionalPaged(queryparam.toOperationLog(), Pageable.of(page, size));
+    public Page<OperationLogVO> listpage(OperationLogQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+        if (log.isDebugEnabled()) {
+            log.debug("查询应用序列列表， 参数 {}，page：{}， size： {}", queryParam, page, size);
+        }
+        Page<OperationLog> pagedData = operationLogService.findAllConditionalPaged(queryParam.toOperationLog(), Pageable.of(page, size));
         //VO转换
         List<OperationLogVO> voList = pagedData.getData().stream().map(OperationLogVO::build).collect(Collectors.toList());
         return Page.of(voList, pagedData.getTotal());

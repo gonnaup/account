@@ -80,7 +80,7 @@ public class ApplicationSequenceController {
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         ApplicationSequenceKey applicationSequenceKey = queryParam.toApplicationSequenceKey();
         if (log.isDebugEnabled()) {
-            log.debug("查询应用序列列表， 参数 {}，page：{}， size： {}", applicationSequenceKey, page, size);
+            log.debug("查询应用序列列表， 参数 {}，page：{}， size： {}", queryParam, page, size);
         }
         return applicationSequenceService.findAllConditionalPaged(applicationSequenceKey, Pageable.of(page, size));
     }

@@ -76,7 +76,7 @@ public class AccountController {
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Account account = queryParam.toAccount();
         if (log.isDebugEnabled()) {
-            log.debug("查询账户列表， 参数 {}， page: {}, size {}", account, page, size);
+            log.debug("查询账户列表， 参数 {}， page: {}, size {}", queryParam, page, size);
         }
         Page<Account> accountPage = accountService.findAllConditionalPaged(account, Pageable.of(page, size));
         List<AccountVO> accountVOList = accountPage.getData().stream().map(AccountVO::fromAccount).collect(Collectors.toUnmodifiableList());

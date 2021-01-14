@@ -90,7 +90,7 @@ public class PermissionController {
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
         Permission permission = queryParam.toPermission();
         if (log.isDebugEnabled()) {
-            log.debug("查询权限列表， 参数 {}，page：{}， size： {}", permission, page, size);
+            log.debug("查询权限列表， 参数 {}，page：{}， size： {}", queryParam, page, size);
         }
         Page<Permission> paged = permissionService.findAllConditionalPaged(permission, Pageable.of(page, size));
         List<PermissionVO> permissionVOList = paged.getData().stream().map(PermissionVO::fromPermission).collect(Collectors.toUnmodifiableList());

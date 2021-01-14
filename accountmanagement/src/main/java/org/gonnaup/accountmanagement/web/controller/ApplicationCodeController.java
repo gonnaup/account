@@ -76,7 +76,7 @@ public class ApplicationCodeController {
     public Result<List<ApplicationCode>> listConditional(@JwtDataParam JwtData jwtData, ApplicationCode applicationCode) {
         if (rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) { //系统管理员权限返回所有数据
             List<ApplicationCode> applicationCodeList = applicationCodeService.findAllConditional(applicationCode);
-            log.info("系统管理员 [{}] 查询所有应用编码共 {} 条数据", jwtData.getAccountId(), applicationCodeList.size());
+            log.info("系统管理员 [{}] 查询所有应用编码 参数 {} 共 {} 条数据", jwtData.getAccountId(), applicationCode, applicationCodeList.size());
             return Result.code(ResultCode.SUCCESS.code()).success().data(applicationCodeList);
         } else {//非系统管理员只返回本系统的数据
             String appName = jwtData.getAppName();

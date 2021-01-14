@@ -91,7 +91,7 @@ public class RoleController {
         Role role = queryParam.toRole();
 
         if (log.isDebugEnabled()) {
-            log.debug("查询角色列表， 参数 {}，page：{}， size： {}", role, page, size);
+            log.debug("查询角色列表， 参数 {}，page：{}， size： {}", queryParam, page, size);
         }
         Page<Role> paged = roleService.findAllConditionalPaged(role, Pageable.of(page, size));
         List<RoleVO> roleVOList = paged.getData().stream().map(RoleVO::fromRole).collect(Collectors.toUnmodifiableList());
