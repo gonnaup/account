@@ -21,7 +21,7 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAllCoditionalByLimit" resultMap="OperationLogMap">
+    <select id="queryAllCoditionalByLimit" resultMap="OperationLogMap" databaseId="mysql">
         select
         id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
         from operation_log
@@ -47,6 +47,34 @@
         </where>
         order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllCoditionalByLimit" resultMap="OperationLogMap" databaseId="postgresql">
+        select
+        id, operater_type, operater_id, operater_name, operate_type, operate_detail, createtime
+        from operation_log
+        <where>
+            <if test="operationLog.id != null">
+                and id = #{operationLog.id}
+            </if>
+            <if test="operationLog.operaterType != null and operationLog.operaterType != ''">
+                and operater_type = #{operationLog.operaterType}
+            </if>
+            <if test="operationLog.operaterId != null">
+                and operater_id = #{operationLog.operaterId}
+            </if>
+            <if test="operationLog.operaterName != null and operationLog.operaterName != ''">
+                and operater_name = #{operationLog.operaterName}
+            </if>
+            <if test="operationLog.operateType != null and operationLog.operateType != ''">
+                and operate_type = #{operationLog.operateType}
+            </if>
+            <if test="operationLog.createtime != null">
+                and createtime = #{operationLog.createtime}
+            </if>
+        </where>
+        order by id
+        limit #{limit} offset #{offset}
     </select>
 
     <select id="countAllConditional" resultType="int">

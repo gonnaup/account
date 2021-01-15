@@ -29,7 +29,7 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAllConditionalByLimit" resultMap="PermissionMap">
+    <select id="queryAllConditionalByLimit" resultMap="PermissionMap" databaseId="mysql">
         select
         id, application_name, permission_name, weight, description, createtime, updatetime
         from permission
@@ -49,6 +49,28 @@
         </where>
         order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="PermissionMap" databaseId="postgresql">
+        select
+        id, application_name, permission_name, weight, description, createtime, updatetime
+        from permission
+        <where>
+            <if test="permission.id != null">
+                and id = #{permission.id}
+            </if>
+            <if test="permission.applicationName != null and permission.applicationName != ''">
+                and application_name = #{permission.applicationName}
+            </if>
+            <if test="permission.permissionName != null and permission.permissionName != ''">
+                and permission_name like concat('%', #{permission.permissionName} , '%')
+            </if>
+            <if test="permission.description != null and permission.description != ''">
+                and description like concat('%', #{permission.description} , '%')
+            </if>
+        </where>
+        order by id
+        limit #{limit} offset #{offset}
     </select>
 
     <select id="countAllConditional" resultType="int">

@@ -27,6 +27,9 @@ spring:
 mybatis:
   mapper-locations: mapper/*.xml
   lazy-initialization: true
+  configuration:
+    database-id: postgresql
+
 logging:
   level:
     org.gonnaup.accountmanagement.dao: info

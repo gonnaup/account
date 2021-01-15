@@ -36,7 +36,7 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAllConditionalByLimit" resultMap="RoleMap">
+    <select id="queryAllConditionalByLimit" resultMap="RoleMap" databaseId="mysql">
         select
         id, application_name, role_name, score, description, createtime, updatetime
         from role
@@ -56,6 +56,28 @@
         </where>
         order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="RoleMap" databaseId="postgresql">
+        select
+        id, application_name, role_name, score, description, createtime, updatetime
+        from role
+        <where>
+            <if test="role.id != null">
+                and id = #{role.id}
+            </if>
+            <if test="role.applicationName != null and role.applicationName != ''">
+                and application_name = #{role.applicationName}
+            </if>
+            <if test="role.roleName != null and role.roleName != ''">
+                and role_name like concat('%', #{role.roleName}, '%')
+            </if>
+            <if test="role.description != null and role.description != ''">
+                and description like concat('%', #{role.description}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{limit} offset #{offset}
     </select>
 
     <select id="countAllConditional" resultType="int">

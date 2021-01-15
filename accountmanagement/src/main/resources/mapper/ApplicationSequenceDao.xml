@@ -48,7 +48,7 @@
     </update>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAllConditionalByLimit" resultMap="ApplicationSequenceMap">
+    <select id="queryAllConditionalByLimit" resultMap="ApplicationSequenceMap" databaseId="mysql">
         select
         application_name, sequence_type, sequence, step
         from application_sequence
@@ -62,6 +62,22 @@
         </where>
         order by application_name
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="ApplicationSequenceMap" databaseId="postgresql">
+        select
+        application_name, sequence_type, sequence, step
+        from application_sequence
+        <where>
+            <if test="applicationSequenceKey.applicationName != null and applicationSequenceKey.applicationName != ''">
+                and application_name = #{applicationSequenceKey.applicationName}
+            </if>
+            <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
+                and sequence_type = #{applicationSequenceKey.sequenceType}
+            </if>
+        </where>
+        order by application_name
+        limit #{limit} offset #{offset}
     </select>
 
     <select id="countAllConditional" resultType="int">

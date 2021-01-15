@@ -46,7 +46,7 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="queryAllConditionalByLimit" resultMap="AccountMap">
+    <select id="queryAllConditionalByLimit" resultMap="AccountMap" databaseId="mysql">
         select
         id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag,
         createtime, updatetime
@@ -73,6 +73,35 @@
         </where>
         order by id
         limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="AccountMap" databaseId="postgresql">
+        select
+        id, application_name, account_name, account_nickname, account_avatar, account_state, last_logintime, tag,
+        createtime, updatetime
+        from account
+        <where>
+            <if test="account.id != null">
+                and id = #{account.id}
+            </if>
+            <if test="account.applicationName != null and account.applicationName != ''">
+                and application_name = #{account.applicationName}
+            </if>
+            <if test="account.accountName != null and account.accountName != ''">
+                and account_name like concat('%', #{account.accountName} , '%')
+            </if>
+            <if test="account.accountNickname != null and account.accountNickname != ''">
+                and account_nickname like concat('%', #{account.accountNickname}, '%')
+            </if>
+            <if test="account.accountState != null and account.accountState != ''">
+                and account_state = #{account.accountState}
+            </if>
+            <if test="account.tag != null and account.tag != ''">
+                and tag like concat('%', ${account.tag}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{limit} offset #{offset}
     </select>
 
     <select id="countAllConditional" resultType="int">

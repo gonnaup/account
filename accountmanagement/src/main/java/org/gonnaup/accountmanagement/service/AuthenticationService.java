@@ -2,6 +2,8 @@ package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 
 /**
  * 账户认证信息(Authentication)表服务接口
@@ -18,6 +20,14 @@ public interface AuthenticationService {
      * @return 实例对象
      */
     Authentication findById(Long id);
+
+    /**
+     * 分页查询
+     * @param authentication
+     * @param pageable
+     * @return
+     */
+    Page<Authentication> findAllConditionalPaged(Authentication authentication, Pageable pageable);
 
     /**
      * 在一个应用中email是否已经绑定账号

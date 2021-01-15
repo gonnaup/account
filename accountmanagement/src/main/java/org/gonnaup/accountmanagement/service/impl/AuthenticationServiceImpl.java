@@ -6,8 +6,13 @@ import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.AuthenticationDao;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.common.domain.Page;
+import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * 账户认证信息(Authentication)表服务实现类
@@ -34,6 +39,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Authentication findById(Long id) {
         return authenticationDao.queryById(id);
+    }
+
+    /**
+     * 分页查询
+     *
+     * @param authentication
+     * @param pageable
+     * @return
+     */
+    @Override
+    public Page<Authentication> findAllConditionalPaged(Authentication authentication, Pageable pageable) {
+        authentication = Optional.ofNullable(authentication).orElse(new Authentication());
+        List<Authentication> authenticationList = authenticationDao.queryAllConditionalByLimit(authentication, pageable.getOffset(), pageable.getSize());
+        int count = authenticationDao.countAllConditional(authentication);
+        return Page.of(authenticationList, count);
     }
 
     /**

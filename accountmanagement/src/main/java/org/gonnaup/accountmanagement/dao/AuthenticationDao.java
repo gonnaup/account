@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Param;
 import org.gonnaup.account.domain.Authentication;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 账户认证信息(Authentication)表数据库访问层
  *
@@ -38,6 +40,22 @@ public interface AuthenticationDao {
      */
     Authentication queryByApplicationnameAndAuthtypeAndIdentifier(@Param("applicationName") String applicationName, @Param("authType") String authType, @Param("identifier") String identifier);
 
+
+    /**
+     * 查询符合条件的总数
+     * @param authentication
+     * @return 总条数
+     */
+    int countAllConditional(@Param("authentication") Authentication authentication);
+
+    /**
+     * 条件分页查询
+     * @param authentication
+     * @param offset
+     * @param limit
+     * @return
+     */
+    List<Authentication> queryAllConditionalByLimit(@Param("authentication") Authentication authentication, @Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * 新增数据

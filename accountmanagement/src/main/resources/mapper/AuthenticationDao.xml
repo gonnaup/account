@@ -22,34 +22,88 @@
     </select>
 
     <select id="queryByAccountIdAndAuthType" resultMap="AuthenticationMap">
-        select id,
-               account_id,
-               application_name,
-               auth_type,
-               identifier,
-               credential,
-               expires,
-               createtime,
-               updatetime
+        select id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime
         from authentication
         where account_id = #{accountId}
           and auth_type = #{authType}
     </select>
 
     <select id="queryByApplicationnameAndAuthtypeAndIdentifier" resultMap="AuthenticationMap">
-        select id,
-               account_id,
-               application_name,
-               auth_type,
-               identifier,
-               credential,
-               expires,
-               createtime,
-               updatetime
+        select id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime
         from authentication
         where application_name = #{applicationName}
           and auth_type = #{authType}
           and identifier = #{identifier}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="AuthenticationMap" databaseId="mysql">
+        select id, account_id, application_name, auth_type, '******' as identifier, credential, expires, createtime, updatetime
+        from authentication
+        <where>
+            <if test="authentication.id != null">
+                and id = #{authentication.id}
+            </if>
+            <if test="authentication.accountId != null">
+                and account_id = #{authentication.accountId}
+            </if>
+            <if test="authentication.applicationName != null and authentication.applicationName != ''">
+                and application_name = #{authentication.applicationName}
+            </if>
+            <if test="authentication.authType != null and authentication.authType != ''">
+                and auth_type = #{authentication.authType}
+            </if>
+            <if test="authentication.identifier != null and authentication.identifier != ''">
+                and identifier like concat('%', #{authentication.identifier}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="queryAllConditionalByLimit" resultMap="AuthenticationMap" databaseId="postgresql">
+        select id, account_id, application_name, auth_type, '******' as identifier, credential, expires, createtime, updatetime
+        from authentication
+        <where>
+            <if test="authentication.id != null">
+                and id = #{authentication.id}
+            </if>
+            <if test="authentication.accountId != null">
+                and account_id = #{authentication.accountId}
+            </if>
+            <if test="authentication.applicationName != null and authentication.applicationName != ''">
+                and application_name = #{authentication.applicationName}
+            </if>
+            <if test="authentication.authType != null and authentication.authType != ''">
+                and auth_type = #{authentication.authType}
+            </if>
+            <if test="authentication.identifier != null and authentication.identifier != ''">
+                and identifier like concat('%', #{authentication.identifier}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="countAllConditional" resultType="int">
+        select count(1)
+        from authentication
+        <where>
+            <if test="authentication.id != null">
+                and id = #{authentication.id}
+            </if>
+            <if test="authentication.accountId != null">
+                and account_id = #{authentication.accountId}
+            </if>
+            <if test="authentication.applicationName != null and authentication.applicationName != ''">
+                and application_name = #{authentication.applicationName}
+            </if>
+            <if test="authentication.authType != null and authentication.authType != ''">
+                and auth_type = #{authentication.authType}
+            </if>
+            <if test="authentication.identifier != null and authentication.identifier != ''">
+                and identifier like concat('%', #{authentication.identifier}, '%')
+            </if>
+        </where>
     </select>
 
     <!--新增所有列-->
