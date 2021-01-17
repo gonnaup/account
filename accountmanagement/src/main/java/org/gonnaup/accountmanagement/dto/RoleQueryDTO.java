@@ -3,8 +3,8 @@ package org.gonnaup.accountmanagement.dto;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Role;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Pattern;
@@ -41,7 +41,7 @@ public class RoleQueryDTO implements Serializable, ApplicationNameAccessor {
 
     public Role toRole() {
         Role role = new Role();
-        BeanUtils.copyProperties(this, role);
+        BeanFieldCopyUtil.copyProperties(this, role);
         if (StringUtils.isNotBlank(id)) {
             role.setId(Long.parseLong(id));
         }

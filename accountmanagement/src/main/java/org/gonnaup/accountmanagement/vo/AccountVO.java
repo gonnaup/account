@@ -3,6 +3,7 @@ package org.gonnaup.accountmanagement.vo;
 import lombok.Data;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.enums.AccountState;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -79,14 +80,9 @@ public class AccountVO implements Serializable {
      */
     public static AccountVO fromAccount(Account account) {
         AccountVO accountVO = new AccountVO();
+        BeanFieldCopyUtil.copyProperties(account, accountVO);
         accountVO.setId(Long.toString(account.getId()));
-        accountVO.setApplicationName(account.getApplicationName());
-        accountVO.setAccountName(account.getAccountName());
-        accountVO.setAccountNickname(account.getAccountNickname());
-        accountVO.setAccountAvatar(account.getAccountAvatar());
         accountVO.setAccountState(AccountState.valueOf(account.getAccountState()).description());
-        accountVO.setLastLogintime(account.getLastLogintime());
-        accountVO.setTag(account.getTag());
         accountVO.setCreatetime(LocalDate.from(account.getCreatetime()));
         accountVO.setUpdatetime(LocalDate.from(account.getUpdatetime()));
         return accountVO;

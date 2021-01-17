@@ -11,9 +11,8 @@ spring:
       password: 121314
       maximum-pool-size: 8
   redis:
-    host: my.ali.com
-    port: 8379
-    password: 121314
+    host: localhost
+    port: 6379
   mail:
     host: smtp.yeah.net
     username: weimohun@yeah.net

@@ -195,10 +195,6 @@ public class AuthenticateController {
         return ResultConst.SUCCESS_NULL;
     }
 
-    ////////////////////////////////// query ////////////////////////////////
-
-
-
     /**
      * 获取普通操作增删改查权限
      * @param jwtData

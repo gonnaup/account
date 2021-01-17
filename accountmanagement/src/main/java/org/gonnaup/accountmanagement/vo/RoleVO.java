@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.vo;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Role;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -47,13 +48,8 @@ public class RoleVO implements Serializable {
 
     public static RoleVO fromRole(Role role) {
         RoleVO roleVO = new RoleVO();
+        BeanFieldCopyUtil.copyProperties(role, roleVO);
         roleVO.setId(Long.toString(role.getId()));
-        roleVO.setApplicationName(role.getApplicationName());
-        roleVO.setRoleName(role.getRoleName());
-        roleVO.setScore(role.getScore());
-        roleVO.setDescription(role.getDescription());
-        roleVO.setCreatetime(role.getCreatetime());
-        roleVO.setUpdatetime(role.getUpdatetime());
         return roleVO;
     }
 

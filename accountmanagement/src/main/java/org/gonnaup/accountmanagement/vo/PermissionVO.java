@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.vo;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Permission;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -47,13 +48,8 @@ public class PermissionVO implements Serializable {
 
     public static PermissionVO fromPermission(Permission permission) {
         PermissionVO permissionVO = new PermissionVO();
+        BeanFieldCopyUtil.copyProperties(permission, permissionVO);
         permissionVO.setId(Long.toString(permission.getId()));
-        permissionVO.setApplicationName(permission.getApplicationName());
-        permissionVO.setPermissionName(permission.getPermissionName());
-        permissionVO.setWeight(permission.getWeight());
-        permissionVO.setDescription(permission.getDescription());
-        permissionVO.setCreatetime(permission.getCreatetime());
-        permissionVO.setUpdatetime(permission.getUpdatetime());
         return permissionVO;
     }
 

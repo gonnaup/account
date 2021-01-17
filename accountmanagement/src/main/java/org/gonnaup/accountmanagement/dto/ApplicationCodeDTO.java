@@ -2,8 +2,8 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.accountmanagement.entity.ApplicationCode;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Max;
@@ -50,7 +50,7 @@ public class ApplicationCodeDTO implements Serializable, ApplicationNameAccessor
      */
     public ApplicationCode toApplicationCode() {
         ApplicationCode applicationCode = new ApplicationCode();
-        BeanUtils.copyProperties(this, applicationCode);
+        BeanFieldCopyUtil.copyProperties(this, applicationCode);
         return applicationCode;
     }
 

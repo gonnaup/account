@@ -2,8 +2,8 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.account.domain.Permission;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
@@ -43,7 +43,7 @@ public class PermissionDTO implements Serializable, ApplicationNameAccessor {
 
     public Permission toPermission() {
         Permission permission = new Permission();
-        BeanUtils.copyProperties(this, permission);
+        BeanFieldCopyUtil.copyProperties(this, permission);
         return permission;
     }
 

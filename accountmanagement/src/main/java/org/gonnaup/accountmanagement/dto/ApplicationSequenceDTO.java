@@ -2,8 +2,8 @@ package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
 import org.gonnaup.accountmanagement.entity.ApplicationSequence;
+import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
@@ -45,7 +45,7 @@ public class ApplicationSequenceDTO implements Serializable, ApplicationNameAcce
 
     public ApplicationSequence toApplicationSequence() {
         ApplicationSequence applicationSequence = new ApplicationSequence();
-        BeanUtils.copyProperties(this, applicationSequence);
+        BeanFieldCopyUtil.copyProperties(this, applicationSequence);
         return applicationSequence;
     }
 
