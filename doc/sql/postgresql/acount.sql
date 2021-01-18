@@ -203,7 +203,6 @@ comment on column operation_log.operate_detail is '操作内容细节';
 comment on column operation_log.createtime is '创建时间';
 COMMENT on table operation_log is '系统操作日志';
 CREATE INDEX operation_log_name_type ON operation_log (operater_name ASC, operate_type ASC);
-create trigger auto_updatetime_operation_log before update on operation_log for each row execute procedure autoupdate_timestamp();-- auto update column updatetime
 
 
 -- -----------------------------------------------------
@@ -249,4 +248,3 @@ comment on column application_sequence.sequence_type is '序列类型';
 comment on column application_sequence.sequence is '序列号';
 comment on column application_sequence.step is '序列号步幅';
 COMMENT on table application_sequence is '应用序列';
-create trigger auto_updatetime_application_sequence before update on application_sequence for each row execute procedure autoupdate_timestamp();-- auto update column updatetime

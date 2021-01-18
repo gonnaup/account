@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Created on 2020/11/12 16:21
  */
 @SpringBootTest
+@ActiveProfiles({"default", "postgresql"})
 @Slf4j
 class PermissionServiceTest {
 
@@ -46,7 +48,7 @@ class PermissionServiceTest {
         log.info("===================更新测试=======================");
         permissionInserted.setPermissionName("ALL");
         permissionService.update(permissionInserted, TestOperaters.ADMIN);
-        Assertions.assertEquals(permissionService.findById(permissionInserted.getId()).getPermissionName(), "ALL");
+        Assertions.assertEquals(permissionService.findById(permissionInserted.getId()).getPermissionName(), pmName);
 
         log.info("==================删除测试========================");
         permissionService.deleteById(permissionInserted.getId(), TestOperaters.ADMIN);

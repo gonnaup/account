@@ -24,7 +24,7 @@ public class BeanFieldCopyUtil {
      * {@link BeanCopier} 缓存
      */
     private static final LoadingCache<CacheKeyWapper, BeanCopier> beanCopierCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(Duration.ofMillis(10))
+            .expireAfterAccess(Duration.ofMinutes(10))
             .build(new CacheLoader<CacheKeyWapper, BeanCopier>() {
                 @Override
                 public BeanCopier load(CacheKeyWapper cacheKeyWapper) {

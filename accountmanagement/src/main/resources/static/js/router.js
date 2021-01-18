@@ -10,6 +10,7 @@ pagepermission_urlMap.set('../html/applicationcode.html', '../api/applicationCod
 pagepermission_urlMap.set('../html/applicationsequence.html', '../api/applicationSequence/display')
 pagepermission_urlMap.set('../html/role.html', '../api/role/display')
 pagepermission_urlMap.set('../html/permission.html', '../api/permission/display')
+pagepermission_urlMap.set('../html/authentication.html', '../api/authentication/display')
 var current_page//当前页面缓存
 
 /**

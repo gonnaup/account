@@ -13,12 +13,7 @@ spring:
   redis:
     host: localhost
     port: 6379
-  mail:
-    host: smtp.yeah.net
-    username: weimohun@yeah.net
-    password: YBVBDZQGLIRGVDFU
-    default-encoding: UTF-8
-    protocol: smtp
+    password:
   cache:
     redis:
       key-prefix: redisCache::$

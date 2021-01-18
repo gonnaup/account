@@ -5,6 +5,7 @@
     <resultMap type="org.gonnaup.account.domain.Authentication" id="AuthenticationMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="accountId" column="account_id" jdbcType="INTEGER"/>
+        <result property="applicationName" column="application_name" jdbcType="VARCHAR"/>
         <result property="authType" column="auth_type" jdbcType="VARCHAR"/>
         <result property="identifier" column="identifier" jdbcType="VARCHAR"/>
         <result property="credential" column="credential" jdbcType="VARCHAR"/>
@@ -37,7 +38,7 @@
     </select>
 
     <select id="queryAllConditionalByLimit" resultMap="AuthenticationMap" databaseId="mysql">
-        select id, account_id, application_name, auth_type, '******' as identifier, credential, expires, createtime, updatetime
+        select id, account_id, application_name, auth_type, identifier, '******' as credential, expires, createtime, updatetime
         from authentication
         <where>
             <if test="authentication.id != null">
@@ -61,7 +62,7 @@
     </select>
 
     <select id="queryAllConditionalByLimit" resultMap="AuthenticationMap" databaseId="postgresql">
-        select id, account_id, application_name, auth_type, '******' as identifier, credential, expires, createtime, updatetime
+        select id, account_id, application_name, auth_type, identifier, '******' as credential, expires, createtime, updatetime
         from authentication
         <where>
             <if test="authentication.id != null">

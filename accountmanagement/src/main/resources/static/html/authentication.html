@@ -1,10 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<header>
+    <meta charset="utf-8">
+</header>
 <body>
-    authentication
+<div class="layui-collapse">
+    <div class="layui-colla-item">
+        <h3 class="layui-colla-title"><i class="layui-icon layui-icon-search"></i>查询</h3>
+        <div class="layui-colla-content">
+            <div class="layui-container" style="margin-left: 0">
+                <form class="layui-form">
+                    <div class="layui-row">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">认证ID：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="id">
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">账号ID：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="accountId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-row main-marginTop10">
+                        <div class="layui-col-md3">
+                            <label class="main-querylabel">应用名称：</label>
+                            <div class="layui-input-block">
+                                <select name="applicationName">
+                                    <!-- todo 根据用户角色动态显示此项 -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">认证类型：</label>
+                            <div class="layui-input-block">
+                                <select name="authType">
+                                    <option value="">全部</option>
+                                    <option value="P">密码</option>
+                                    <option value="E">邮箱</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-md3 main-marginLeft10">
+                            <label class="main-querylabel">认证标识：</label>
+                            <div class="layui-input-block">
+                                <input class="layui-input" type="text" name="identifier">
+                            </div>
+                        </div>
+                        <div class="layui-col-md1 main-marginLeft10">
+                            <button class="layui-btn" lay-submit lay-filter="authenticationQueryForm">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="authenticationTable" lay-filter="authentication"></table>
+
+<script type="text/html" id="toolbarauthentication">
+    <div class="layui-btn-container">
+        <button id="authenticationbar_add" class="layui-btn layui-btn-sm" disabled lay-event="add">添加</button>
+        <button id="authenticationbar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
+        <button id="authenticationbar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
+    </div>
+</script>
+
+<script type="text/javascript">
+    layui.use(['element', 'table', 'form', 'layer'], function () {
+        var element = layui.element
+        element.init()
+        var table = layui.table;
+        var operationlogTable = table.render({
+            elem: '#authenticationTable',
+            url: '../api/authentication/list',
+            headers: {token_jwt: obtainJwt() || ''},
+            page: true,
+            toolbar: '#toolbarauthentication',
+            title: '操作日志',
+            parseData: function (data) {
+                return {
+                    'code': 0,
+                    'msg': '',
+                    'count': data.total,
+                    'data': data.data
+                }
+            },
+            done: function (res, curr, count) {
+            },
+            cols: [[
+                {type: 'radio'},
+                {field: 'id', title: 'ID', width: 180},
+                {field: 'accountId', title: '账户ID', width: 180},
+                {field: 'applicationName', title: '应用名称', width: 120},
+                {field: 'authType', title: '认证类型', width: 100},
+                {field: 'identifier', title: '认证标识', width: 180},
+                {field: 'credential', title: '认证密码', width: 180},
+                {field: 'expires', title: '过期时间', width: 180},
+                {field: 'createtime', title: '创建时间', width: 140},
+                {field: 'updatetime', title: '更新时间', width: 140},
+            ]]
+        })
+        table.on('toolbar(authentication)', function (obj) {
+            switch(obj.event){
+                case 'add':
+                    // authenticationAddClicked()
+                    break;
+                case 'delete':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    // authenticationDeleteClicked(data)
+                    break;
+                case 'update':
+                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    // authenticationUpdateClicked(data)
+                    break;
+            };
+        })
+        var form = layui.form
+        form.render('select')
+        form.on('submit(authenticationQueryForm)', function (data) {
+            operationlogTable.reload({
+                where: data.field,
+                page: {
+                    curr: 1
+                }
+            });
+            return false
+        })
+    })
+
+
+</script>
 </body>
 </html>

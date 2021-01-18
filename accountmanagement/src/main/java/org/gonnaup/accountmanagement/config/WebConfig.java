@@ -62,7 +62,9 @@ public class WebConfig implements WebMvcConfigurer {
             HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
             Object jwtData = Objects.requireNonNull(request).getAttribute(AuthenticateConst.REQUEST_ATTR_JWTDATA);
             if (jwtData == null) {
-                log.info("JwtData不存在，尝试从HttpServletRequest中解析");
+                if (log.isDebugEnabled()) {
+                    log.debug("JwtData不存在，尝试从HttpServletRequest中解析");
+                }
                 try {
                     String jwt = RequestUtil.obtainJWT(request);
                     if (StringUtils.isBlank(jwt)) {

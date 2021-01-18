@@ -14,12 +14,6 @@ spring:
     host: my.ali.com
     port: 8379
     password: 121314
-  mail:
-    host: smtp.yeah.net
-    username: weimohun@yeah.net
-    password: YBVBDZQGLIRGVDFU
-    default-encoding: UTF-8
-    protocol: smtp
   cache:
     redis:
       key-prefix: redisCache::$

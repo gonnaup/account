@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,13 +72,13 @@ public class AccountController {
      */
     @GetMapping("/list")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Page<AccountVO> list(@JwtDataParam JwtData jwtData, AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
+    public Page<AccountVO> list(@JwtDataParam JwtData jwtData, @Valid AccountQueryDTO queryParam, @RequestParam("page") Integer page, @RequestParam("limit") Integer size) {
         //ADMIN可查询所有账户列表
         applicationNameValidator.putApplicationNameBaseonRole(jwtData, queryParam);
-        Account account = queryParam.toAccount();
         if (log.isDebugEnabled()) {
             log.debug("查询账户列表， 参数 {}， page: {}, size {}", queryParam, page, size);
         }
+        Account account = queryParam.toAccount();
         Page<Account> accountPage = accountService.findAllConditionalPaged(account, Pageable.of(page, size));
         List<AccountVO> accountVOList = accountPage.getData().stream().map(AccountVO::fromAccount).collect(Collectors.toUnmodifiableList());
         return Page.of(accountVOList, accountPage.getTotal());

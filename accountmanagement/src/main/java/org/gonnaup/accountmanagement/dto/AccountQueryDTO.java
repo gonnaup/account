@@ -6,6 +6,8 @@ import org.gonnaup.account.domain.Account;
 import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 /**
@@ -14,12 +16,14 @@ import java.io.Serializable;
  * @version 2021/1/1 15:23
  */
 @Data
+@Valid
 public class AccountQueryDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = -1495379259264226616L;
     /**
      * ID
      */
+    @Pattern(regexp = "^[0-9]*$", message = "ID必须为数字")
     private String id;
 
     /**
