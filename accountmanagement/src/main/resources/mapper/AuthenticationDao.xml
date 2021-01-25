@@ -117,12 +117,6 @@
     <update id="update">
         update authentication
         <set>
-            <if test="accountId != null">
-                account_id = #{accountId},
-            </if>
-            <if test="authType != null and authType != ''">
-                auth_type = #{authType},
-            </if>
             <if test="identifier != null and identifier != ''">
                 identifier = #{identifier},
             </if>

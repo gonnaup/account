@@ -2,6 +2,7 @@ package org.gonnaup.accountmanagement.service;
 
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 
@@ -59,17 +60,25 @@ public interface AuthenticationService {
      * 新增数据
      *
      * @param authentication 实例对象
-     * @return 实例对象
+     * @return
      */
-    Authentication insert(Authentication authentication);
+    int insert(Authentication authentication);
 
     /**
      * 修改数据
      *
      * @param authentication 实例对象
-     * @return 实例对象
+     * @return
      */
-    Authentication update(Authentication authentication);
+    int update(Authentication authentication);
+
+    /**
+     * 修改数据
+     * @param authentication
+     * @param operater
+     * @return
+     */
+    int update(Authentication authentication, Operater operater);
 
     /**
      * 通过主键删除数据

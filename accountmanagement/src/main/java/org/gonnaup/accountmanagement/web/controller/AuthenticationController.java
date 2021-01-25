@@ -3,10 +3,12 @@ package org.gonnaup.accountmanagement.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Authentication;
+import org.gonnaup.account.exception.LogicValidationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.dto.AuthenticationDTO;
 import org.gonnaup.accountmanagement.dto.AuthenticationQueryDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.service.AccountService;
@@ -17,10 +19,7 @@ import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -67,6 +66,26 @@ public class AuthenticationController {
         Page<Authentication> paged = authenticationService.findAllConditionalPaged(queryParam.toAuthentication(), Pageable.of(page, size));
         List<AuthenticationVO> authenticationVOList = paged.getData().stream().map(AuthenticationVO::fromAuthentication).collect(Collectors.toUnmodifiableList());
         return Page.of(authenticationVOList, paged.getTotal());
+    }
+
+    /**
+     * 更新认证信息，只能修改认证标识和密码
+     * @param jwtData
+     * @param authentication
+     * @return
+     */
+    @PutMapping("/update")
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Valid AuthenticationDTO authenticationDTO) {
+        //appName check
+        Authentication origin = authenticationService.findById(Long.valueOf(authenticationDTO.getId()));
+        if (origin == null) {
+            log.error("传入的认证信息ID={}不存在!", authenticationDTO.getId());
+            throw new LogicValidationException("要更新的认证信息不存在!");
+        }
+        applicationNameValidator.validateApplicationName(jwtData, origin.getApplicationName());
+        Authentication authentication = authenticationDTO.toAuthentication();
+        authenticationService.update(authentication);
+        return ResultConst.SUCCESS_NULL;
     }
 
 

@@ -4,8 +4,12 @@ import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.accountmanagement.constant.AppSequenceKey;
 import org.gonnaup.accountmanagement.dao.AuthenticationDao;
+import org.gonnaup.accountmanagement.domain.Operater;
+import org.gonnaup.accountmanagement.entity.OperationLog;
+import org.gonnaup.accountmanagement.enums.OperateType;
 import org.gonnaup.accountmanagement.service.ApplicationSequenceService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.service.OperationLogService;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private ApplicationSequenceService applicationSequenceService;
+
+    @Autowired
+    private OperationLogService operationLogService;
 
 
     /**
@@ -87,11 +94,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 实例对象
      */
     @Override
-    public Authentication insert(Authentication authentication) {
+    public int insert(Authentication authentication) {
         long id = applicationSequenceService.produceSequence(AppSequenceKey.AUTH);
         authentication.setId(id);
-        this.authenticationDao.insert(authentication);
-        return authentication;
+        return this.authenticationDao.insert(authentication);
     }
 
     /**
@@ -101,9 +107,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return 实例对象
      */
     @Override
-    public Authentication update(Authentication authentication) {
-        this.authenticationDao.update(authentication);
-        return this.findById(authentication.getId());
+    public int update(Authentication authentication) {
+        return this.authenticationDao.update(authentication);
+    }
+
+    /**
+     * 修改数据
+     *
+     * @param authentication
+     * @param operater
+     * @return
+     */
+    @Override
+    public int update(Authentication authentication, Operater operater) {
+        int count = authenticationDao.update(authentication);
+        operationLogService.insert(OperationLog.of(operater, OperateType.U, "更新认证信息ID=" + authentication.getId()));
+        return count;
     }
 
     /**

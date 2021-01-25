@@ -81,6 +81,8 @@ public class Authentication implements Serializable {
                 .add("applicationName='" + applicationName + "'")
                 .add("authType='" + authType + "'")
                 .add("identifier='" + identifier + "'")
+                .add("credential='******'")
+                .add("expires=" + expires)
                 .toString();
     }
 }
