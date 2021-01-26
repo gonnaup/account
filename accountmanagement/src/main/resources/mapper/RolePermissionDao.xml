@@ -50,6 +50,6 @@
     </delete>
 
     <delete id="deleteByRoleIdAndPermissionId">
-        delete from role_permission where role_id = #{roleId} and permission_id = #{permissionId} limit 1
+        delete from role_permission where role_id = #{roleId} and permission_id = #{permissionId}
     </delete>
 </mapper>

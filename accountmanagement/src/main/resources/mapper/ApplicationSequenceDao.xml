@@ -57,7 +57,7 @@
                 and application_name = #{applicationSequenceKey.applicationName}
             </if>
             <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
-                and sequence_type = #{applicationSequenceKey.sequenceType}
+                and sequence_type like concat('%', #{applicationSequenceKey.sequenceType} , '%')
             </if>
         </where>
         order by application_name
@@ -73,7 +73,7 @@
                 and application_name = #{applicationSequenceKey.applicationName}
             </if>
             <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
-                and sequence_type = #{applicationSequenceKey.sequenceType}
+                and sequence_type like concat('%', #{applicationSequenceKey.sequenceType} , '%')
             </if>
         </where>
         order by application_name
@@ -89,7 +89,7 @@
                 and application_name = #{applicationSequenceKey.applicationName}
             </if>
             <if test="applicationSequenceKey.sequenceType != null and applicationSequenceKey.sequenceType != ''">
-                and sequence_type = #{applicationSequenceKey.sequenceType}
+                and sequence_type like concat('%', #{applicationSequenceKey.sequenceType} , '%')
             </if>
         </where>
     </select>
@@ -105,7 +105,6 @@
         delete from application_sequence
         where application_name = #{applicationName}
         and sequence_type = #{sequenceType}
-        limit 1
     </delete>
 
 </mapper>

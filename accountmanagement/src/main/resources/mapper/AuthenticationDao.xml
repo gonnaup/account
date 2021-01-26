@@ -132,10 +132,10 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from authentication where id = #{id} limit 1
+        delete from authentication where id = #{id}
     </delete>
 
     <delete id="deleteByAccountIdAndAuthType">
-        delete from authentication where account_id = #{accountId} and auth_type = #{authType} limit 1
+        delete from authentication where account_id = #{accountId} and auth_type = #{authType}
     </delete>
 </mapper>

@@ -208,7 +208,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from account where id = #{id} limit 1
+        delete from account where id = #{id}
     </delete>
 
     <!-- 查询账户状态 -->

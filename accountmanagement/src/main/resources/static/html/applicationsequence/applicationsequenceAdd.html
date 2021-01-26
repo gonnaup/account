@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>account add</title>
+    <title>applicationsequence add</title>
 </head>
 <body>
 <div class="main-loginForm">
@@ -10,9 +10,8 @@
         <div class="layui-form-item" id="sequenceAdd_appName">
             <label class="main-querylabel">应用名称：</label>
             <div class="layui-input-block">
-                <select id="applicationSequenceADDForm_appName" name="applicationName" lay-verify="required"
+                <select class="layui-select" id="applicationSequenceADDForm_appName" name="applicationName" lay-verify="required"
                         lay-verType="tips">
-                    <option value="">全部</option>
                 </select>
             </div>
         </div>
@@ -62,7 +61,6 @@
     layui.use(['form'], function () {
         handleAppNameSelect('sequenceAdd_appName', 'applicationSequenceADDForm_appName')
         var form = layui.form
-        form.render('select')
         var $ = layui.jquery
         form.on('submit(formSequenceAdd)', function (data) {
             $.ajax({

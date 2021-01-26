@@ -86,19 +86,21 @@ function listenEvents() {
                     });
                 } else if (code == '402' && openLoginTipsPage) {//权限不够
                     // loadpage('../html/403.html')
-                    layer.alert('您的权限不够，请联系管理员')
+                    alertMsg('您的权限不够，请联系管理员')
                 } else if (code == "410" || code == "411") { //410：逻辑验证失败，411：数据验证失败
-                    layer.alert(xhr.responseJSON.data)
+                    alertMsg(xhr.responseJSON.data)
                 } else {
                     openLoginTipsPage = true//当此值为false时赋值为true，只打断一次提示
                 }
             } else if (xhr.status == 500) {
-                layer.msg(xhr.responseJSON.data)
+                alertMsg(xhr.responseJSON.data)
             } else if (xhr.status == 400) {
                 var code = xhr.responseJSON.code;//410逻辑验证失败；411数据验证失败
                 if (code == "410" || code == "411") { //410：逻辑验证失败，411：数据验证失败
-                    layer.alert(xhr.responseJSON.data)
+                    alertMsg(xhr.responseJSON.data)
                 }
+            } else if (xhr.status == 404) {
+                alertMsg('请求资源不存在！  ' + xhr.responseJSON.path)
             }
         }
     );

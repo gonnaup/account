@@ -140,7 +140,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from role where id = #{id} limit 1
+        delete from role where id = #{id}
     </delete>
 
 </mapper>

@@ -32,17 +32,35 @@ function applicationcodeDeleteClicked(rowData) {
 }
 
 
-
 //////////////////////////// applicationsequence.html //////////////////
 function applicationsequenceAddClicked() {
     openPage('../html/applicationsequence/applicationsequenceAdd.html', '新增')
 }
 
 function applicationsequenceUpdateClicked(rowData) {
-    openPage('../html/applicationsequence/applicationsequenceUpdate.html', '修改')
+    if (selectOneRowDataVerify(rowData.data)) {
+        openPage('../html/applicationsequence/applicationsequenceUpdate.html', '修改')
+    }
 }
 
 function applicationsequenceDeleteClicked(rowData) {
-
+    if (selectOneRowDataVerify(rowData.data)) {
+        var layer = layui.layer
+        layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
+            function (index) {
+                layer.close(index)//关闭layer
+                var $ = layui.jquery
+                var data = rowData.data[0]
+                $.ajax({
+                    url: '../api/applicationSequence/delete/' + data.applicationName + '/' + data.sequenceType,
+                    type: 'delete',
+                    headers: {token_jwt: obtainJwt()||''},
+                    success: function (data) {
+                        operateSuccessMsg()
+                        layui.table.reload('id_applicationSequenceTable')
+                    }
+                })
+            })
+    }
 }
 

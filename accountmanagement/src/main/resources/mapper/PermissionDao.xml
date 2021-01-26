@@ -130,7 +130,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from permission where id = #{id} limit 1
+        delete from permission where id = #{id}
     </delete>
 
 </mapper>

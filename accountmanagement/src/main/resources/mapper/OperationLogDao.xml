@@ -45,7 +45,7 @@
                 and createtime = #{operationLog.createtime}
             </if>
         </where>
-        order by id
+        order by id desc
         limit #{offset}, #{limit}
     </select>
 
@@ -73,7 +73,7 @@
                 and createtime = #{operationLog.createtime}
             </if>
         </where>
-        order by id
+        order by id desc
         limit #{limit} offset #{offset}
     </select>
 
@@ -144,7 +144,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from operation_log where id = #{id} limit 1
+        delete from operation_log where id = #{id}
     </delete>
 
 </mapper>

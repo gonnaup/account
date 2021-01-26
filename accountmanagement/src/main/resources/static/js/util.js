@@ -54,13 +54,18 @@ function closeAllLayerPage() {
     var layer = layui.layer
     layer.closeAll('page')
 }
-
+/////////////////////// layer //////////////////////////
 /**
  * 操作成功提示
  */
 function operateSuccessMsg() {
     var layer = layui.layer
     layer.msg('操作成功', {icon: 1, time: 3000})
+}
+
+function alertMsg(msg) {
+    var layer = layui.layer
+    layer.alert(msg, {icon: 7})
 }
 
 /**
@@ -101,4 +106,29 @@ function handleAppNameSelect(blockId, selectId) {
         var $ = layui.jquery
         $('#' + blockId).css('display', 'none')
     }
+}
+
+/**
+ * 验证表格中选中的行数
+ * @param rowData
+ */
+function selectOneRowDataVerify(rowData) {
+    if (rowData.length < 1) {
+        alertMsg('请选中一行数据')
+        return false
+    }
+    if (rowData.length > 1) {
+        alertMsg('只能选中一行数据')
+        return false
+    }
+    return true
+}
+
+/**
+ * 获取表格选中行的数据
+ * @param tableId
+ */
+function obtainTableSelectedRowData(tableId) {
+    var table = layui.table
+    return table.checkStatus(tableId).data
 }

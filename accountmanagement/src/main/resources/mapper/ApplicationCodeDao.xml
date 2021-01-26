@@ -69,6 +69,6 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from application_code where application_name = #{applicationName} limit 1
+        delete from application_code where application_name = #{applicationName}
     </delete>
 </mapper>

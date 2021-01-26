@@ -73,7 +73,10 @@ function openPage(url, title) {
                 type: 1,
                 area: '450px',
                 title: title,
-                content: data
+                content: data,
+                success: function () {
+                    $(':focus').blur()//按enter键重复出现弹窗问题
+                }
             })
         },
         error: function () {

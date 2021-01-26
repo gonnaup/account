@@ -56,6 +56,6 @@
     </delete>
 
     <delete id="deleteByAccountIdAndRoleId">
-        delete from account_role where account_id = #{accountId} and role_id = #{roleId} limit 1
+        delete from account_role where account_id = #{accountId} and role_id = #{roleId}
     </delete>
 </mapper>
