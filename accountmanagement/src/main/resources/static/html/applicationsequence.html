@@ -14,7 +14,7 @@
                         <div class="layui-col-md3" id="sequenceQuery_appName">
                             <label class="main-querylabel">应用名称：</label>
                             <div class="layui-input-block">
-                                <select id="applicationSequenceQueryForm_name" name="applicationName">
+                                <select id="applicationSequenceQueryForm_appName" name="applicationName">
                                     <option value="">全部</option>
                                 </select>
                             </div>
@@ -49,15 +49,11 @@
     layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
-        if (isAdmin()) {
-            renderSelect('applicationSequenceQueryForm_name', '../api/applicationCode/listAll')//渲染select
-        } else {
-            var $ = layui.jquery
-            $('#sequenceQuery_appName').css('display', 'none')
-        }
+        handleAppNameSelect('sequenceQuery_appName', 'applicationSequenceQueryForm_appName')
         var table = layui.table;
         ADUOperateValidate('applicationSequencebar_add', 'applicationSequencebar_delete', 'applicationSequencebar_update', '../api/applicationSequence/applicationSequencePermission')//toolbar按钮权限处理
         var operationlogTable = table.render({
+            id: 'id_applicationSequenceTable',
             elem: '#applicationSequenceTable',
             url: '../api/applicationSequence/list',
             headers: {token_jwt: obtainJwt() || ''},
@@ -85,15 +81,15 @@
         table.on('toolbar(applicationSequence)', function (obj) {
             switch (obj.event) {
                 case 'add':
-                    accountAddClicked()
+                    applicationsequenceAddClicked()
                     break;
                 case 'delete':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountDeleteClicked(data)
+                    applicationsequenceDeleteClicked(data)
                     break;
                 case 'update':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountUpdateClicked(data)
+                    applicationsequenceUpdateClicked(data)
                     break;
             }
             ;

@@ -73,28 +73,34 @@ function listenEvents() {
 
     //请求错误拦截处理
     $(document).ajaxError(function (event, xhr, options, exc) {
-        //无权限
-        if (xhr.status == 403) {
-            var code = xhr.responseJSON.code; //401:未登录，402：已登录但权限不够
-            if (code == '401' && openLoginTipsPage) {//未登录
-                layer.confirm(xhr.responseJSON.data + '，是否现在登陆？', {
-                    icon: 3,
-                    btn: ['现在就去', '等会再说'] //按钮
-                }, function (index) {
-                    layer.close(index)//关闭上层layler
-                    openLoginPage()
-                });
-            } else if (code == '402' && openLoginTipsPage) {//权限不够
-                // loadpage('../html/403.html')
-                layer.alert('您的权限不够，请联系管理员')
-            } else if (code == "410" || code == "411") { //410：逻辑验证失败，411：数据验证失败
-                layer.alert(xhr.responseJSON.data)
-            } else {
-                openLoginTipsPage = true//当此值为false时赋值为true，只打断一次提示
+            //无权限
+            if (xhr.status == 403) {
+                var code = xhr.responseJSON.code; //401:未登录，402：已登录但权限不够
+                if (code == '401' && openLoginTipsPage) {//未登录
+                    layer.confirm(xhr.responseJSON.data + '，是否现在登陆？', {
+                        icon: 3,
+                        btn: ['现在就去', '等会再说'] //按钮
+                    }, function (index) {
+                        layer.close(index)//关闭上层layler
+                        openLoginPage()
+                    });
+                } else if (code == '402' && openLoginTipsPage) {//权限不够
+                    // loadpage('../html/403.html')
+                    layer.alert('您的权限不够，请联系管理员')
+                } else if (code == "410" || code == "411") { //410：逻辑验证失败，411：数据验证失败
+                    layer.alert(xhr.responseJSON.data)
+                } else {
+                    openLoginTipsPage = true//当此值为false时赋值为true，只打断一次提示
+                }
+            } else if (xhr.status == 500) {
+                layer.msg(xhr.responseJSON.data)
+            } else if (xhr.status == 400) {
+                var code = xhr.responseJSON.code;//410逻辑验证失败；411数据验证失败
+                if (code == "410" || code == "411") { //410：逻辑验证失败，411：数据验证失败
+                    layer.alert(xhr.responseJSON.data)
+                }
             }
-        } else if (xhr.status == 500) {
-            layer.msg(xhr.responseJSON.data)
         }
-    });
+    );
 }
 

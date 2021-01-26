@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>account add</title>
+</head>
+<body>
+<div class="main-loginForm">
+    <form class="layui-form" action="">
+        <div class="layui-form-item" id="sequenceAdd_appName">
+            <label class="main-querylabel">应用名称：</label>
+            <div class="layui-input-block">
+                <select id="applicationSequenceADDForm_appName" name="applicationName" lay-verify="required"
+                        lay-verType="tips">
+                    <option value="">全部</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">序列类型：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="sequenceType" placeholder="序列类型" lay-verify="required"
+                       lay-verType="tips">
+            </div>
+        </div>
+
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">序列值：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="sequence" placeholder="序列值" lay-verify="required|number"
+                       lay-verType="tips">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">序列间隔：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="step" placeholder="序列间隔" lay-verify="required|number"
+                       lay-verType="tips">
+            </div>
+        </div>
+
+        <div class="layui-row" style="text-align: center">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formSequenceAdd">添加
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        handleAppNameSelect('sequenceAdd_appName', 'applicationSequenceADDForm_appName')
+        var form = layui.form
+        form.render('select')
+        var $ = layui.jquery
+        form.on('submit(formSequenceAdd)', function (data) {
+            $.ajax({
+                url: '../api/applicationSequence/add',
+                type: 'post',
+                data: JSON.stringify(data.field),
+                headers: {token_jwt: obtainJwt() || ''},
+                contentType: 'application/json',
+                success: function (data) {
+                    closeAllLayerPage()//关闭layer
+                    operateSuccessMsg()
+                    layui.table.reload('id_applicationSequenceTable')
+                }
+            })
+            return false
+        })
+    })
+</script>
+</body>
+</html>

@@ -48,6 +48,22 @@ function disabeButton(id) {
 }
 
 /**
+ * 关闭所有页面层
+ */
+function closeAllLayerPage() {
+    var layer = layui.layer
+    layer.closeAll('page')
+}
+
+/**
+ * 操作成功提示
+ */
+function operateSuccessMsg() {
+    var layer = layui.layer
+    layer.msg('操作成功', {icon: 1, time: 3000})
+}
+
+/**
  * 动态加载下拉框
  * @param id select元素id
  * @param url 数据url
@@ -71,4 +87,18 @@ function renderSelect(id, url, type) {
             layui.form.render("select")//重新渲染select
         }
     })
+}
+
+/**
+ * 处理应用名选择框
+ * 如果是ADMIN用户则显示并渲染应用名下拉框，否则隐藏下拉框
+ */
+function handleAppNameSelect(blockId, selectId) {
+    var api = '../api/applicationCode/listAll'//数据api
+    if(isAdmin()) {
+        renderSelect(selectId, api)
+    } else {
+        var $ = layui.jquery
+        $('#' + blockId).css('display', 'none')
+    }
 }

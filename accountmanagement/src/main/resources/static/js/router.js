@@ -39,28 +39,6 @@ var routerTo = function (url) {
     }
 }
 
-///////////////////// account.html /////////////////////////
-//账号添加按钮点击
-function accountAddClicked() {
-    console.log("a")
-}
-
-//账号删除按钮点击
-function accountDeleteClicked(rowData) {
-    console.log("d")
-}
-
-//账号更新按钮点击
-function accountUpdateClicked(rowData) {
-    console.log("u")
-}
-
-
-
-
-///////////////////////////// end /////////////////////////////
-
-
 /**
  * 加载主窗口页面
  * @param url
@@ -84,7 +62,7 @@ function loadContentPage(url) {
  * 加载悬浮页面
  * @param url
  */
-function openPage(url) {
+function openPage(url, title) {
     var $ = layui.jquery
     var layer = layui.layer
     $.ajax({
@@ -94,7 +72,7 @@ function openPage(url) {
             layer.open({
                 type: 1,
                 area: '450px',
-                title: ['登录'],
+                title: title,
                 content: data
             })
         },

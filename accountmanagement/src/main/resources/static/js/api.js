@@ -1,5 +1,5 @@
 /**
- * 请求api
+ * 通用的请求api
  */
 
 var JWT_HEADERNAME = 'token_jwt'
@@ -70,7 +70,7 @@ function login_jwt() {
  * 打开登录页面
  */
 function openLoginPage() {
-    openPage('../html/login.html')
+    openPage('../html/login.html', '登录')
 }
 
 /**

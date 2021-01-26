@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <button class="layui-btn layui-btn-normal layui-btn-radius" style="margin-left: 30px; width: 95%" lay-submit
+            <button class="layui-btn layui-btn-radius" style="margin-left: 30px; width: 95%" lay-submit
                     lay-filter="formLogin">登录
             </button>
         </div>
@@ -50,7 +50,7 @@
                     contentType: 'application/json',
                     success: function (data) {
                         localStorage.setItem(JWT_LOCALSTORAGENAME, data.message)
-                        layer.closeAll('page')//关闭layer
+                        closeAllLayerPage()//关闭layer
                         layer.msg('登录成功!', {icon: 1})
                         fillAccountInformation(data.data)
                         if (current_page != undefined) {

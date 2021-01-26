@@ -2,10 +2,7 @@ package org.gonnaup.accountmanagement.web.controller;
 
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
-import org.gonnaup.account.exception.AuthenticationException;
-import org.gonnaup.account.exception.JwtInvalidException;
-import org.gonnaup.account.exception.LogicValidationException;
-import org.gonnaup.account.exception.LoginException;
+import org.gonnaup.account.exception.*;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.common.domain.Result;
 import org.springframework.http.HttpStatus;
@@ -100,6 +97,12 @@ public class ExceptionController {
     public Result<String> bindExceptionHandler(HttpServletResponse response, BindingResult e) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         return Result.code(ResultCode.DATA_VALIDATE_ERROR.code()).fail().data(Joiner.on(',').join(e.getAllErrors().stream().map(ObjectError::getDefaultMessage).filter(Objects::nonNull).collect(Collectors.toUnmodifiableList())));
+    }
+
+    @ExceptionHandler(RelatedDataExistsException.class)
+    public Result<String> relatedDataExistesExceptionHandler(HttpServletResponse response, RelatedDataExistsException e) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        return Result.code(ResultCode.LOGIC_VALIDATE_ERROR.code()).fail().data(e.getMessage());
     }
 
     @ExceptionHandler

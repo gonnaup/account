@@ -14,7 +14,7 @@
                         <div class="layui-col-md3">
                             <label class="main-querylabel">应用名称：</label>
                             <div class="layui-input-block">
-                                <select id="applicationCodeQueryForm_name" name="applicationName">
+                                <select id="applicationCodeQueryForm_appName" name="applicationName">
                                     <option value="">全部</option>
                                     <!-- todo 根据用户角色动态显示此项 -->
                                 </select>
@@ -64,12 +64,7 @@
     layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
-        if (isAdmin()) {
-            renderSelect('applicationCodeQueryForm_name', '../api/applicationCode/listAll')//渲染select
-        } else {
-            var $ = layui.jquery
-            $('#applicationCodeQueryBlock').css('display', 'none')
-        }
+        handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
         var table = layui.table;
         ADUOperateValidate('applicationCodebar_add', 'applicationCodebar_delete', 'applicationCodebar_update', '../api/applicationCode/applicationCodePermission')//toolbar按钮权限处理
         var operationlogTable = table.render({
@@ -100,15 +95,15 @@
         table.on('toolbar(applicationCode)', function (obj) {
             switch (obj.event) {
                 case 'add':
-                    accountAddClicked()
+                    applicationcodeAddClicked()
                     break;
                 case 'delete':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountDeleteClicked(data)
+                    applicationcodeDeleteClicked(data)
                     break;
                 case 'update':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountUpdateClicked(data)
+                    applicationcodeUpdateClicked(data)
                     break;
             }
             ;
