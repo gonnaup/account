@@ -133,8 +133,6 @@ public class ApplicationCodeController {
         //appName validate
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, applicationCodeDTO);
         ApplicationCode applicationCode = applicationCodeDTO.toApplicationCode();
-        //exist check
-        applicationCodeExistThrow(applicationCode.getApplicationName(), applicationCode.getApplicationCode());
 
         Long accountId = jwtData.getAccountId();
         AccountHeader operaterAccount = accountService.findHeaderById(accountId);

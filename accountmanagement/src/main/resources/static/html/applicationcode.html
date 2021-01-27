@@ -16,7 +16,6 @@
                             <div class="layui-input-block">
                                 <select id="applicationCodeQueryForm_appName" name="applicationName">
                                     <option value="">全部</option>
-                                    <!-- todo 根据用户角色动态显示此项 -->
                                 </select>
                             </div>
                         </div>
@@ -54,9 +53,9 @@
 
 <script type="text/html" id="toolbarApplicationCode">
     <div class="layui-btn-container">
-        <button id="applicationCodebar_add" class="layui-btn layui-btn-sm" disabled lay-event="add">添加</button>
+        <button id="applicationCodebar_add" class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button id="applicationCodebar_update" class="layui-btn layui-btn-sm" lay-event="update">修改</button>
         <button id="applicationCodebar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
-        <button id="applicationCodebar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
     </div>
 </script>
 
@@ -68,6 +67,7 @@
         var table = layui.table;
         ADUOperateValidate('applicationCodebar_add', 'applicationCodebar_delete', 'applicationCodebar_update', '../api/applicationCode/applicationCodePermission')//toolbar按钮权限处理
         var operationlogTable = table.render({
+            id: 'id_applicationCodeTable',
             elem: '#applicationCodeTable',
             url: '../api/applicationCode/list',
             headers: {token_jwt: obtainJwt() || ''},
@@ -98,12 +98,12 @@
                     applicationcodeAddClicked()
                     break;
                 case 'delete':
-                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    applicationcodeDeleteClicked(data)
+                    var rowData = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    applicationcodeDeleteClicked(rowData)
                     break;
                 case 'update':
-                    var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    applicationcodeUpdateClicked(data)
+                    var rowData = table.checkStatus(obj.config.id);//选中行数据Array[]
+                    applicationcodeUpdateClicked(rowData)
                     break;
             }
             ;

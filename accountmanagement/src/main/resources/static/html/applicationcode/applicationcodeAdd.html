@@ -2,39 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>applicationsequence add</title>
+    <title>applicationcode add</title>
 </head>
 <body>
 <div class="main-loginForm">
     <form class="layui-form" action="">
-        <div class="layui-form-item" id="sequenceAdd_appName">
+        <div class="layui-form-item">
             <label class="main-querylabel">应用名称：</label>
             <div class="layui-input-block">
-                <select class="layui-select" id="applicationSequenceADDForm_appName" name="applicationName" lay-verify="required"
-                        lay-verType="tips">
-                </select>
+                <input class="layui-input" type="text" name="applicationName" placeholder="应用名称" lay-verify="required"
+                       lay-verType="tips">
             </div>
         </div>
         <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列类型：</label>
+            <label class="main-querylabel">应用代码：</label>
             <div class="layui-input-block">
-                <input class="layui-input" type="text" name="sequenceType" placeholder="序列类型" lay-verify="required"
+                <input class="layui-input" type="text" name="applicationCode" placeholder="应用代码 10-99的数字" lay-verify="required|number"
                        lay-verType="tips">
             </div>
         </div>
 
         <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列值：</label>
+            <label class="main-querylabel">应用url：</label>
             <div class="layui-input-block">
-                <input class="layui-input" type="text" name="sequence" placeholder="序列值" lay-verify="required|number"
-                       lay-verType="tips">
+                <input class="layui-input" type="text" name="url" placeholder="应用url">
             </div>
         </div>
         <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列间隔：</label>
+            <label class="main-querylabel">应用描述：</label>
             <div class="layui-input-block">
-                <input class="layui-input" type="text" name="step" placeholder="序列间隔" lay-verify="required|number"
-                       lay-verType="tips">
+                <textarea class="layui-textarea" name="description" placeholder="应用描述"></textarea>
             </div>
         </div>
 
@@ -42,7 +39,7 @@
             <div class="layui-col-md6">
                 <div class="layui-input-inline">
                     <button class="layui-btn" lay-submit
-                            lay-filter="formSequenceAdd">添加
+                            lay-filter="formApplicationCodeAdd">添加
                     </button>
                 </div>
             </div>
@@ -59,11 +56,12 @@
 </div>
 <script type="text/javascript">
     layui.use(['form'], function () {
-        handleAppNameSelect('sequenceAdd_appName', 'applicationSequenceADDForm_appName')
         var form = layui.form
         var $ = layui.jquery
-        form.on('submit(formSequenceAdd)', function (data) {
-            addOp('../api/applicationSequence/add', data.field, 'id_applicationSequenceTable')
+        form.on('submit(formApplicationCodeAdd)', function (data) {
+            addOp('../api/applicationCode/add', data.field, 'id_applicationCodeTable')
+            //todo 删除已有的节点
+            handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
             return false
         })
     })

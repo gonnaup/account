@@ -28,6 +28,7 @@ logging:
   level:
     org.gonnaup.accountmanagement.dao: info
     org.gonnaup.accountmanagement.web: debug
+    org.gonnaup.accountmanagement.web.AccountInterceptor: info
 dubbo:
   application:
     name: dubbo-accountmanagement

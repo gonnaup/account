@@ -20,15 +20,21 @@ function accountDeleteClicked(rowData) {
 
 ///////////////////////////// applicationcode.html /////////////////////////////
 function applicationcodeAddClicked() {
-    console.log("a")
+    openPage('../html/applicationcode/applicationcodeAdd.html', '新增')
 }
 
 function applicationcodeUpdateClicked(rowData) {
-    console.log("u")
+    if (selectOneRowDataVerify(rowData.data)) {
+        openPage('../html/applicationcode/applicationcodeUpdate.html', '修改')
+    }
 }
 
 function applicationcodeDeleteClicked(rowData) {
-    console.log("d")
+    if (selectOneRowDataVerify(rowData.data)) {
+        var data = rowData.data[0]
+        var url = '../api/applicationCode/delete/' + data.applicationName
+        deleteOp(url, 'id_applicationCodeTable')
+    }
 }
 
 
@@ -45,22 +51,9 @@ function applicationsequenceUpdateClicked(rowData) {
 
 function applicationsequenceDeleteClicked(rowData) {
     if (selectOneRowDataVerify(rowData.data)) {
-        var layer = layui.layer
-        layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
-            function (index) {
-                layer.close(index)//关闭layer
-                var $ = layui.jquery
-                var data = rowData.data[0]
-                $.ajax({
-                    url: '../api/applicationSequence/delete/' + data.applicationName + '/' + data.sequenceType,
-                    type: 'delete',
-                    headers: {token_jwt: obtainJwt()||''},
-                    success: function (data) {
-                        operateSuccessMsg()
-                        layui.table.reload('id_applicationSequenceTable')
-                    }
-                })
-            })
+        var data = rowData.data[0]
+        var url = '../api/applicationSequence/delete/' + data.applicationName + '/' + data.sequenceType
+        deleteOp(url, 'id_applicationSequenceTable')
     }
 }
 

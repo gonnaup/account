@@ -71,18 +71,7 @@
         })
         var $ = layui.jquery
         form.on('submit(formSequenceUpdate)', function (data) {
-            $.ajax({
-                url: '../api/applicationSequence/update',
-                type: 'put',
-                data: JSON.stringify(data.field),
-                headers: {token_jwt: obtainJwt() || ''},
-                contentType: 'application/json',
-                success: function (data) {
-                    closeAllLayerPage()//关闭layer
-                    operateSuccessMsg()
-                    layui.table.reload('id_applicationSequenceTable')
-                }
-            })
+            updateOp('../api/applicationSequence/update', data.field, 'id_applicationSequenceTable')
             return false
         })
     })

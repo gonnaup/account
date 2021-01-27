@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>applicationcode update</title>
+</head>
+<body>
+<div class="main-loginForm">
+    <form class="layui-form" action="" lay-filter="form_applicationCodeUpdate">
+        <div class="layui-form-item">
+            <label class="main-querylabel">应用名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input layui-disabled" type="text" name="applicationName" placeholder="应用名称"
+                       lay-verify="required"
+                       lay-verType="tips" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">应用代码：</label>
+            <div class="layui-input-block">
+                <input class="layui-input layui-disabled" type="text" name="applicationCode" placeholder="应用代码 10-99的数字"
+                       lay-verify="required|number"
+                       lay-verType="tips" disabled>
+            </div>
+        </div>
+
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">应用url：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="url" placeholder="应用url">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">应用描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description" placeholder="应用描述"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-row" style="text-align: center">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formApplicationCodeUpdate">更新
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var data = obtainTableSelectedRowData('id_applicationCodeTable')[0]
+        var form = layui.form
+        form.val('form_applicationCodeUpdate', {
+            'applicationName': data.applicationName,
+            'applicationCode': data.applicationCode,
+            'url': data.url,
+            'description': data.description
+        })
+        var $ = layui.jquery
+        form.on('submit(formApplicationCodeUpdate)', function (data) {
+            updateOp('../api/applicationCode/update', data.field, 'id_applicationCodeTable')
+            handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
+            return false
+        })
+    })
+</script>
+</body>
+</html>

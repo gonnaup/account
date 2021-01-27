@@ -19,7 +19,7 @@ public class ApplicationCode implements Serializable {
      */
     private String applicationName;
     /**
-     * 应用代码 100~999的数字
+     * 应用代码 10~99的数字
      */
     private Integer applicationCode;
     /**

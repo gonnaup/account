@@ -55,16 +55,16 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update application_code t
+        update application_code
         <set>
             <if test="url != null and url != ''">
-                t.url = #{url},
+                url = #{url},
             </if>
             <if test="description != null and description != ''">
-                t.description = #{description},
+                description = #{description},
             </if>
         </set>
-        where t.application_name = #{applicationName}
+        where application_name = #{applicationName}
     </update>
 
     <!--通过主键删除-->

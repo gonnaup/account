@@ -54,6 +54,7 @@ function closeAllLayerPage() {
     var layer = layui.layer
     layer.closeAll('page')
 }
+
 /////////////////////// layer //////////////////////////
 /**
  * 操作成功提示
@@ -100,7 +101,7 @@ function renderSelect(id, url, type) {
  */
 function handleAppNameSelect(blockId, selectId) {
     var api = '../api/applicationCode/listAll'//数据api
-    if(isAdmin()) {
+    if (isAdmin()) {
         renderSelect(selectId, api)
     } else {
         var $ = layui.jquery
@@ -131,4 +132,63 @@ function selectOneRowDataVerify(rowData) {
 function obtainTableSelectedRowData(tableId) {
     var table = layui.table
     return table.checkStatus(tableId).data
+}
+
+/**
+ * 数据新增方法
+ * @param url 请求api
+ * @param data 数据，表格原始数据
+ * @param tableId 需要刷新的表格ID
+ */
+function addOp(url, data, tableId) {
+    saveOp(url, data, tableId, 'post')
+}
+
+/**
+ * 数据修改方法
+ * @param url 请求api
+ * @param data 数据，表格原始数据
+ * @param tableId 需要刷新的表格ID
+ */
+function updateOp(url, data, tableId) {
+    saveOp(url, data, tableId, 'put')
+}
+
+function saveOp(url, data, tableId, type) {
+    var $ = layui.jquery
+    $.ajax({
+        url: url,
+        type: type,
+        data: JSON.stringify(data),
+        headers: {token_jwt: obtainJwt() || ''},
+        contentType: 'application/json',
+        success: function (data) {
+            closeAllLayerPage()//关闭layer
+            operateSuccessMsg()
+            layui.table.reload(tableId)
+        }
+    })
+}
+
+/**
+ * 删除数据方法
+ * @param url 请求api
+ * @param tableId 需要刷新的表格ID
+ */
+function deleteOp(url, tableId) {
+    var layer = layui.layer
+    layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
+        function (index) {
+            layer.close(index)//关闭layer
+            var $ = layui.jquery
+            $.ajax({
+                url: url,
+                type: 'delete',
+                headers: {token_jwt: obtainJwt() || ''},
+                success: function (data) {
+                    operateSuccessMsg()
+                    layui.table.reload(tableId)
+                }
+            })
+        })
 }
