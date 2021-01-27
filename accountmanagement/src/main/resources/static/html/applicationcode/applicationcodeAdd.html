@@ -17,7 +17,8 @@
         <div class="layui-form-item main-marginTop10">
             <label class="main-querylabel">应用代码：</label>
             <div class="layui-input-block">
-                <input class="layui-input" type="text" name="applicationCode" placeholder="应用代码 10-99的数字" lay-verify="required|number"
+                <input class="layui-input" type="text" name="applicationCode" placeholder="应用代码 10-99的数字"
+                       lay-verify="required|number"
                        lay-verType="tips">
             </div>
         </div>
@@ -60,7 +61,7 @@
         var $ = layui.jquery
         form.on('submit(formApplicationCodeAdd)', function (data) {
             addOp('../api/applicationCode/add', data.field, 'id_applicationCodeTable')
-            //todo 删除已有的节点
+            removeOptionExceptFirst('applicationCodeQueryForm_appName')
             handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
             return false
         })

@@ -33,7 +33,11 @@ function applicationcodeDeleteClicked(rowData) {
     if (selectOneRowDataVerify(rowData.data)) {
         var data = rowData.data[0]
         var url = '../api/applicationCode/delete/' + data.applicationName
-        deleteOp(url, 'id_applicationCodeTable')
+        //删除应用编码后对应用编码下拉框进行刷新
+        deleteOp(url, 'id_applicationCodeTable', function () {
+            removeOptionExceptFirst('applicationCodeQueryForm_appName')
+            handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
+        })
     }
 }
 

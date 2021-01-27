@@ -69,7 +69,6 @@
         var $ = layui.jquery
         form.on('submit(formApplicationCodeUpdate)', function (data) {
             updateOp('../api/applicationCode/update', data.field, 'id_applicationCodeTable')
-            handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
             return false
         })
     })

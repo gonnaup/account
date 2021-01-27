@@ -174,8 +174,9 @@ function saveOp(url, data, tableId, type) {
  * 删除数据方法
  * @param url 请求api
  * @param tableId 需要刷新的表格ID
+ * @param callback 成功后的回调函数
  */
-function deleteOp(url, tableId) {
+function deleteOp(url, tableId, callback = undefined) {
     var layer = layui.layer
     layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
         function (index) {
@@ -188,7 +189,30 @@ function deleteOp(url, tableId) {
                 success: function (data) {
                     operateSuccessMsg()
                     layui.table.reload(tableId)
+                    if (callback != undefined) {
+                        callback()
+                    }
                 }
             })
         })
+}
+
+/**
+ * 移除下拉框除第一个选项的所有选项，用于下拉框刷新
+ * @param selectId
+ */
+function removeOptionExceptFirst(selectId) {
+    removeOptionExceptFirstN(selectId, 1)
+}
+
+/**
+ * 移除除前n个以外的选项
+ * @param selectId 选择器ID
+ * @param exceptIndex 前面不移除的选项个数
+ */
+function removeOptionExceptFirstN(selectId, exceptNunber = 0) {
+    var selectNode = document.getElementById(selectId)
+    while (selectNode.childElementCount > exceptNunber) {
+        selectNode.removeChild(selectNode.lastChild)
+    }
 }
