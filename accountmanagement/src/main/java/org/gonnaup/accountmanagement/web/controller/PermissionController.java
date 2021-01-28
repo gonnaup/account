@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.account.exception.LogicValidationException;
@@ -9,6 +10,7 @@ import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
+import org.gonnaup.accountmanagement.constant.ValidateGroups;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
@@ -146,7 +148,7 @@ public class PermissionController {
      */
     @PostMapping("/add")
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
+    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.ADD.class) PermissionDTO permissionDTO) {
         //appName deal
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, permissionDTO);
         //exist check
@@ -161,11 +163,18 @@ public class PermissionController {
 
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated PermissionDTO permissionDTO) {
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.UPDATE.class) PermissionDTO permissionDTO) {
+        Long id = Long.parseLong(permissionDTO.getId());
+        Permission origin = permissionService.findById(id);
+        if (origin == null) {
+            log.error("要更新的权限对象ID={}不存在", permissionDTO.getId());
+            throw new LogicValidationException("要更新的权限对象不存在");
+        }
+        if (StringUtils.isBlank(permissionDTO.getApplicationName())) {
+            permissionDTO.setApplicationName(origin.getApplicationName());//没有传参则设置
+        }
         //appName deal
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, permissionDTO);
-        //exist check
-        permissionExistThrow(permissionDTO.getApplicationName(), permissionDTO.getPermissionName());
 
         Long accountId = jwtData.getAccountId();
         AccountHeader accountHeader = accountService.findHeaderById(accountId);

@@ -118,11 +118,14 @@
     <update id="update">
         update permission
         <set>
+            <if test="permissionName != null and permissionName != ''">
+                permission_name = #{permissionName},
+            </if>
             <if test="weight != null and weight != ''">
                 weight = #{weight},
             </if>
             <if test="description != null and description != ''">
-                description = #{description},
+                description = #{description}
             </if>
         </set>
         where id = #{id}

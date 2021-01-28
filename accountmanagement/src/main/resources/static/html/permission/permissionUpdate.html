@@ -2,35 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>applicationsequence update</title>
+    <title>permission add</title>
 </head>
 <body>
 <div class="main-loginForm">
-    <form class="layui-form" action="" lay-filter="form_SequenceUpdate">
+    <form class="layui-form" action="" lay-filter="form_PermissionUpdate">
         <div class="layui-form-item">
             <label class="main-querylabel">应用名称：</label>
             <div class="layui-input-block">
-                <input class="layui-input layui-disabled" type="text" name="applicationName" disabled>
+                <input class="layui-input layui-disabled" name="applicationName" disabled>
             </div>
         </div>
         <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列类型：</label>
+            <label class="main-querylabel">权限名称：</label>
             <div class="layui-input-block">
-                <input class="layui-input layui-disabled" type="text" name="sequenceType" disabled>
-            </div>
-        </div>
-
-        <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列值：</label>
-            <div class="layui-input-block">
-                <input class="layui-input layui-disabled" type="number" name="sequence" disabled>
-            </div>
-        </div>
-        <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">序列间隔：</label>
-            <div class="layui-input-block">
-                <input class="layui-input" type="number" name="step" placeholder="序列间隔" lay-verify="required|number"
+                <input class="layui-input" type="text" name="permissionName" placeholder="应用名称" lay-verify="required"
                        lay-verType="tips">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权重：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="weight" placeholder="1~8位16进制数">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权限描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description" placeholder="应用描述"></textarea>
             </div>
         </div>
 
@@ -38,7 +37,7 @@
             <div class="layui-col-md6">
                 <div class="layui-input-inline">
                     <button class="layui-btn" lay-submit
-                            lay-filter="formSequenceUpdate">修改
+                            lay-filter="formPermissionUpdate">添加
                     </button>
                 </div>
             </div>
@@ -55,18 +54,20 @@
 </div>
 <script type="text/javascript">
     layui.use(['form'], function () {
-        var data = obtainTableSelectedRowData('id_applicationSequenceTable')[0];
-        var $ = layui.jquery
+        var data = obtainTableSelectedRowData('id_permissionTable')[0];
         var form = layui.form
-        //赋值
-        form.val('form_SequenceUpdate', {
+        var $ = layui.jquery
+        form.val('form_PermissionUpdate', {
             'applicationName': data.applicationName,
-            'sequenceType': data.sequenceType,
-            'sequence': data.sequence,
-            'step': data.step
+            'permissionName': data.permissionName,
+            'weight': data.weight,
+            'description': data.description
         })
-        form.on('submit(formSequenceUpdate)', function (data) {
-            updateOp('../api/applicationSequence/update', data.field, 'id_applicationSequenceTable')
+        form.on('submit(formPermissionUpdate)', function (formdata) {
+            var dt = formdata.field
+            //赋值ID
+            dt.id = data.id
+            updateOp('../api/permission/update', dt, 'id_permissionTable')
             return false
         })
     })

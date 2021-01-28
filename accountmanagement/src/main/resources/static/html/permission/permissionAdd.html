@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>permission add</title>
+</head>
+<body>
+<div class="main-loginForm">
+    <form class="layui-form" action="">
+        <div class="layui-form-item" id="permissionAdd_appName">
+            <label class="main-querylabel">应用名称：</label>
+            <div class="layui-input-block">
+                <select class="layui-select" id="permissionAddForm_appName" name="applicationName" lay-verify="required"
+                        lay-verType="tips">
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权限名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="permissionName" placeholder="应用名称" lay-verify="required"
+                       lay-verType="tips">
+            </div>
+        </div>
+
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权重：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="weight" placeholder="1~8位16进制数">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权限描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description" placeholder="应用描述"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-row" style="text-align: center">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formPermissionAdd">添加
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        handleAppNameSelect('permissionAdd_appName', 'permissionAddForm_appName')
+        var form = layui.form
+        var $ = layui.jquery
+        form.on('submit(formPermissionAdd)', function (data) {
+            addOp('../api/permission/add', data.field, 'id_permissionTable')
+            return false
+        })
+    })
+</script>
+</body>
+</html>

@@ -76,7 +76,7 @@ function alertMsg(msg) {
  * @param type 请求类型，默认'get'
  * 数据返回类型[{id: xxx, name: xxx}]
  */
-function renderSelect(id, url, type) {
+function renderSelect(id, url, type, callback) {
     var type = type || 'get'
     var $ = layui.jquery
     var jwt = obtainJwt() || ''
@@ -91,6 +91,9 @@ function renderSelect(id, url, type) {
                 node.append("<option value='" + obj.id + "'>" + obj.name + "</option>")
             })
             layui.form.render("select")//重新渲染select
+            if (callback != undefined) {
+                callback()
+            }
         }
     })
 }
@@ -99,10 +102,10 @@ function renderSelect(id, url, type) {
  * 处理应用名选择框
  * 如果是ADMIN用户则显示并渲染应用名下拉框，否则隐藏下拉框
  */
-function handleAppNameSelect(blockId, selectId) {
+function handleAppNameSelect(blockId, selectId, callback = undefined) {
     var api = '../api/applicationCode/listAll'//数据api
     if (isAdmin()) {
-        renderSelect(selectId, api)
+        renderSelect(selectId, api, callback)
     } else {
         var $ = layui.jquery
         $('#' + blockId).css('display', 'none')

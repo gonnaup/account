@@ -132,7 +132,7 @@
                 score = #{score},
             </if>
             <if test="description != null and description != ''">
-                description = #{description},
+                description = #{description}
             </if>
         </set>
         where id = #{id}

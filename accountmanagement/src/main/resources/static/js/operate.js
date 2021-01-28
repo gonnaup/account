@@ -61,3 +61,21 @@ function applicationsequenceDeleteClicked(rowData) {
     }
 }
 
+/////////////////////////// permission.html /////////////////////////////////
+
+function permissionAddClicked() {
+    openPage('../html/permission/permissionAdd.html', '新增')
+}
+function permissionUpdateClicked(rowData) {
+    if (selectOneRowDataVerify(rowData.data)) {
+        openPage('../html/permission/permissionUpdate.html', '新增')
+    }
+}
+function permissionDeleteClicked(rowData) {
+    if (selectOneRowDataVerify(rowData.data)) {
+        var data = rowData.data[0]
+        var url = '../api/permission/delete/' + data.id
+        deleteOp(url, 'id_permissionTable')
+    }
+}
+
