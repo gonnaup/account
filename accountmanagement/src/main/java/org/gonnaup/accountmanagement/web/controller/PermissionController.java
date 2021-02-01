@@ -164,7 +164,7 @@ public class PermissionController {
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
     public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.UPDATE.class) PermissionDTO permissionDTO) {
-        Long id = Long.parseLong(permissionDTO.getId());
+        Long id = permissionDTO.getId();
         Permission origin = permissionService.findById(id);
         if (origin == null) {
             log.error("要更新的权限对象ID={}不存在", permissionDTO.getId());

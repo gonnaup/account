@@ -130,6 +130,7 @@ public class PermissionServiceImpl implements PermissionService {
             return null;
         }
         permissionDao.update(permission);
+        //todo 更新角色的权限分数
         Permission after = findById(permission.getId());
         operationLogService.insert(OperationLog.of(operater, OperateType.U, String.format("更新权限对象：%s => %s", origin, after)));
         log.info("{}[{}]更新权限对象 原对象：{} => 更新后对象：{}", operater.getOperaterId(), operater.getOperaterName(), origin, after);

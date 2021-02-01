@@ -2,9 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>role add</title>
 </head>
 <body>
+<div class="main-loginForm">
+    <form class="layui-form" action="" lay-filter="form_RoleUpdate">
+        <div class="layui-form-item">
+            <label class="main-querylabel">应用名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input layui-disabled" name="applicationName" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">角色名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="roleName" lay-verify="required"
+                       lay-verType="tips">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">权限分数：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="score" placeholder="1~8位16进制数">
+            </div>
+        </div>
+        <div class="layui-form-item main-marginTop10">
+            <label class="main-querylabel">角色描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description" placeholder="角色描述"></textarea>
+            </div>
+        </div>
 
+        <div class="layui-row" style="text-align: center">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formRoleUpdate">添加
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var data = obtainTableSelectedRowData('id_roleTable')[0];
+        var form = layui.form
+        var $ = layui.jquery
+        form.val('form_RoleUpdate', {
+            'applicationName': data.applicationName,
+            'roleName': data.roleName,
+            'score': data.score,
+            'description': data.description
+        })
+        form.on('submit(formRoleUpdate)', function (formdata) {
+            var dt = formdata.field
+            //赋值ID
+            dt.id = data.id
+            updateOp('../api/role/update', dt, 'id_roleTable')
+            return false
+        })
+    })
+</script>
 </body>
 </html>

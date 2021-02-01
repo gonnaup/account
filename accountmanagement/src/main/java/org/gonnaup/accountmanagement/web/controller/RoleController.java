@@ -11,6 +11,7 @@ import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequireLogin;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
+import org.gonnaup.accountmanagement.constant.ValidateGroups;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
@@ -107,13 +108,13 @@ public class RoleController {
      */
     @PostMapping("/add")
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated RoleDTO roleDTO) {
+    public Result<Void> add(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.ADD.class) RoleDTO roleDTO) {
         //appName check
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, roleDTO);
 
         roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
 
-        List<String> permissionIdList = roleDTO.getPermissionIdList();
+        List<Long> permissionIdList = roleDTO.getPermissionIdList();
         String addObj_appName = roleDTO.getApplicationName();
 
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
@@ -141,13 +142,13 @@ public class RoleController {
      */
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
-    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated RoleDTO roleDTO) {
+    public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.UPDATE.class) RoleDTO roleDTO) {
         //appName deal
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, roleDTO);
 
         roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
 
-        List<String> permissionIdList = roleDTO.getPermissionIdList();
+        List<Long> permissionIdList = roleDTO.getPermissionIdList();
         String updateObj_appName = roleDTO.getApplicationName();
 
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
@@ -216,10 +217,10 @@ public class RoleController {
      * @param permissionIdList
      * @param addObj_appName
      */
-    private void checkPermissionIdBelongApp(RoleDTO roleDTO, List<String> permissionIdList, String addObj_appName) {
+    private void checkPermissionIdBelongApp(RoleDTO roleDTO, List<Long> permissionIdList, String addObj_appName) {
         if (CollectionUtils.isNotEmpty(permissionIdList) &&
                 !permissionIdList.stream().allMatch(pId -> {
-                            Permission permission = permissionService.findById(Long.parseLong(pId));
+                            Permission permission = permissionService.findById(pId);
                             return permission != null && addObj_appName.equals(permission.getApplicationName());
                         }
                 )
@@ -249,12 +250,12 @@ public class RoleController {
      * @param operater
      * @param roleId
      */
-    private void insertRolePermission(List<String> permissionIdList, Operater operater, Long roleId) {
+    private void insertRolePermission(List<Long> permissionIdList, Operater operater, Long roleId) {
         if (CollectionUtils.isNotEmpty(permissionIdList)) {
             List<RolePermission> rolePermissionList = permissionIdList.stream().map(permissionId -> {
                 RolePermission rolePermission = new RolePermission();
                 rolePermission.setRoleId(roleId);
-                rolePermission.setPermissionId(Long.parseLong(permissionId));
+                rolePermission.setPermissionId(permissionId);
                 return rolePermission;
             }).collect(Collectors.toUnmodifiableList());
             rolePermissionService.insertBatch(rolePermissionList, operater);//新增和权限的关联关系

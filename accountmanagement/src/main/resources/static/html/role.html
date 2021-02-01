@@ -73,6 +73,7 @@
         var table = layui.table;
         ADUOperateValidate('rolebar_add', 'rolebar_delete', 'rolebar_update')//toolbar按钮权限处理
         var operationlogTable = table.render({
+            id: 'id_roleTable',
             elem: '#roleTable',
             url: '../api/role/list',
             headers: {token_jwt: obtainJwt() || ''},
@@ -103,15 +104,15 @@
         table.on('toolbar(role)', function (obj) {
             switch (obj.event) {
                 case 'add':
-                    accountAddClicked()
+                    roleAddClicked()
                     break;
                 case 'delete':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountDeleteClicked(data)
+                    roleDeleteClicked(data)
                     break;
                 case 'update':
                     var data = table.checkStatus(obj.config.id);//选中行数据Array[]
-                    accountUpdateClicked(data)
+                    roleUpdateClicked(data)
                     break;
             }
             ;

@@ -2,9 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>role add</title>
 </head>
 <body>
+<div class="main-loginForm">
+    <form class="layui-form" action="">
+        <div class="layui-form-item" id="roleAdd_appName">
+            <label class="main-querylabel">应用名称：</label>
+            <div class="layui-input-block">
+                <select class="layui-select" lay-filter="roleAppName" id="roleAddForm_appName" name="applicationName"
+                        lay-verify="required"
+                        lay-verType="tips">
+                </select>
+            </div>
+        </div>
 
+        <div class="layui-form-item main-marginTop30">
+            <label class="main-querylabel">角色名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="roleName" lay-verify="required"
+                       lay-verType="tips">
+            </div>
+        </div>
+
+        <div class="layui-form-item main-marginTop30" id="roleAdd_permissions">
+            <label class="main-querylabel">权限列表：</label>
+            <div class="layui-input-block" id="div_permissionList"></div>
+        </div>
+
+        <div class="layui-form-item main-marginTop30">
+            <label class="main-querylabel">权限分数：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="score" placeholder="1~8位16进制数">
+            </div>
+        </div>
+
+        <div class="layui-form-item main-marginTop30">
+            <label class="main-querylabel">角色描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-row main-marginTop30" style="text-align: center; margin-bottom: 40px">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formRoleAdd">添加
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="../xmSelect.js"></script>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var $ = layui.jquery
+        var form = layui.form
+        handleAppNameSelect('roleAdd_appName', 'roleAddForm_appName',
+            function () {
+                form.on('select(roleAppName)', function (data) {
+                    var url = '../api/permission/listAppAll?appName=' + data.value
+                    renderMultSelect('div_permissionList', url)
+                })
+
+                var selectRoot = document.getElementById('roleAddForm_appName');
+                if (selectRoot.childElementCount > 0) {
+                    /**
+                     * 由于当下拉框渲染完成时，不会触发layui的下拉框选中事件，完成时进行手动选择；
+                     * 当第一个选项的value值不为空字符串时，则为默认选中的第一项
+                     */
+                    var firstNode = selectRoot.children[0]
+                    var firstApp = firstNode.value//第一个选中的app
+                    if (firstApp != '') {
+                        var url = '../api/permission/listAppAll?appName=' + firstApp
+                        renderMultSelect('div_permissionList', url)
+                    }
+                }
+            }, function () {
+
+            })
+
+        form.on('submit(formRoleAdd)', function (data) {
+            addOp('../api/role/add', data.field, 'id_roleTable')
+            return false
+        })
+    })
+</script>
 </body>
 </html>

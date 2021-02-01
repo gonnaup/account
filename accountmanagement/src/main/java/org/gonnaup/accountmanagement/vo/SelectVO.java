@@ -19,7 +19,7 @@ public class SelectVO implements Serializable {
     /**
      * id
      */
-    private String id;
+    private String value;
 
     /**
      * 名称

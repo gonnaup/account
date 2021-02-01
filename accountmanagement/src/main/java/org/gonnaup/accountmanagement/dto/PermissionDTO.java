@@ -1,14 +1,12 @@
 package org.gonnaup.accountmanagement.dto;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Permission;
 import org.gonnaup.accountmanagement.constant.ValidateGroups;
 import org.gonnaup.accountmanagement.util.BeanFieldCopyUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -30,8 +28,7 @@ public class PermissionDTO implements Serializable, ApplicationNameAccessor {
      * ID
      */
     @NotNull(message = "权限ID不能为空", groups = ValidateGroups.UPDATE.class)
-    @DecimalMin(value = "0", message = "ID必须为数字", groups = ValidateGroups.UPDATE.class)
-    private String id;
+    private Long id;
 
     /**
      * 所属服务(为不同服务定制不同角色)
@@ -55,9 +52,6 @@ public class PermissionDTO implements Serializable, ApplicationNameAccessor {
     public Permission toPermission() {
         Permission permission = new Permission();
         BeanFieldCopyUtil.copyProperties(this, permission);
-        if (StringUtils.isNotBlank(id)) {
-            permission.setId(Long.parseLong(id));
-        }
         return permission;
     }
 

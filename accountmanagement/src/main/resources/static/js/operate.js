@@ -79,3 +79,16 @@ function permissionDeleteClicked(rowData) {
     }
 }
 
+///////////////////////// role.html //////////////////////////////////////
+function roleAddClicked() {
+    openPage('../html/role/roleAdd.html', '新增')
+}
+
+function roleDeleteClicked(rowData) {
+
+}
+
+function roleUpdateClicked(rowData) {
+
+}
+

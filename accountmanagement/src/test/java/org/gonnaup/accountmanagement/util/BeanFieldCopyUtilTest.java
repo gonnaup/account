@@ -21,7 +21,7 @@ class BeanFieldCopyUtilTest {
         roleDTO.setApplicationName(ApplicationName.APPNAME);
         roleDTO.setRoleName("AAA");
         roleDTO.setDescription("BBB");
-        roleDTO.setPermissionIdList(List.of("10101010", "2020202020"));
+        roleDTO.setPermissionIdList(List.of(10101010L, 2020202020L));
         Role role = new Role();
         BeanFieldCopyUtil.copyProperties(roleDTO, role);
         BeanFieldCopyUtil.copyProperties(roleDTO, role);

@@ -88,10 +88,10 @@ function renderSelect(id, url, type, callback) {
             var data = data.data
             var node = $('#' + id)//select节点
             data.forEach(function (obj) {
-                node.append("<option value='" + obj.id + "'>" + obj.name + "</option>")
+                node.append("<option value='" + obj.value + "'>" + obj.name + "</option>")
             })
             layui.form.render("select")//重新渲染select
-            if (callback != undefined) {
+            if (callback) {
                 callback()
             }
         }
@@ -101,14 +101,21 @@ function renderSelect(id, url, type, callback) {
 /**
  * 处理应用名选择框
  * 如果是ADMIN用户则显示并渲染应用名下拉框，否则隐藏下拉框
+ * @param blockId 下拉框所属<div/>ID
+ * @param selectId 下拉框ID
+ * @param adminCallback 角色为admin时，渲染完成后的回调
+ * @param commonCallback 普通用户的回调
  */
-function handleAppNameSelect(blockId, selectId, callback = undefined) {
+function handleAppNameSelect(blockId, selectId, adminCallback, commonCallback) {
     var api = '../api/applicationCode/listAll'//数据api
     if (isAdmin()) {
-        renderSelect(selectId, api, callback)
+        renderSelect(selectId, api, 'get', adminCallback)
     } else {
         var $ = layui.jquery
         $('#' + blockId).css('display', 'none')
+        if (commonCallback) {
+            commonCallback()
+        }
     }
 }
 
@@ -179,7 +186,7 @@ function saveOp(url, data, tableId, type) {
  * @param tableId 需要刷新的表格ID
  * @param callback 成功后的回调函数
  */
-function deleteOp(url, tableId, callback = undefined) {
+function deleteOp(url, tableId, callback) {
     var layer = layui.layer
     layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
         function (index) {
@@ -213,9 +220,33 @@ function removeOptionExceptFirst(selectId) {
  * @param selectId 选择器ID
  * @param exceptIndex 前面不移除的选项个数
  */
-function removeOptionExceptFirstN(selectId, exceptNunber = 0) {
+function removeOptionExceptFirstN(selectId, exceptNunber) {
     var selectNode = document.getElementById(selectId)
-    while (selectNode.childElementCount > exceptNunber) {
+    while (selectNode.childElementCount > (exceptNunber || 0)) {
         selectNode.removeChild(selectNode.lastChild)
     }
+}
+
+function renderMultSelect(id, url, type, callback) {
+    var $ = layui.jquery
+    $.ajax({
+        url: url,
+        type: type || 'get',
+        headers: {token_jwt: obtainJwt() || ''},
+        success: function (data) {
+            xmSelect.render({
+                el: '#' + id,
+                toolbar: {
+                    show: true,
+                },
+                paging: true,
+                pageSize: 5,
+                direction: 'down',
+                data: data.data
+            })
+            if (callback) {
+                callback()
+            }
+        }
+    })
 }
