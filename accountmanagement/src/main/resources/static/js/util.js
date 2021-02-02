@@ -227,15 +227,29 @@ function removeOptionExceptFirstN(selectId, exceptNunber) {
     }
 }
 
-function renderMultSelect(id, url, type, callback) {
+/**
+ *
+ * @param id 需要渲染的id
+ * @param url 数据请求url
+ * @param type 请求类型
+ * @param listener 下拉框监听器函数
+ * @param callback 渲染成功后的回调函数
+ */
+function renderMultSelect(id, url, name, type, listener, callback) {
     var $ = layui.jquery
     $.ajax({
         url: url,
         type: type || 'get',
         headers: {token_jwt: obtainJwt() || ''},
         success: function (data) {
-            xmSelect.render({
+            var pList = xmSelect.render({
                 el: '#' + id,
+                name: name,
+                on: function (data) {
+                    if (listener) {
+                        listener(data)
+                    }
+                },
                 toolbar: {
                     show: true,
                 },
@@ -245,7 +259,7 @@ function renderMultSelect(id, url, type, callback) {
                 data: data.data
             })
             if (callback) {
-                callback()
+                callback(pList)
             }
         }
     })

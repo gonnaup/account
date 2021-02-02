@@ -1,5 +1,6 @@
 package org.gonnaup.accountmanagement.web.controller;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.gonnaup.account.domain.AccountHeader;
@@ -35,6 +36,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -118,7 +120,7 @@ public class RoleController {
         String addObj_appName = roleDTO.getApplicationName();
 
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
-        checkPermissionIdBelongApp(roleDTO, permissionIdList, addObj_appName);
+        String score = checkPermissionIdBelongAppAndCalculateScore(roleDTO, permissionIdList, addObj_appName);
 
         //account info
         Long accountId = jwtData.getAccountId();
@@ -127,7 +129,7 @@ public class RoleController {
         //add
         Role role = roleDTO.toRole();
         Operater operater = Operater.of(operaterType, accountId, accountHeader.getAccountName());
-        //todo 计算权限分
+        role.setScore(score);
         Long roleId = roleService.insert(role, operater).getId();//新增角色
         insertRolePermission(permissionIdList, operater, roleId);//新增权限关联关系
         return ResultConst.SUCCESS_NULL;
@@ -143,16 +145,16 @@ public class RoleController {
     @PutMapping("/update")
     @RequirePermission(permissions = {PermissionType.APP_U})
     public Result<Void> update(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.UPDATE.class) RoleDTO roleDTO) {
+        roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
+
         //appName deal
         OperaterType operaterType = applicationNameValidator.validateApplicationName(jwtData, roleDTO);
 
-        roleExistThrow(roleDTO.getApplicationName(), roleDTO.getRoleName());
-
         List<Long> permissionIdList = roleDTO.getPermissionIdList();
-        String updateObj_appName = roleDTO.getApplicationName();
+        String appName = roleDTO.getApplicationName();
 
         //permission appName check，确保所有权限Id有效并且其所属应用名和新增的角色应用名相同
-        checkPermissionIdBelongApp(roleDTO, permissionIdList, updateObj_appName);
+        String score = checkPermissionIdBelongAppAndCalculateScore(roleDTO, permissionIdList, appName);
 
         //account info
         Long accountId = jwtData.getAccountId();
@@ -165,7 +167,7 @@ public class RoleController {
         Long roleId = role.getId();
         rolePermissionService.deleteByRoleId(roleId, roleDTO.getApplicationName(), operater);
         //update
-        //todo 计算权限分
+        role.setScore(score);
         roleService.update(role, operater);
         //add related
         insertRolePermission(permissionIdList, operater, roleId);
@@ -196,6 +198,7 @@ public class RoleController {
 
     /**
      * 判断应用中某个名称的角色是否已经存在
+     *
      * @param jwtData
      * @param appName
      * @param roleName
@@ -211,23 +214,50 @@ public class RoleController {
     }
 
     /**
-     * 检查权限列表中是否有不属于角色所在应用的权限
+     * 计算权限列表的总权限分数
+     * @param permissionIdList
+     * @return
+     */
+    @GetMapping("/calculatescore")
+    @RequirePermission(permissions = PermissionType.APP_R)
+    public Result<String> calculateScore(@RequestParam("permissionIdList") List<Long> permissionIdList) {
+        final AtomicInteger score = new AtomicInteger(0);
+        permissionIdList.forEach(pId -> {
+                    Permission permission = permissionService.findById(pId);
+                    if (permission != null) {
+                        score.accumulateAndGet(Integer.parseInt(permission.getWeight(), 16), (left, right) -> left | right);
+                    }
+                }
+        );
+        return Result.code(ResultCode.SUCCESS.code()).success().data(Strings.padStart(Integer.toHexString(score.get()).toUpperCase(), 8, '0'));
+    }
+
+    /**
+     * 检查权限列表中是否有不属于角色所在应用的权限，并返回总权限分
      *
      * @param roleDTO
      * @param permissionIdList
      * @param addObj_appName
      */
-    private void checkPermissionIdBelongApp(RoleDTO roleDTO, List<Long> permissionIdList, String addObj_appName) {
+    private String checkPermissionIdBelongAppAndCalculateScore(RoleDTO roleDTO, List<Long> permissionIdList, String addObj_appName) {
+        final AtomicInteger score = new AtomicInteger(0);
         if (CollectionUtils.isNotEmpty(permissionIdList) &&
                 !permissionIdList.stream().allMatch(pId -> {
                             Permission permission = permissionService.findById(pId);
-                            return permission != null && addObj_appName.equals(permission.getApplicationName());
+                            if (permission != null && addObj_appName.equals(permission.getApplicationName())) {
+                                score.accumulateAndGet(Integer.parseInt(permission.getWeight(), 16), (left, right) -> left | right);
+                                return true;
+                            }
+                            return false;
                         }
                 )
         ) {
             log.error("存在不属于角色 {} 所属应用 {} 中的权限信息 {}", roleDTO.toRole(), addObj_appName, roleDTO.getPermissionIdList());
             throw new LogicValidationException("存在不属于此角色应用的权限");
         }
+        String scoreFormated = Strings.padStart(Integer.toHexString(score.get()).toUpperCase(), 8, '0');
+        log.info("计算权限列表 {} 的权限分数为 {}", permissionIdList, scoreFormated);
+        return scoreFormated;
     }
 
     /**
