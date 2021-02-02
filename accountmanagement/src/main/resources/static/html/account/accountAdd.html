@@ -3,39 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <title>account add</title>
+    <style type="text/css">
+        .freshButton {
+            color: #009688;
+            font-weight: bold;
+        }
+        .freshButton:hover {
+            cursor: pointer;
+            color: #5FB878;
+        }
+    </style>
 </head>
 <body>
 <div class="main-loginForm">
     <form class="layui-form" action="">
-        <div class="layui-form-item">
-            <label class="layui-form-label">账号：</label>
+        <div class="layui-form-item" id="accountAdd_appName">
+            <label class="layui-form-label">应用名称：</label>
             <div class="layui-input-block">
-                <input type="text" name="identifier" required lay-verify="required" placeholder="邮箱或用户名"
-                       autocomplete="off"
-                       class="layui-input">
+                <select class="layui-select" lay-filter="accountAppName" id="accountAddForm_appName"
+                        name="applicationName" lay-verify="required" lay-verType="tips">
+                </select>
             </div>
         </div>
+
         <div class="layui-form-item">
-            <label class="layui-form-label">密码：</label>
-            <div class="layui-input-block">
-                <input type="password" name="credential" required lay-verify="required" placeholder="请输入密码"
-                       autocomplete="off" class="layui-input">
+            <label class="layui-form-label">账号名称：</label>
+            <div class="layui-input-inline" style="width: 212px">
+                <input id="accountAddForm_accountName" class="layui-input" type="text" name="accountName">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+            <!--                todo-->
+                <span class="freshButton" onclick=""><i id="accountName_fresh" class="layui-icon layui-icon-refresh"></i></span>
             </div>
         </div>
+
         <div class="layui-form-item">
-            <label class="layui-form-label">记住我：</label>
+            <label class="layui-form-label">昵称：</label>
             <div class="layui-input-block">
-                <input type="checkbox" name="rememberme" checked lay-skin="switch">
-                <button type="button" class="layui-btn layui-btn-primary" style="border: none;float: right">忘记密码？
-                </button>
+                <input class="layui-input" type="text" name="accountNickname" lay-verify="required">
             </div>
         </div>
+
         <div class="layui-form-item">
-            <button class="layui-btn layui-btn-normal layui-btn-radius" style="margin-left: 30px; width: 95%" lay-submit
-                    lay-filter="formLogin">登录
-            </button>
+            <label class="layui-form-label">账号状态：</label>
+            <div class="layui-input-block">
+                <select class="layui-select" name="accountState">
+                    <option value="N" selected>正常</option>
+                    <option value="F">禁用</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户标记：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="tag"></textarea>
+            </div>
+        </div>
+
+        <fieldset class="layui-elem-field" style="margin-right: -20px">
+            <legend><span style="font-size: small">认证信息</span></legend>
+            <div class="layui-form-item" style="margin-right: 20px">
+                <label class="layui-form-label">邮箱：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" id="account_identifier" type="email" name="identifier" required
+                           lay-verify="required" placeholder="邮箱或用户名">
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-right: 20px">
+                <label class="layui-form-label">密码：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" id="account_credential" type="password" name="credential" required
+                           lay-verify="required" placeholder="请输入密码">
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="layui-row main-marginTop30" style="text-align: center; margin-bottom: 40px">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formAccountAdd">添加
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
 </div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var form = layui.form;
+        handleAppNameSelect('accountAdd_appName', 'accountAddForm_appName', function () {
+            //admin用户
+            /* 生成用户名 */
+            // 监听
+            form.on('select(accountAppName)', function (data) {
+                var url = '../api/account/generateAccountname?applicationName=' + data.value
+                accountNameFill(url, 'accountAddForm_accountName')
+            })
+
+            //首次渲染完成时
+            var selectRoot = document.getElementById('accountAddForm_appName');
+            if (selectRoot.childElementCount > 0) {
+                var firstNode = selectRoot.children[0]
+                var firstApp = firstNode.value//第一个选中的app
+                if (firstApp != '') {
+                    var url = '../api/account/generateAccountname?applicationName=' + firstApp
+                    accountNameFill(url, 'accountAddForm_accountName')
+                }
+            }
+        }, function () {
+            //普通用户
+            accountNameFill('../api/account/generateAccountname', 'accountAddForm_accountName')
+        })
+        form.render('select')
+        //submit
+        form.on('submit(formAccountAdd)', function (data) {
+            addOp('../api/account/add', data.field, 'id_accountTable')
+            return false
+        })
+    })
+</script>
 </body>
 </html>

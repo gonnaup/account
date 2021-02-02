@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AccountState;
@@ -13,8 +14,10 @@ import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
+import org.gonnaup.accountmanagement.service.AccountNameGenerator;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
@@ -49,6 +52,9 @@ public class AccountController {
 
     @Autowired
     private ApplicationNameValidator applicationNameValidator;
+
+    @Autowired
+    private AccountNameGenerator accountNameGenerator;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -91,14 +97,17 @@ public class AccountController {
      * @param account 账号信息
      * @return
      */
-    @PostMapping("/new")
+    @PostMapping("/add")
     @Transactional
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @Validated AccountDTO accountDTO) {
+    public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @RequestBody @Validated AccountDTO accountDTO) {
         //应用名处理
         applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
 
         Account account = accountDTO.toAccount();
+        if (StringUtils.isBlank(account.getAccountName())) {
+            account.setAccountName(generateAccountName(account.getApplicationName()));
+        }
         Account inserted = accountService.insert(account);//添加账号信息
         Authentication authentication = accountDTO.createAuthentication(inserted.getId());//设置认证信息账号ID
         authenticationService.insert(authentication);//添加账号认证信息
@@ -156,9 +165,58 @@ public class AccountController {
      */
     @GetMapping("/accountNicknameExist")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Result<SimpleBooleanShell> accountNicknameExist(@JwtDataParam JwtData jwtData, AccountQueryDTO accountQueryDTO) {
-        applicationNameValidator.judgeAndSetApplicationName(jwtData, accountQueryDTO);
-        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(accountService.accountNameExist(accountQueryDTO.getApplicationName(), accountQueryDTO.getAccountNickname())));
+    public Result<SimpleBooleanShell> accountNicknameExist(@JwtDataParam JwtData jwtData, @RequestParam(value = "applicationName", required = false) String appName, @RequestParam("accountNickname") String nickName) {
+        ApplicationNameAccessor accessor = new TemporaryApplicationNameAccessor(appName);
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accessor);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(SimpleBooleanShell.of(accountService.accountNameExist(accessor.getApplicationName(), nickName)));
+    }
+
+    /**
+     * 生成默认的账号名称
+     * @param jwtData
+     * @param appName
+     * @return
+     */
+    @GetMapping("/generateAccountname")
+    @RequirePermission(permissions = PermissionType.APP_R)
+    public Result<String> generateAccountName(@JwtDataParam JwtData jwtData, @RequestParam(value = "applicationName", required = false) String appName) {
+        ApplicationNameAccessor accessor = new TemporaryApplicationNameAccessor(appName);
+        //appName check
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accessor);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(generateAccountName(accessor.getApplicationName()));
+    }
+
+    /**
+     * 生成账号名称，自旋直到账号名不重复
+     * @param appName 应用名称
+     * @return 账号名称
+     */
+    private String generateAccountName(String appName) {
+        String accountName = null;
+        while (accountService.accountNameExist(appName, accountName = accountNameGenerator.generate(appName))) {
+            log.info("账号名称 {} 在应用 {} 中已存在，重新生成", accountName, appName);
+        }
+        log.info("成功生成账号名 {}", accountName);
+        return accountName;
+    }
+
+    static class TemporaryApplicationNameAccessor implements ApplicationNameAccessor {
+
+        private String appName;
+
+        public TemporaryApplicationNameAccessor(String appName) {
+            this.appName = appName;
+        }
+
+        @Override
+        public String getApplicationName() {
+            return appName;
+        }
+
+        @Override
+        public void setApplicationName(String applicationName) {
+            this.appName = applicationName;
+        }
     }
 
 }

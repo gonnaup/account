@@ -69,9 +69,9 @@
 
 <script type="text/html" id="toolbarAccount">
     <div class="layui-btn-container">
-        <button id="accountbar_add" class="layui-btn layui-btn-sm" disabled lay-event="add">添加</button>
+        <button id="accountbar_add" class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+        <button id="accountbar_update" class="layui-btn layui-btn-sm" lay-event="update">修改</button>
         <button id="accountbar_delete" class="layui-btn layui-btn-sm" lay-event="delete">删除</button>
-        <button id="accountbar_update" class="layui-btn layui-btn-sm" lay-event="update">编辑</button>
     </div>
 </script>
 
@@ -82,6 +82,7 @@
         var table = layui.table;
         ADUOperateValidate('accountbar_add', 'accountbar_delete', 'accountbar_update')//toolbar按钮权限处理
         var operationlogTable = table.render({
+            id: 'id_accountTable',
             elem: '#accountTable',
             url: '../api/account/list',
             headers: {token_jwt: obtainJwt() || ''},
@@ -139,8 +140,6 @@
             return false
         })
     })
-
-
 </script>
 </body>
 </html>

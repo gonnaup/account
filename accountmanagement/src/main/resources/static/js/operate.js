@@ -4,7 +4,7 @@
 ///////////////////// account.html /////////////////////////
 //账号添加按钮点击
 function accountAddClicked() {
-    console.log("a")
+    openPage('../html/account/accountAdd.html', '新增')
 }
 
 //账号更新按钮点击

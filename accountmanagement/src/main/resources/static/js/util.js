@@ -264,3 +264,20 @@ function renderMultSelect(id, url, name, type, listener, callback) {
         }
     })
 }
+
+/**
+ * 赋值账号名称
+ * @param url 请求url
+ * @param id 账号名输入框ID
+ */
+function accountNameFill(url, id) {
+    var $ = layui.jquery
+    $.ajax({
+        url: url,
+        type: 'get',
+        headers: {token_jwt: obtainJwt() || ''},
+        success: function (data) {
+            $('#' + id).val(data.data)
+        }
+    })
+}
