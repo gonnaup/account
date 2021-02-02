@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <div class="layui-form-item main-marginTop30" id="roleAdd_permissions">
+        <div class="layui-form-item main-marginTop30">
             <label class="main-querylabel">权限列表：</label>
             <div class="layui-input-block" id="div_permissionList"></div>
         </div>
@@ -33,7 +33,7 @@
         <div class="layui-form-item main-marginTop30">
             <label class="main-querylabel">权限分数：</label>
             <div class="layui-input-block">
-                <input class="layui-input layui-disabled" id="id_rolescore" readonly type="text" name="score" placeholder="1~8位16进制数">
+                <input class="layui-input" type="text" name="score" placeholder="1~8位16进制数">
             </div>
         </div>
 
@@ -67,7 +67,6 @@
     layui.use(['form'], function () {
         var $ = layui.jquery
         var form = layui.form
-        var permissionList//权限列表下拉框实例
         handleAppNameSelect('roleAdd_appName', 'roleAddForm_appName',
             function () {
                 //监听应用名称下拉框点击
@@ -88,33 +87,35 @@
                     if (firstApp != '') {
                         var url = '../api/permission/listAppAll?appName=' + firstApp
                         renderMultSelect('div_permissionList', url, 'permissionIdList', 'get', function (data) {
-                            if (data.arr.length > 0) {
-                                var ids = []
-                                data.arr.forEach(function (d) {
-                                    ids.push(d.value)
-                                })
-                                var param = ids.join(',')//权限ID列表参数
-                                $.ajax({
-                                    url: '../api/role/calculatescore?permissionIdList=' + param,
-                                    type: 'get',
-                                    headers: {token_jwt: obtainJwt() || ''},
-                                    success: function (data) {
-                                        var score = data.data
-                                        $('#id_rolescore').val(score)
-                                    }
-                                })
-                            }
+                            // if (data.arr.length > 0) {
+                            //     var ids = []
+                            //     data.arr.forEach(function (d) {
+                            //         ids.push(d.value)
+                            //     })
+                            //     var param = ids.join(',')//权限ID列表参数
+                            //     $.ajax({
+                            //         url: '../api/role/calculatescore?permissionIdList=' + param,
+                            //         type: 'get',
+                            //         headers: {token_jwt: obtainJwt() || ''},
+                            //         success: function (data) {
+                            //             var score = data.data
+                            //             $('#id_rolescore').val(score)
+                            //         }
+                            //     })
+                            // }
                         })
                     }
                 }
-            }, function (pList) {
-                permissionList = pList
             })
 
         form.on('submit(formRoleAdd)', function (data) {
-            data.field.permissionIdList = data.field.permissionIdList.split(',')
-            console.log(data.field)
-            addOp('../api/role/add', data.field, 'id_roleTable')
+            var dt = data.field
+            if (dt.permissionIdList != undefined && dt.permissionIdList.trim() != '') {
+                dt.permissionIdList = dt.permissionIdList.split(',')
+            } else {
+                dt.permissionIdList = []
+            }
+            addOp('../api/role/add', dt, 'id_roleTable')
             return false
         })
     })

@@ -68,7 +68,7 @@ function permissionAddClicked() {
 }
 function permissionUpdateClicked(rowData) {
     if (selectOneRowDataVerify(rowData.data)) {
-        openPage('../html/permission/permissionUpdate.html', '新增')
+        openPage('../html/permission/permissionUpdate.html', '修改')
     }
 }
 function permissionDeleteClicked(rowData) {
@@ -84,11 +84,17 @@ function roleAddClicked() {
     openPage('../html/role/roleAdd.html', '新增')
 }
 
-function roleDeleteClicked(rowData) {
-
+function roleUpdateClicked(rowData) {
+    if (selectOneRowDataVerify(rowData.data)) {
+        openPage('../html/role/roleUpdate.html', '修改')
+    }
 }
 
-function roleUpdateClicked(rowData) {
-
+function roleDeleteClicked(rowData) {
+    if (selectOneRowDataVerify(rowData.data)) {
+        var data = rowData.data[0]
+        var url = '../api/role/delete/' + data.id
+        deleteOp(url, 'id_roleTable')
+    }
 }
 

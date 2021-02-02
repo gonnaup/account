@@ -13,31 +13,39 @@
                 <input class="layui-input layui-disabled" name="applicationName" disabled>
             </div>
         </div>
-        <div class="layui-form-item main-marginTop10">
+
+        <div class="layui-form-item main-marginTop30">
             <label class="main-querylabel">角色名称：</label>
             <div class="layui-input-block">
                 <input class="layui-input" type="text" name="roleName" lay-verify="required"
                        lay-verType="tips">
             </div>
         </div>
-        <div class="layui-form-item main-marginTop10">
+
+        <div class="layui-form-item main-marginTop30">
+            <label class="main-querylabel">权限列表：</label>
+            <div class="layui-input-block" id="div_permissionList"></div>
+        </div>
+
+        <div class="layui-form-item main-marginTop30">
             <label class="main-querylabel">权限分数：</label>
             <div class="layui-input-block">
-                <input class="layui-input" type="text" name="score" placeholder="1~8位16进制数">
-            </div>
-        </div>
-        <div class="layui-form-item main-marginTop10">
-            <label class="main-querylabel">角色描述：</label>
-            <div class="layui-input-block">
-                <textarea class="layui-textarea" name="description" placeholder="角色描述"></textarea>
+                <input class="layui-input" type="text" name="score">
             </div>
         </div>
 
-        <div class="layui-row" style="text-align: center">
+        <div class="layui-form-item main-marginTop30">
+            <label class="main-querylabel">角色描述：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-textarea" name="description"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-row main-marginTop30" style="text-align: center; margin-bottom: 40px">
             <div class="layui-col-md6">
                 <div class="layui-input-inline">
                     <button class="layui-btn" lay-submit
-                            lay-filter="formRoleUpdate">添加
+                            lay-filter="formRoleUpdate">修改
                     </button>
                 </div>
             </div>
@@ -49,22 +57,60 @@
                 </div>
             </div>
         </div>
-
     </form>
 </div>
+<script src="../xmSelect.js"></script>
 <script type="text/javascript">
     layui.use(['form'], function () {
         var data = obtainTableSelectedRowData('id_roleTable')[0];
         var form = layui.form
         var $ = layui.jquery
+        //赋值
         form.val('form_RoleUpdate', {
             'applicationName': data.applicationName,
             'roleName': data.roleName,
             'score': data.score,
             'description': data.description
         })
+
+        //权限列表渲染
+        var url = '../api/permission/listAppAll?appName=' + data.applicationName
+        renderMultSelect('div_permissionList', url, 'permissionIdList', 'get', function (data) {
+            // if (data.arr.length > 0) {
+            //     var ids = []
+            //     data.arr.forEach(function (d) {
+            //         ids.push(d.value)
+            //     })
+            //     var param = ids.join(',')//权限ID列表参数
+            //     $.ajax({
+            //         url: '../api/role/calculatescore?permissionIdList=' + param,
+            //         type: 'get',
+            //         headers: {token_jwt: obtainJwt() || ''},
+            //         success: function (data) {
+            //             var score = data.data
+            //             $('#id_rolescore').val(score)
+            //         }
+            //     })
+            // }
+        }, function (component) {
+            //赋值下拉框
+            $.ajax({
+                url: '../api/role/listPermissionIds/' + data.id,
+                type: 'get',
+                headers: {token_jwt: obtainJwt() || ''},
+                success: function (data) {
+                    component.setValue(data.data)
+                }
+            })
+        })
+
         form.on('submit(formRoleUpdate)', function (formdata) {
             var dt = formdata.field
+            if (dt.permissionIdList != undefined && dt.permissionIdList.trim() != '') {
+                dt.permissionIdList = dt.permissionIdList.split(',')
+            } else {
+                dt.permissionIdList = []
+            }
             //赋值ID
             dt.id = data.id
             updateOp('../api/role/update', dt, 'id_roleTable')
