@@ -8,12 +8,12 @@ spring:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
-      password: 121314
+      password: 123456
       maximum-pool-size: 8
   redis:
-    host: my.ali.com
-    port: 8379
-    password: 121314
+    host: localhost
+    port: 6379
+    password:
   cache:
     redis:
       key-prefix: redisCache::$
