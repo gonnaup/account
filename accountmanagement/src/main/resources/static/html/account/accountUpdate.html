@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>account update</title>
+    <style type="text/css">
+        .accountNameFreshButton {
+            color: #009688;
+            font-weight: bold;
+        }
+        .accountNameFreshButton:hover {
+            cursor: pointer;
+            color: #5FB878;
+        }
+    </style>
+</head>
+<body>
+<div class="main-loginForm">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">应用名称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" name="applicationName">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号名称：</label>
+            <div class="layui-input-inline" style="width: 212px">
+                <input id="accountAddForm_accountName" class="layui-input" type="text" name="accountName">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="accountNameFreshButton" onclick="freshButtonClick()"><i id="accountName_fresh" class="layui-icon layui-icon-refresh"></i></span>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">昵称：</label>
+            <div class="layui-input-block">
+                <input class="layui-input" type="text" name="accountNickname" lay-verify="required">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号状态：</label>
+            <div class="layui-input-block">
+                <select class="layui-select" name="accountState">
+                    <option value="N" selected>正常</option>
+                    <option value="F">禁用</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户角色：</label>
+            <div class="layui-input-block" id="accountadd_div_roleList"></div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户标记：</label>
+            <div class="layui-input-block">
+                <textarea class="layui-input" rows="3" style="height: 5em;padding-top: 10px; padding-bottom: 10px" name="tag"></textarea>
+            </div>
+        </div>
+
+        <fieldset class="layui-elem-field" style="margin-right: -20px">
+            <legend><span style="font-size: small">认证信息</span></legend>
+            <div class="layui-form-item" style="margin-right: 20px">
+                <label class="layui-form-label">邮箱：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" id="account_identifier" type="email" name="identifier" required
+                           lay-verify="required" placeholder="邮箱或用户名">
+                </div>
+            </div>
+            <div class="layui-form-item" style="margin-right: 20px">
+                <label class="layui-form-label">密码：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" id="account_credential" type="password" name="credential" required
+                           lay-verify="required" placeholder="请输入密码">
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="layui-row main-marginTop30" style="text-align: center; margin-bottom: 40px">
+            <div class="layui-col-md6">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit
+                            lay-filter="formAccountUpdate">修改
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-col-md-offset4">
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" onclick="closeAllLayerPage()">取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    var currentApplicationName = undefined//当前选中的应用名缓存
+    //刷新按钮点击事件
+    function freshButtonClick() {
+        var url = currentApplicationName == undefined ? '../api/account/generateAccountname' : '../api/account/generateAccountname?applicationName=' + currentApplicationName
+        accountNameFill(url, 'accountAddForm_accountName')
+    }
+
+    layui.use(['form'], function () {
+        var form = layui.form;
+        handleAppNameSelect('accountAdd_appName', 'accountAddForm_appName', function () {
+            //admin用户
+            form.on('select(accountAppName)', function (data) {
+                currentApplicationName = data.value
+                //生成账号名称
+                var url = '../api/account/generateAccountname?applicationName=' + currentApplicationName
+                accountNameFill(url, 'accountAddForm_accountName')
+
+                //角色下拉框
+                var url = '../api/role/listAppAll?applicationName=' + currentApplicationName
+                renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
+
+            })
+
+            //首次渲染完成时
+            var selectRoot = document.getElementById('accountAddForm_appName');
+            if (selectRoot.childElementCount > 0) {
+                var firstNode = selectRoot.children[0]
+                var firstApp = firstNode.value//第一个选中的app
+                currentApplicationName = firstApp
+                if (firstApp != '') {
+                    //生成账号名称
+                    var url = '../api/account/generateAccountname?applicationName=' + firstApp
+                    accountNameFill(url, 'accountAddForm_accountName')
+                    //渲染角色列表
+                    var url = '../api/role/listAppAll?applicationName=' + firstApp
+                    renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
+                }
+            }
+        }, function () {
+            //普通用户
+            accountNameFill('../api/account/generateAccountname', 'accountAddForm_accountName')
+            //渲染角色列表
+            var url = '../api/role/listAppAll'
+            renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
+        })
+        form.render('select')
+        //submit
+        form.on('submit(formAccountAdd)', function (data) {
+            var dt = data.field
+            if (dt.roleIdList != undefined && dt.roleIdList.trim() != '') {
+                dt.roleIdList = dt.roleIdList.split(',')
+            } else {
+                dt.roleIdList = []
+            }
+            addOp('../api/account/add', dt, 'id_accountTable')
+            return false
+        })
+    })
+</script>
+</body>
+</html>

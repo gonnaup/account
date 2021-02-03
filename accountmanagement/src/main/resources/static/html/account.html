@@ -23,20 +23,20 @@
                                 <input class="layui-input" type="text" name="accountName" placeholder="账号名称">
                             </div>
                         </div>
-                        <div class="layui-col-md3 main-marginLeft10">
-                            <label class="main-querylabel">账号昵称：</label>
+                        <div class="layui-col-md3 main-marginLeft10" id="accountQuery_appName">
+                            <label class="main-querylabel">应用名称：</label>
                             <div class="layui-input-block">
-                                <input class="layui-input" type="text" name="accountNickname" placeholder="账号昵称">
+                                <select id="accountQueryForm_name" name="applicationName">
+                                    <option value="">全部</option>
+                                </select>
                             </div>
                         </div>
-
                     </div>
                     <div class="layui-row main-marginTop10">
                         <div class="layui-col-md3">
-                            <label class="main-querylabel">应用名称：</label>
+                            <label class="main-querylabel">账号昵称：</label>
                             <div class="layui-input-block">
-                                <select name="applicationName">
-                                </select>
+                                <input class="layui-input" type="text" name="accountNickname" placeholder="账号昵称">
                             </div>
                         </div>
                         <div class="layui-col-md3 main-marginLeft10">
@@ -79,6 +79,7 @@
     layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
+        handleAppNameSelect('accountQuery_appName', 'accountQueryForm_name')
         var table = layui.table;
         ADUOperateValidate('accountbar_add', 'accountbar_delete', 'accountbar_update')//toolbar按钮权限处理
         var operationlogTable = table.render({

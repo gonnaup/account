@@ -9,12 +9,18 @@ function accountAddClicked() {
 
 //账号更新按钮点击
 function accountUpdateClicked(rowData) {
-    console.log("u")
+    if (selectOneRowDataVerify(rowData.data)) {
+        openPage('../html/account/accountUpdate.html', '修改')
+    }
 }
 
 //账号删除按钮点击
 function accountDeleteClicked(rowData) {
-    console.log("d")
+    if (selectOneRowDataVerify(rowData.data)) {
+        // var data = rowData.data[0]
+        // var url = '../api/applicationSequence/delete/' + data.applicationName + '/' + data.sequenceType
+        // deleteOp(url, 'id_applicationSequenceTable')
+    }
 }
 
 

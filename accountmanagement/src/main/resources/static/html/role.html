@@ -64,12 +64,7 @@
     layui.use(['element', 'table', 'form', 'layer'], function () {
         var element = layui.element
         element.init()
-        if (isAdmin()) {
-            renderSelect('roleQueryForm_name', '../api/applicationCode/listAll')//渲染select
-        } else {
-            var $ = layui.jquery
-            $('#roleQuery_appName').css('display', 'none')
-        }
+        handleAppNameSelect('roleQuery_appName', 'roleQueryForm_name')
         var table = layui.table;
         ADUOperateValidate('rolebar_add', 'rolebar_delete', 'rolebar_update')//toolbar按钮权限处理
         var operationlogTable = table.render({
