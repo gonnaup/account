@@ -4,11 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
+import org.gonnaup.account.domain.AccountHeader;
 import org.gonnaup.account.domain.Authentication;
+import org.gonnaup.account.domain.Role;
 import org.gonnaup.account.enums.AccountState;
+import org.gonnaup.account.exception.LogicValidationException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
+import org.gonnaup.accountmanagement.constant.ValidateGroups;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
@@ -22,6 +26,7 @@ import org.gonnaup.accountmanagement.service.AccountNameGenerator;
 import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.util.ObjectUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
 import org.gonnaup.accountmanagement.validator.TemporaryApplicationNameAccessor;
@@ -35,7 +40,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,12 +113,13 @@ public class AccountController {
     @PostMapping("/add")
     @Transactional
     @RequirePermission(permissions = {PermissionType.APP_A})
-    public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @RequestBody @Validated AccountDTO accountDTO) {
+    public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.ADD.class) AccountDTO accountDTO) {
         log.info("开始生成新的账号...");
         //应用名处理
         OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
 
         Account account = accountDTO.toAccount();
+        //没有设置账号名称则自动生成
         if (StringUtils.isBlank(account.getAccountName())) {
             account.setAccountName(generateAccountName(account.getApplicationName()));
         }
@@ -148,6 +153,56 @@ public class AccountController {
     }
 
     /**
+     * 账号更新，只更新基本信息和角色信息，认证信息请在认证信息模块修改
+     * @param jwtData
+     * @return
+     */
+    @Transactional
+    @PutMapping("/update")
+    @RequirePermission(permissions = PermissionType.APP_U)
+    public Result<Void> updateAccount(@JwtDataParam JwtData jwtData, @RequestBody @Validated(ValidateGroups.UPDATE.class) AccountDTO accountDTO) {
+        log.info("开始更新账号信息...");
+        Account origin = ObjectUtil.requireNotNullThrows(accountService.findById(accountDTO.getId()), new LogicValidationException("要更新的对象不存在"), String.format("要更新的账号ID=%s不存在", accountDTO.getId()));
+        if (log.isDebugEnabled()) {
+            log.debug("原账号信息 {}", origin);
+        }
+        if (!origin.getApplicationName().equals(accountDTO.getApplicationName())) {
+            log.error("参数的应用名[{}]和原数据的应用名[{}]不一致", origin.getApplicationName(), accountDTO.getApplicationName());
+            throw new LogicValidationException("应用名和原数据不一致!");
+        }
+        OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
+        //更新账号
+        Account account = accountDTO.toAccount();
+        accountService.update(account);
+        if (log.isDebugEnabled()) {
+            log.debug("更新后的账号信息 {}", account);
+        }
+
+        //角色列表更新
+        List<Long> roleIdList = accountDTO.getRoleIdList();
+        if (roleIdList != null) {
+            log.info("开始更新账号权限列表...");
+            AccountHeader operaterAccountHeader = accountService.findHeaderById(jwtData.getAccountId());
+            //删除
+            accountRoleService.deleteByAccountId(origin.getId(), origin.getApplicationName(), Operater.of(operaterType, operaterAccountHeader.getId(), operaterAccountHeader.getAccountName()));
+            if (!roleIdList.isEmpty()) {
+                final Long accountId = origin.getId();
+                List<AccountRole> accountRoleList = roleIdList.stream().map(id -> {
+                    AccountRole accountRole = new AccountRole();
+                    accountRole.setAccountId(accountId);
+                    accountRole.setRoleId(id);
+                    return accountRole;
+                }).collect(Collectors.toUnmodifiableList());
+                accountRoleService.insertBatch(accountRoleList, Operater.of(operaterType, operaterAccountHeader.getId(), operaterAccountHeader.getAccountName()));
+                log.info("添加角色信息 {} 条", accountRoleList.size());
+            } else {
+                log.info("角色信息列表为空");
+            }
+        }
+        return ResultConst.SUCCESS_NULL;
+    }
+
+    /**
      * 禁用账号
      *
      * @param app       应用名
@@ -157,19 +212,9 @@ public class AccountController {
     @DeleteMapping("/disable/{accountId}")
     @RequirePermission(permissions = {PermissionType.APP_D})
     public Result<Void> disableAccount(@JwtDataParam JwtData jwtData, @PathVariable Long accountId) {
-        Account account = accountService.findById(accountId);
-        if (account == null) {
-            log.error("账号id={} 不存在", accountId);
-            throw new ValidationException("不存在此账号，无法操作");
-        }
+        Account account = ObjectUtil.requireNotNullThrows(accountService.findById(accountId), new LogicValidationException("不存在此账号，无法操作"), String.format("要禁用的账号ID=%s不存在", accountId));
         applicationNameValidator.validateApplicationName(jwtData, account.getApplicationName());
         accountService.updateState(accountId, AccountState.F.name());//修改账户状态
-        return ResultConst.SUCCESS_NULL;
-    }
-
-    @PutMapping("/update")
-    public Result<Void> updateAccount(@JwtDataParam JwtData jwtData) {
-
         return ResultConst.SUCCESS_NULL;
     }
 
@@ -204,6 +249,7 @@ public class AccountController {
 
     /**
      * 生成默认的账号名称
+     *
      * @param jwtData
      * @param appName
      * @return
@@ -217,10 +263,31 @@ public class AccountController {
         return Result.code(ResultCode.SUCCESS.code()).success().data(generateAccountName(accessor.getApplicationName()));
     }
 
+    /**
+     * 获取账户所有角色ID
+     * @param jwtData
+     * @param accountId
+     * @return
+     */
+    @GetMapping("/rolelist/{accountId}")
+    @RequirePermission(permissions = PermissionType.APP_R)
+    public Result<List<String>> roleList(@JwtDataParam JwtData jwtData, @PathVariable("accountId") Long accountId) {
+        Account account = accountService.findById(accountId);
+        ObjectUtil.requireNotNullThrows(account, new LogicValidationException("此账号不存在"));
+        ApplicationNameAccessor accessor = new TemporaryApplicationNameAccessor(account.getApplicationName());
+        //appName check
+        applicationNameValidator.validateApplicationName(jwtData, accessor);
+        List<Role> roleList = accountRoleService.findRolesByAccountId(accountId);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(
+                roleList.stream()
+                        .map(role -> Long.toString(role.getId()))
+                        .collect(Collectors.toUnmodifiableList()));
+    }
 
 
     /**
      * 生成账号名称，自旋直到账号名不重复
+     *
      * @param appName 应用名称
      * @return 账号名称
      */

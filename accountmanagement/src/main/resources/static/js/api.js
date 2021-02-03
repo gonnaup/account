@@ -153,3 +153,74 @@ function isAdmin() {
     })
     return flag
 }
+
+/********************   AJAX请求     *********************/
+/**
+ * get请求
+ * @param url url
+ * @param success 成功回调函数
+ * @param error 错误回调
+ * @param data 附加数据
+ * @param async 是否异步，默认是
+ */
+function ajaxGET(url, success, error, data, async) {
+    ajax(url, 'get', data, async, success, error)
+}
+
+/**
+ * post请求
+ * @param url url
+ * @param data 数据
+ * @param success 成功回调
+ * @param error 失败回调
+ * @param async 是否异步，默认是
+ */
+function ajaxPOST(url, data, success, error, async) {
+    ajax(url, 'post', data, async, success, error)
+}
+
+/**
+ * put请求
+ * @param url url
+ * @param data 数据
+ * @param success 成功回调
+ * @param error 失败回调
+ * @param async 是否异步，默认是
+ */
+function ajaxPUT(url, data, success, error, async) {
+    ajax(url, 'put', data, async, success, error)
+}
+
+/**
+ * delete请求
+ * @param url url
+ * @param data 数据
+ * @param success 成功回调
+ * @param error 失败回调
+ * @param async 是否异步，默认是
+ */
+function ajaxDELETE(url, data, success, error, async) {
+    ajax(url, 'delete', data, async, success, error)
+}
+
+function ajax(url, type, data, async, success, error) {
+    var $  = layui.jquery
+    async ||= true
+    $.ajax({
+        url: url,
+        type: type,
+        headers: {token_jwt: obtainJwt() || ''},
+        async: async,
+        data: data,
+        success: function (dt) {
+            success(dt)
+        },
+        error: function () {
+            if (error) {
+                error()
+            }
+        }
+    })
+}
+
+

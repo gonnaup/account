@@ -46,11 +46,16 @@ public class AccountVO implements Serializable {
     private String accountAvatar;
 
     /**
-     * 账户状态
+     * 账户状态值
      * N - 正常
      * F - 禁用
      */
     private String accountState;
+
+    /**
+     * 状态名称
+     */
+    private String accountStateName;
 
     /**
      * 最近成功登陆时间，可用于清除僵尸账户
@@ -82,7 +87,7 @@ public class AccountVO implements Serializable {
         AccountVO accountVO = new AccountVO();
         BeanFieldCopyUtil.copyProperties(account, accountVO);
         accountVO.setId(Long.toString(account.getId()));
-        accountVO.setAccountState(AccountState.valueOf(account.getAccountState()).description());
+        accountVO.setAccountStateName(AccountState.valueOf(account.getAccountState()).description());
         accountVO.setCreatetime(LocalDate.from(account.getCreatetime()));
         accountVO.setUpdatetime(LocalDate.from(account.getUpdatetime()));
         return accountVO;

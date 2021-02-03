@@ -71,7 +71,7 @@ function openPage(url, title) {
         success: function (data) {
             layer.open({
                 type: 1,
-                area: '450px',
+                area: '480px',
                 title: title,
                 content: data,
                 success: function () {

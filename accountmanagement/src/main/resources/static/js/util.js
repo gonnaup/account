@@ -232,11 +232,11 @@ function removeOptionExceptFirstN(selectId, exceptNunber) {
  * @param id 需要渲染的id
  * @param url 数据请求url
  * @param name 数据name
- * @param type 请求类型
  * @param listener 下拉框监听器函数
- * @param callback 渲染成功后的回调函数
+ * @param callback 渲染成功后的回调函数,参数为下拉框对象
+ * @param type 请求类型 默认'get'
  */
-function renderMultSelect(id, url, name, type, listener, callback) {
+function renderMultSelect(id, url, name, listener, callback, type) {
     var $ = layui.jquery
     $.ajax({
         url: url,

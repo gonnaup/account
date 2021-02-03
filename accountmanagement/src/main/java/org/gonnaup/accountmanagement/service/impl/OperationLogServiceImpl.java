@@ -11,7 +11,6 @@ import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -65,7 +64,7 @@ public class OperationLogServiceImpl implements OperationLogService {
      * @return 实例对象
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public OperationLog insert(OperationLog operationLog) {
         try {
             operationLog.setId(applicationSequenceService.produceSequence(AppSequenceKey.OPERATIONLOG));

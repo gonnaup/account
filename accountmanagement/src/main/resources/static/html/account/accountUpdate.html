@@ -16,17 +16,17 @@
 </head>
 <body>
 <div class="main-loginForm">
-    <form class="layui-form" action="">
+    <form class="layui-form" action="" lay-filter="form_AccountUpdate">
         <div class="layui-form-item">
             <label class="layui-form-label">应用名称：</label>
             <div class="layui-input-block">
-                <input class="layui-input" name="applicationName">
+                <input class="layui-input layui-disabled" name="applicationName" disabled>
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">账号名称：</label>
-            <div class="layui-input-inline" style="width: 212px">
+            <div class="layui-input-inline" style="width: 225px">
                 <input id="accountAddForm_accountName" class="layui-input" type="text" name="accountName">
             </div>
             <div class="layui-form-mid layui-word-aux">
@@ -63,24 +63,6 @@
             </div>
         </div>
 
-        <fieldset class="layui-elem-field" style="margin-right: -20px">
-            <legend><span style="font-size: small">认证信息</span></legend>
-            <div class="layui-form-item" style="margin-right: 20px">
-                <label class="layui-form-label">邮箱：</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" id="account_identifier" type="email" name="identifier" required
-                           lay-verify="required" placeholder="邮箱或用户名">
-                </div>
-            </div>
-            <div class="layui-form-item" style="margin-right: 20px">
-                <label class="layui-form-label">密码：</label>
-                <div class="layui-input-block">
-                    <input class="layui-input" id="account_credential" type="password" name="credential" required
-                           lay-verify="required" placeholder="请输入密码">
-                </div>
-            </div>
-        </fieldset>
-
         <div class="layui-row main-marginTop30" style="text-align: center; margin-bottom: 40px">
             <div class="layui-col-md6">
                 <div class="layui-input-inline">
@@ -100,61 +82,44 @@
     </form>
 </div>
 <script type="text/javascript">
-    var currentApplicationName = undefined//当前选中的应用名缓存
+    var data = obtainTableSelectedRowData('id_accountTable')[0]
+
     //刷新按钮点击事件
     function freshButtonClick() {
-        var url = currentApplicationName == undefined ? '../api/account/generateAccountname' : '../api/account/generateAccountname?applicationName=' + currentApplicationName
+        var appName = data.applicationName
+        var url = appName == undefined ? '../api/account/generateAccountname' : '../api/account/generateAccountname?applicationName=' + appName
         accountNameFill(url, 'accountAddForm_accountName')
     }
-
     layui.use(['form'], function () {
         var form = layui.form;
-        handleAppNameSelect('accountAdd_appName', 'accountAddForm_appName', function () {
-            //admin用户
-            form.on('select(accountAppName)', function (data) {
-                currentApplicationName = data.value
-                //生成账号名称
-                var url = '../api/account/generateAccountname?applicationName=' + currentApplicationName
-                accountNameFill(url, 'accountAddForm_accountName')
-
-                //角色下拉框
-                var url = '../api/role/listAppAll?applicationName=' + currentApplicationName
-                renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
-
-            })
-
-            //首次渲染完成时
-            var selectRoot = document.getElementById('accountAddForm_appName');
-            if (selectRoot.childElementCount > 0) {
-                var firstNode = selectRoot.children[0]
-                var firstApp = firstNode.value//第一个选中的app
-                currentApplicationName = firstApp
-                if (firstApp != '') {
-                    //生成账号名称
-                    var url = '../api/account/generateAccountname?applicationName=' + firstApp
-                    accountNameFill(url, 'accountAddForm_accountName')
-                    //渲染角色列表
-                    var url = '../api/role/listAppAll?applicationName=' + firstApp
-                    renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
-                }
-            }
-        }, function () {
-            //普通用户
-            accountNameFill('../api/account/generateAccountname', 'accountAddForm_accountName')
-            //渲染角色列表
-            var url = '../api/role/listAppAll'
-            renderMultSelect('accountadd_div_roleList', url, 'roleIdList')
-        })
         form.render('select')
+        //一般赋值
+        form.val('form_AccountUpdate', {
+            'applicationName': data.applicationName,
+            'accountName': data.accountName,
+            'accountNickname': data.accountNickname,
+            'accountState': data.accountState,
+            'tag': data.tag
+        })
+
+        //角色下拉框渲染和赋值
+        var url = '../api/role/listAppAll?applicationName=' + data.applicationName
+        renderMultSelect('accountadd_div_roleList', url, 'roleIdList', null, function (component) {
+            ajaxGET('../api/account/rolelist/' + data.id, function (data) {
+                component.setValue(data.data)
+            })
+        } )
+
         //submit
-        form.on('submit(formAccountAdd)', function (data) {
-            var dt = data.field
+        form.on('submit(formAccountUpdate)', function (formdata) {
+            var dt = formdata.field
             if (dt.roleIdList != undefined && dt.roleIdList.trim() != '') {
                 dt.roleIdList = dt.roleIdList.split(',')
             } else {
                 dt.roleIdList = []
             }
-            addOp('../api/account/add', dt, 'id_accountTable')
+            dt.id = data.id
+            updateOp('../api/account/update', dt, 'id_accountTable')
             return false
         })
     })

@@ -5,6 +5,7 @@ import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.Authentication;
 import org.gonnaup.account.enums.AuthType;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
+import org.gonnaup.accountmanagement.constant.ValidateGroups;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.common.util.CryptUtil;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,9 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
 
     private static final long serialVersionUID = 8472465126440580678L;
 
+    @NotNull(message = "账号ID不能为空", groups = ValidateGroups.UPDATE.class)
+    private Long id;
+
     //***************账号信息******************//
     /**
      * 应用名称
@@ -35,6 +39,7 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
     /**
      * 用户名，同一应用中唯一
      */
+    @NotNull(message = "账号名称不能为空", groups = ValidateGroups.UPDATE.class)
     private String accountName;
 
     /**
@@ -53,6 +58,7 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
      * N - 正常
      * F - 禁用
      */
+    @NotNull(message = "用户状态不能为空")
     private String accountState;
 
     /**
@@ -64,14 +70,14 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
     /**
      * 邮箱
      */
-    @Email(message = "邮箱格式错误")
+    @Email(message = "邮箱格式错误", groups = ValidateGroups.ADD.class)
     private String identifier;
 
     /**
      * 密码
      */
-    @NotNull(message = "密码不能为空")
-    @Size(min = 6, message = "密码需大于6位")
+    @NotNull(message = "密码不能为空", groups = ValidateGroups.ADD.class)
+    @Size(min = 6, message = "密码需大于6位", groups = ValidateGroups.ADD.class)
     private char[] credential;
 
     /**

@@ -85,7 +85,7 @@
                     var firstApp = firstNode.value//第一个选中的app
                     if (firstApp != '') {
                         var url = '../api/permission/listAppAll?applicationName=' + firstApp
-                        renderMultSelect('div_permissionList', url, 'permissionIdList', 'get', function (data) {
+                        renderMultSelect('div_permissionList', url, 'permissionIdList', function (data) {
                             // if (data.arr.length > 0) {
                             //     var ids = []
                             //     data.arr.forEach(function (d) {
