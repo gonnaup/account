@@ -62,7 +62,6 @@
         </div>
     </form>
 </div>
-<script src="../xmSelect.js"></script>
 <script type="text/javascript">
     layui.use(['form'], function () {
         var $ = layui.jquery
@@ -71,7 +70,7 @@
             function () {
                 //监听应用名称下拉框点击
                 form.on('select(roleAppName)', function (data) {
-                    var url = '../api/permission/listAppAll?appName=' + data.value
+                    var url = '../api/permission/listAppAll?applicationName=' + data.value
                     renderMultSelect('div_permissionList', url)
                 })
 
@@ -85,7 +84,7 @@
                     var firstNode = selectRoot.children[0]
                     var firstApp = firstNode.value//第一个选中的app
                     if (firstApp != '') {
-                        var url = '../api/permission/listAppAll?appName=' + firstApp
+                        var url = '../api/permission/listAppAll?applicationName=' + firstApp
                         renderMultSelect('div_permissionList', url, 'permissionIdList', 'get', function (data) {
                             // if (data.arr.length > 0) {
                             //     var ids = []

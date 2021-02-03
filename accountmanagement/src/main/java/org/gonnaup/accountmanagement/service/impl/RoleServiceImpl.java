@@ -96,8 +96,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<Role> findByAppName(String appName) {
-        // TODO Auto-generated method stub
-        return null;
+        return roleDao.queryByAppName(appName);
     }
 
     /**

@@ -20,10 +20,10 @@ import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
-import org.gonnaup.accountmanagement.service.ApplicationCodeService;
 import org.gonnaup.accountmanagement.service.PermissionService;
-import org.gonnaup.accountmanagement.service.RolePermissionConfirmService;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
+import org.gonnaup.accountmanagement.validator.TemporaryApplicationNameAccessor;
 import org.gonnaup.accountmanagement.vo.PermissionVO;
 import org.gonnaup.accountmanagement.vo.SelectVO;
 import org.gonnaup.common.domain.Page;
@@ -34,7 +34,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,16 +51,10 @@ import java.util.stream.Collectors;
 public class PermissionController {
 
     @Autowired
-    private ApplicationCodeService applicationCodeService;
-
-    @Autowired
     private AccountService accountService;
 
     @Autowired
     private PermissionService permissionService;
-
-    @Autowired
-    private RolePermissionConfirmService rolePermissionConfirmService;
 
     @Autowired
     private ApplicationNameValidator applicationNameValidator;
@@ -106,16 +99,11 @@ public class PermissionController {
      */
     @GetMapping("/listAppAll")
     @RequirePermission(permissions = {PermissionType.APP_R})
-    public Result<List<SelectVO>> listAppAll(@JwtDataParam JwtData jwtData, @RequestParam(name = "appName", required = false) String appName) {
-        if (rolePermissionConfirmService.isAdmin(jwtData.getAccountId())) {
-            if (applicationCodeService.findByApplicationName(appName) == null) {
-                throw new ValidationException("请选择一个正确的应用名称");
-            }
-        } else {
-            appName = jwtData.getAppName();
-        }
+    public Result<List<SelectVO>> listAppAll(@JwtDataParam JwtData jwtData, @RequestParam(name = "applicationName", required = false) String appName) {
+        ApplicationNameAccessor accessor = new TemporaryApplicationNameAccessor(appName);
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accessor);
         return Result.code(ResultCode.SUCCESS.code()).success().data(
-                permissionService.findByAppName(appName).stream()
+                permissionService.findByAppName(accessor.getApplicationName()).stream()
                         .map(permission -> SelectVO.of(Long.toString(permission.getId()), permission.getPermissionName()))
                         .collect(Collectors.toUnmodifiableList())
         );

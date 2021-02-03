@@ -145,45 +145,25 @@
 
     <!--新增所有列-->
     <insert id="insert">
-        insert into account(id, application_name, account_name, account_nickname, account_avatar, account_state, tag, createtime, updatetime)
-        values (#{id}, #{applicationName}, #{accountName}, #{accountNickname}, #{accountAvatar}, #{accountState}, #{tag}, #{createtime}, #{updatetime})
+        insert into account(id, application_name, account_name, account_nickname, account_avatar, account_state, tag)
+        values (#{id}, #{applicationName}, #{accountName}, #{accountNickname}, #{accountAvatar}, #{accountState}, #{tag})
     </insert>
 
     <insert id="insertBatch">
         insert into account(id, application_name, account_name, account_nickname, account_avatar,
-        account_state, tag, createtime, updatetime)
+        account_state, tag)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname},
             #{entity.accountAvatar},
-            #{entity.accountState}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
+            #{entity.accountState}, #{entity.tag})
         </foreach>
-    </insert>
-
-    <insert id="insertOrUpdateBatch">
-        insert into account(id, application_name, account_name, account_nickname, account_avatar,
-        account_state, last_logintime, tag, createtime, updatetime)
-        values
-
-        <foreach collection="entities" item="entity" separator=",">
-            (#{entity.id}, #{entity.applicationName}, #{entity.accountName}, #{entity.accountNickname},
-            #{entity.accountAvatar},
-            #{entity.accountState}, #{entity.lastLogintime}, #{entity.tag}, #{entity.createtime}, #{entity.updatetime})
-        </foreach>
-        on duplicate key update
-        application_name = values(application_name) , account_name = values(account_name) , account_nickname =
-        values(account_nickname) , account_avatar = values(account_avatar) , account_state = values(account_state) ,
-        last_logintime = values(last_logintime) , tag = values(tag) , createtime = values(createtime) , updatetime =
-        values(updatetime)
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
         update account
         <set>
-            <if test="applicationName != null and applicationName != ''">
-                application_name = #{applicationName},
-            </if>
             <if test="accountName != null and accountName != ''">
                 account_name = #{accountName},
             </if>

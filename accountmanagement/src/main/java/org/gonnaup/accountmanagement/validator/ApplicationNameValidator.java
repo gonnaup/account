@@ -34,7 +34,7 @@ public class ApplicationNameValidator {
     private RolePermissionConfirmService rolePermissionConfirmService;
 
     /**
-     * 判断并设置appName，用于新增数据接口
+     * 判断并设置appName
      * <ul>
      *      <li>判断账号是否是admin角色</li>
      *      <li>是：验证参数appName不能为空，{@link OperaterType} 为A</li>

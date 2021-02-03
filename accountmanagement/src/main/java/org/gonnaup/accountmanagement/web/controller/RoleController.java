@@ -26,8 +26,11 @@ import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.PermissionService;
 import org.gonnaup.accountmanagement.service.RolePermissionService;
 import org.gonnaup.accountmanagement.service.RoleService;
+import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
+import org.gonnaup.accountmanagement.validator.TemporaryApplicationNameAccessor;
 import org.gonnaup.accountmanagement.vo.RoleVO;
+import org.gonnaup.accountmanagement.vo.SelectVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
 import org.gonnaup.common.domain.Result;
@@ -248,6 +251,24 @@ public class RoleController {
                 .map(permission -> Long.toString(permission.getId()))
                 .collect(Collectors.toUnmodifiableList());
         return Result.code(ResultCode.SUCCESS.code()).success().data(permissionIdList);
+    }
+
+    /**
+     * 获取某应用所有角色
+     * @param jwtData
+     * @param appName
+     * @return
+     */
+    @GetMapping("/listAppAll")
+    @RequirePermission(permissions = PermissionType.APP_R)
+    public Result<List<SelectVO>> listAppAll(@JwtDataParam JwtData jwtData, @RequestParam(name = "applicationName", required = false) String appName) {
+        ApplicationNameAccessor accessor = new TemporaryApplicationNameAccessor(appName);
+        applicationNameValidator.judgeAndSetApplicationName(jwtData, accessor);
+        return Result.code(ResultCode.SUCCESS.code()).success().data(
+                roleService.findByAppName(accessor.getApplicationName()).stream()
+                        .map(role -> SelectVO.of(Long.toString(role.getId()), role.getRoleName()))
+                        .collect(Collectors.toUnmodifiableList())
+        );
     }
 
     /**

@@ -14,6 +14,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author gonnaup
@@ -73,6 +74,11 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
     @Size(min = 6, message = "密码需大于6位")
     private char[] credential;
 
+    /**
+     * 角色ID列表
+     */
+    private List<Long> roleIdList;
+
 
     /**
      * 对象转换
@@ -98,6 +104,7 @@ public class AccountDTO implements Serializable, ApplicationNameAccessor {
         authentication.setAuthType(AuthType.E.name());//email类型
         authentication.setIdentifier(identifier);
         authentication.setCredential(CryptUtil.md5Encode(new String(credential), AuthenticateConst.SALT));
+        authentication.setExpires(-1L);
         credential = null;//help gc
         return authentication;
     }

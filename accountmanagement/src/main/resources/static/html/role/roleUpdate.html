@@ -74,7 +74,7 @@
         })
 
         //权限列表渲染
-        var url = '../api/permission/listAppAll?appName=' + data.applicationName
+        var url = '../api/permission/listAppAll?applicationName=' + data.applicationName
         renderMultSelect('div_permissionList', url, 'permissionIdList', 'get', function (data) {
             // if (data.arr.length > 0) {
             //     var ids = []

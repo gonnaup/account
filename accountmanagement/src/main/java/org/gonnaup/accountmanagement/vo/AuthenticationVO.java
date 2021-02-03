@@ -76,7 +76,9 @@ public class AuthenticationVO implements Serializable {
         authenticationVO.setId(Long.toString(authentication.getId()));
         authenticationVO.setAccountId(Long.toString(authentication.getAccountId()));
         authenticationVO.setAuthType(AuthType.valueOf(authentication.getAuthType()).description());
-        authenticationVO.setExpires(Long.toString(authentication.getExpires()));
+        if (authentication.getExpires() != null) {
+            authenticationVO.setExpires(Long.toString(authentication.getExpires()));
+        }
         return authenticationVO;
     }
 

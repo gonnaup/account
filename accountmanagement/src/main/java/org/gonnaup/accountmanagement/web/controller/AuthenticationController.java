@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/api/authentication")
-@RequirePermission(permissions = {PermissionType.APP_ALL})//应用管理员
+@RequirePermission(permissions = {PermissionType.APP_R})//应用管理员
 public class AuthenticationController {
 
     @Autowired

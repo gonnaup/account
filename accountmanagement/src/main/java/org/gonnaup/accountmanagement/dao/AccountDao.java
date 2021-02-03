@@ -94,14 +94,6 @@ public interface AccountDao {
     int insertBatch(@Param("entities") List<Account> entities);
 
     /**
-     * 批量新增或按主键更新数据（MyBatis原生foreach方法）
-     *
-     * @param entities List<Account> 实例对象列表
-     * @return 影响行数
-     */
-    int insertOrUpdateBatch(@Param("entities") List<Account> entities);
-
-    /**
      * 修改数据
      *
      * @param account 实例对象

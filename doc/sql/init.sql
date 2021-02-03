@@ -27,11 +27,11 @@ VALUES (102020121100000002, 'AccountManagement', 'read', 'read-only', NULL, 'rea
 -- default admin account admin-123456
 INSERT INTO authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
 VALUES (102020121100000001, 102020121100000001, 'AccountManagement', 'E', 'gonnaup@yeah.net',
-        '401E07A0ECFD7A36091B3CCC194BAB65', 0);
+        '401E07A0ECFD7A36091B3CCC194BAB65', -1);
 -- default read-only account read-123456
 INSERT INTO authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
 VALUES (102020121100000002, 102020121100000002, 'AccountManagement', 'E', 'gonnaup@qq.com',
-        '401E07A0ECFD7A36091B3CCC194BAB65', 0);
+        '401E07A0ECFD7A36091B3CCC194BAB65', -1);
 
 INSERT INTO role (id, application_name, role_name, description, score)
 VALUES (102021010700000101, 'AccountManagement', 'ADMIN', '系统管理员', '7FFFFFFF');

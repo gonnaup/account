@@ -1,6 +1,7 @@
 package org.gonnaup.accountmanagement.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gonnaup.account.domain.Account;
 import org.gonnaup.account.domain.Authentication;
@@ -9,16 +10,21 @@ import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.annotation.RequirePermission;
 import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
+import org.gonnaup.accountmanagement.domain.Operater;
 import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.dto.AccountDTO;
 import org.gonnaup.accountmanagement.dto.AccountQueryDTO;
+import org.gonnaup.accountmanagement.entity.AccountRole;
+import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountNameGenerator;
+import org.gonnaup.accountmanagement.service.AccountRoleService;
 import org.gonnaup.accountmanagement.service.AccountService;
 import org.gonnaup.accountmanagement.service.AuthenticationService;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
+import org.gonnaup.accountmanagement.validator.TemporaryApplicationNameAccessor;
 import org.gonnaup.accountmanagement.vo.AccountVO;
 import org.gonnaup.common.domain.Page;
 import org.gonnaup.common.domain.Pageable;
@@ -55,6 +61,9 @@ public class AccountController {
 
     @Autowired
     private AccountNameGenerator accountNameGenerator;
+
+    @Autowired
+    private AccountRoleService accountRoleService;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -101,17 +110,39 @@ public class AccountController {
     @Transactional
     @RequirePermission(permissions = {PermissionType.APP_A})
     public Result<Void> newAccount(@JwtDataParam JwtData jwtData, @RequestBody @Validated AccountDTO accountDTO) {
+        log.info("开始生成新的账号...");
         //应用名处理
-        applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
+        OperaterType operaterType = applicationNameValidator.judgeAndSetApplicationName(jwtData, accountDTO);
 
         Account account = accountDTO.toAccount();
         if (StringUtils.isBlank(account.getAccountName())) {
             account.setAccountName(generateAccountName(account.getApplicationName()));
         }
+        log.info("生成账号信息 {}", account);
         Account inserted = accountService.insert(account);//添加账号信息
         Authentication authentication = accountDTO.createAuthentication(inserted.getId());//设置认证信息账号ID
+
+        //认证信息
+        log.info("生成认证信息 {}", authentication);
         authenticationService.insert(authentication);//添加账号认证信息
         authentication.setCredential(null);//help gc
+
+        //角色信息
+        List<Long> roleIdList = accountDTO.getRoleIdList();
+        if (CollectionUtils.isNotEmpty(roleIdList)) {
+            final Long accountId = inserted.getId();
+            List<AccountRole> accountRoleList = roleIdList.stream().map(id -> {
+                AccountRole accountRole = new AccountRole();
+                accountRole.setAccountId(accountId);
+                accountRole.setRoleId(id);
+                return accountRole;
+            }).collect(Collectors.toUnmodifiableList());
+            Account opAccount = accountService.findById(jwtData.getAccountId());
+            accountRoleService.insertBatch(accountRoleList, Operater.of(operaterType, opAccount.getId(), opAccount.getAccountName()));
+            log.info("添加角色信息 {} 条", accountRoleList.size());
+        } else {
+            log.info("角色信息列表为空");
+        }
         log.info("账号[{}]添加账户 {} 认证信息 {}", jwtData.getAccountId(), account, authentication);
         return ResultConst.SUCCESS_NULL;
     }
@@ -186,6 +217,8 @@ public class AccountController {
         return Result.code(ResultCode.SUCCESS.code()).success().data(generateAccountName(accessor.getApplicationName()));
     }
 
+
+
     /**
      * 生成账号名称，自旋直到账号名不重复
      * @param appName 应用名称
@@ -198,25 +231,6 @@ public class AccountController {
         }
         log.info("成功生成账号名 {}", accountName);
         return accountName;
-    }
-
-    static class TemporaryApplicationNameAccessor implements ApplicationNameAccessor {
-
-        private String appName;
-
-        public TemporaryApplicationNameAccessor(String appName) {
-            this.appName = appName;
-        }
-
-        @Override
-        public String getApplicationName() {
-            return appName;
-        }
-
-        @Override
-        public void setApplicationName(String applicationName) {
-            this.appName = applicationName;
-        }
     }
 
 }

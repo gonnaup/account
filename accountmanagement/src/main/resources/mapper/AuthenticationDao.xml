@@ -109,8 +109,8 @@
 
     <!--新增所有列-->
     <insert id="insert">
-        insert into authentication(id, account_id, application_name, auth_type, identifier, credential, expires, createtime, updatetime)
-        values (#{id}, #{accountId},#{applicationName}, #{authType}, #{identifier}, #{credential}, #{expires}, #{createtime}, #{updatetime})
+        insert into authentication(id, account_id, application_name, auth_type, identifier, credential, expires)
+        values (#{id}, #{accountId},#{applicationName}, #{authType}, #{identifier}, #{credential}, #{expires})
     </insert>
 
     <!--通过主键修改数据-->
