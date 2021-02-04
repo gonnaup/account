@@ -119,7 +119,9 @@
                 dt.roleIdList = []
             }
             dt.id = data.id
-            updateOp('../api/account/update', dt, 'id_accountTable')
+            updateOp('../api/account/update', dt, 'id_accountTable', function () {
+                ADUOperateValidate('accountbar_add', 'accountbar_delete', 'accountbar_update')
+            })
             return false
         })
     })

@@ -9,12 +9,10 @@ import org.gonnaup.account.exception.LoginException;
 import org.gonnaup.accountmanagement.annotation.JwtDataParam;
 import org.gonnaup.accountmanagement.constant.ApplicationName;
 import org.gonnaup.accountmanagement.constant.AuthenticateConst;
-import org.gonnaup.accountmanagement.constant.ResultConst;
 import org.gonnaup.accountmanagement.domain.JwtData;
 import org.gonnaup.accountmanagement.domain.SimpleBooleanShell;
 import org.gonnaup.accountmanagement.domain.SimplePermission;
 import org.gonnaup.accountmanagement.dto.LoginDTO;
-import org.gonnaup.accountmanagement.dto.RegisterDTO;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
 import org.gonnaup.accountmanagement.service.AccountService;
@@ -73,8 +71,10 @@ public class AuthenticateController {
      */
     @PostMapping("/login")
     public Result<AccountHeader> login(@RequestBody @Validated LoginDTO login, HttpServletRequest request) throws LoginException {
-//        String ipAddr = RequestUtil.obtainRealIpAddr(request);
+        String ipAddr = RequestUtil.obtainRealIpAddr(request);
+        log.info("ip = {} 登录系统", ipAddr);
         //todo 登录次数控制
+        //todo 禁用账号过滤
         //是否是email
         String identifier = login.getIdentifier();
         if (emailPattern.matcher(identifier).matches()) {
@@ -179,20 +179,6 @@ public class AuthenticateController {
             log.info("jwt {} 已失效，无需注销", jwt);
         }
         return Result.code(ResultCode.SUCCESS.code()).success().data("");
-    }
-
-    /**
-     * 账号注册
-     *
-     * @param request
-     * @param account
-     * @return
-     */
-    @PostMapping("/register")
-    public Result<Void> registerAccount(RegisterDTO register) {
-
-
-        return ResultConst.SUCCESS_NULL;
     }
 
     /**

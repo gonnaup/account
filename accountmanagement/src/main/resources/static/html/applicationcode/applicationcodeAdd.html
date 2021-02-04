@@ -60,7 +60,9 @@
         var form = layui.form
         var $ = layui.jquery
         form.on('submit(formApplicationCodeAdd)', function (data) {
-            addOp('../api/applicationCode/add', data.field, 'id_applicationCodeTable')
+            addOp('../api/applicationCode/add', data.field, 'id_applicationCodeTable', function () {
+                ADUOperateValidate('applicationCodebar_add', 'applicationCodebar_delete', 'applicationCodebar_update', '../api/applicationCode/applicationCodePermission')
+            })
             removeOptionExceptFirst('applicationCodeQueryForm_appName')
             handleAppNameSelect('applicationCodeQueryBlock', 'applicationCodeQueryForm_appName')
             return false

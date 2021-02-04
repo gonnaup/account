@@ -68,7 +68,9 @@
         })
         var $ = layui.jquery
         form.on('submit(formApplicationCodeUpdate)', function (data) {
-            updateOp('../api/applicationCode/update', data.field, 'id_applicationCodeTable')
+            updateOp('../api/applicationCode/update', data.field, 'id_applicationCodeTable',  function () {
+                ADUOperateValidate('applicationCodebar_add', 'applicationCodebar_delete', 'applicationCodebar_update', '../api/applicationCode/applicationCodePermission')
+            })
             return false
         })
     })

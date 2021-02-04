@@ -156,7 +156,9 @@
             } else {
                 dt.roleIdList = []
             }
-            addOp('../api/account/add', dt, 'id_accountTable')
+            addOp('../api/account/add', dt, 'id_accountTable', function () {
+                ADUOperateValidate('accountbar_add', 'accountbar_delete', 'accountbar_update')
+            })
             return false
         })
     })

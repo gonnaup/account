@@ -17,9 +17,9 @@ function accountUpdateClicked(rowData) {
 //账号删除按钮点击
 function accountDeleteClicked(rowData) {
     if (selectOneRowDataVerify(rowData.data)) {
-        // var data = rowData.data[0]
-        // var url = '../api/applicationSequence/delete/' + data.applicationName + '/' + data.sequenceType
-        // deleteOp(url, 'id_applicationSequenceTable')
+        var data = rowData.data[0]
+        var url = '../api/account/disable/' + data.id
+        deleteOp(url, 'id_accountTable', undefined, '是否禁用账号？')
     }
 }
 

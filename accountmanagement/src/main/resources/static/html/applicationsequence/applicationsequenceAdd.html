@@ -63,7 +63,9 @@
         var form = layui.form
         var $ = layui.jquery
         form.on('submit(formSequenceAdd)', function (data) {
-            addOp('../api/applicationSequence/add', data.field, 'id_applicationSequenceTable')
+            addOp('../api/applicationSequence/add', data.field, 'id_applicationSequenceTable', function () {
+                ADUOperateValidate('applicationSequencebar_add', 'applicationSequencebar_delete', 'applicationSequencebar_update', '../api/applicationSequence/applicationSequencePermission')
+            })
             return false
         })
     })

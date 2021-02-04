@@ -61,7 +61,7 @@ function closeAllLayerPage() {
  */
 function operateSuccessMsg() {
     var layer = layui.layer
-    layer.msg('操作成功', {icon: 1, time: 3000})
+    layer.msg('操作成功', {icon: 1, time: 2000})
 }
 
 function alertMsg(msg) {
@@ -149,9 +149,10 @@ function obtainTableSelectedRowData(tableId) {
  * @param url 请求api
  * @param data 数据，表格原始数据
  * @param tableId 需要刷新的表格ID
+ * @param callback 刷新表格后的回调
  */
-function addOp(url, data, tableId) {
-    saveOp(url, data, tableId, 'post')
+function addOp(url, data, tableId, callback) {
+    saveOp(url, data, tableId, 'post', callback)
 }
 
 /**
@@ -159,12 +160,13 @@ function addOp(url, data, tableId) {
  * @param url 请求api
  * @param data 数据，表格原始数据
  * @param tableId 需要刷新的表格ID
+ * @param callback 刷新表格后的回调
  */
-function updateOp(url, data, tableId) {
-    saveOp(url, data, tableId, 'put')
+function updateOp(url, data, tableId, callback) {
+    saveOp(url, data, tableId, 'put', callback)
 }
 
-function saveOp(url, data, tableId, type) {
+function saveOp(url, data, tableId, type, callback) {
     var $ = layui.jquery
     $.ajax({
         url: url,
@@ -176,6 +178,9 @@ function saveOp(url, data, tableId, type) {
             closeAllLayerPage()//关闭layer
             operateSuccessMsg()
             layui.table.reload(tableId)
+            if (callback) {
+                callback()
+            }
         }
     })
 }
@@ -186,9 +191,10 @@ function saveOp(url, data, tableId, type) {
  * @param tableId 需要刷新的表格ID
  * @param callback 成功后的回调函数
  */
-function deleteOp(url, tableId, callback) {
+function deleteOp(url, tableId, callback, msg) {
     var layer = layui.layer
-    layer.confirm('是否删除数据？', {icon: 3, btn: ['确认', '取消']},
+    msg ||= '是否删除数据？'
+    layer.confirm(msg, {icon: 3, btn: ['确认', '取消']},
         function (index) {
             layer.close(index)//关闭layer
             var $ = layui.jquery

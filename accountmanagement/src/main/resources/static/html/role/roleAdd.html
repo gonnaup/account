@@ -105,6 +105,9 @@
                         })
                     }
                 }
+            }, function () {
+                var url = '../api/permission/listAppAll'
+                renderMultSelect('div_permissionList', url, 'permissionIdList')
             })
 
         form.on('submit(formRoleAdd)', function (data) {
@@ -114,7 +117,9 @@
             } else {
                 dt.permissionIdList = []
             }
-            addOp('../api/role/add', dt, 'id_roleTable')
+            addOp('../api/role/add', dt, 'id_roleTable', function () {
+                ADUOperateValidate('rolebar_add', 'rolebar_delete', 'rolebar_update')
+            })
             return false
         })
     })

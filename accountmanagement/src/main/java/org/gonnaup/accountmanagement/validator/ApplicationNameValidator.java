@@ -71,15 +71,15 @@ public class ApplicationNameValidator {
     }
 
     /**
-     * 判断账号是否有权操作对应app的数据，用于更新或删除数据接口
+     * 判断账号是否有权操作对应app的数据
      * <ul>
      *     <li>判断账号是否是ADMIN</li>
      *     <li>是：有权操作，{@link OperaterType} 为A</li>
      *     <li>否：验证账号所属appName是否和参数appName一致。yes：{@link OperaterType} 为S，no：抛异常</li>
      * </ul>
      *
-     * @param jwtData
-     * @param applicationNameAccessor
+     * @param jwtData jwt信息
+     * @param applicationNameAccessor 应用名访问器
      * @return
      */
     public OperaterType validateApplicationName(JwtData jwtData, ApplicationNameAccessor applicationNameAccessor) {
@@ -114,8 +114,8 @@ public class ApplicationNameValidator {
     /**
      * {@link #validateApplicationName(JwtData, ApplicationNameAccessor)}
      *
-     * @param jwtData
-     * @param appName
+     * @param jwtData jwt信息
+     * @param appName 数据属实应用名
      * @return
      */
     public OperaterType validateApplicationName(JwtData jwtData, String appName) {

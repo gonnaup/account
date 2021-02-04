@@ -22,10 +22,7 @@ import org.gonnaup.accountmanagement.entity.AccountRole;
 import org.gonnaup.accountmanagement.enums.OperaterType;
 import org.gonnaup.accountmanagement.enums.PermissionType;
 import org.gonnaup.accountmanagement.enums.ResultCode;
-import org.gonnaup.accountmanagement.service.AccountNameGenerator;
-import org.gonnaup.accountmanagement.service.AccountRoleService;
-import org.gonnaup.accountmanagement.service.AccountService;
-import org.gonnaup.accountmanagement.service.AuthenticationService;
+import org.gonnaup.accountmanagement.service.*;
 import org.gonnaup.accountmanagement.util.ObjectUtil;
 import org.gonnaup.accountmanagement.validator.ApplicationNameAccessor;
 import org.gonnaup.accountmanagement.validator.ApplicationNameValidator;
@@ -68,6 +65,9 @@ public class AccountController {
 
     @Autowired
     private AccountRoleService accountRoleService;
+
+    @Autowired
+    private InvalidJwtService invalidJwtService;
 
     /**
      * 判断是否有权限显示此页面，使用鉴权拦截器实现，通过验证后直接返回成功
@@ -199,6 +199,8 @@ public class AccountController {
                 log.info("角色信息列表为空");
             }
         }
+        //账号失效
+        invalidJwtService.invalidJWT(account.getId());
         return ResultConst.SUCCESS_NULL;
     }
 
@@ -215,6 +217,8 @@ public class AccountController {
         Account account = ObjectUtil.requireNotNullThrows(accountService.findById(accountId), new LogicValidationException("不存在此账号，无法操作"), String.format("要禁用的账号ID=%s不存在", accountId));
         applicationNameValidator.validateApplicationName(jwtData, account.getApplicationName());
         accountService.updateState(accountId, AccountState.F.name());//修改账户状态
+        //账号失效
+        invalidJwtService.invalidJWT(accountId);
         return ResultConst.SUCCESS_NULL;
     }
 

@@ -61,7 +61,9 @@
         var form = layui.form
         var $ = layui.jquery
         form.on('submit(formPermissionAdd)', function (data) {
-            addOp('../api/permission/add', data.field, 'id_permissionTable')
+            addOp('../api/permission/add', data.field, 'id_permissionTable', function () {
+                ADUOperateValidate('permissionbar_add', 'permissionbar_delete', 'permissionbar_update')
+            })
             return false
         })
     })

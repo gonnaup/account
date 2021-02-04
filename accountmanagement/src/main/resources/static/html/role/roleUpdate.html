@@ -113,7 +113,9 @@
             }
             //赋值ID
             dt.id = data.id
-            updateOp('../api/role/update', dt, 'id_roleTable')
+            updateOp('../api/role/update', dt, 'id_roleTable', function () {
+                ADUOperateValidate('rolebar_add', 'rolebar_delete', 'rolebar_update')
+            })
             return false
         })
     })

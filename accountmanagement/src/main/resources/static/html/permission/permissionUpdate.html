@@ -67,7 +67,9 @@
             var dt = formdata.field
             //赋值ID
             dt.id = data.id
-            updateOp('../api/permission/update', dt, 'id_permissionTable')
+            updateOp('../api/permission/update', dt, 'id_permissionTable', function () {
+                ADUOperateValidate('permissionbar_add', 'permissionbar_delete', 'permissionbar_update')
+            })
             return false
         })
     })

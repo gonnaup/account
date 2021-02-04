@@ -16,7 +16,7 @@ spring:
     password:
   cache:
     redis:
-      key-prefix: redisCache::$
+      key-prefix: cache::AccountManagement::@
       time-to-live: 60000
 mybatis:
   mapper-locations: mapper/*.xml

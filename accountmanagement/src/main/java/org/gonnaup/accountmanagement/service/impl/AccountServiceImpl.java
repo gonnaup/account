@@ -117,7 +117,7 @@ public class AccountServiceImpl implements AccountService {
      * @return 实例对象
      */
     @Override
-    @Caching(put = {@CachePut(key = "#account.id"), @CachePut(key = "'accountheader::'+#account.id")})
+    @Caching(put = {@CachePut(key = "#account.id", condition = "#result != null")}, evict = {@CacheEvict(key = "'accountheader::'+#account.id", condition = "#result != null")})
     @Transactional
     public Account update(Account account) {
         this.accountDao.update(account);
@@ -131,7 +131,8 @@ public class AccountServiceImpl implements AccountService {
      * @return <code>true</code>：成功；<code>false</code>：失败
      */
     @Override
-    @Caching(put = {@CachePut(key = "#accountId"), @CachePut(key = "'accountheader::'+#accountId")})
+    @Caching(evict = {@CacheEvict(key = "#accountId", condition = "#result"), @CacheEvict(key = "'accountheader::'+#accountId", condition = "#result")})
+    @Transactional
     public boolean updateState(Long accountId, String state) {
         return accountDao.updateAccountStateById(accountId, state) > 0;
     }
@@ -143,7 +144,8 @@ public class AccountServiceImpl implements AccountService {
      * @return 是否成功
      */
     @Override
-    @Caching(evict = {@CacheEvict(key = "#id"), @CacheEvict(key = "'accountheader::'+#id")})
+    @Caching(evict = {@CacheEvict(key = "#id", condition = "#result"), @CacheEvict(key = "'accountheader::'+#id", condition = "#result")})
+    @Transactional
     public boolean deleteById(Long id) {
         return this.accountDao.deleteById(id) > 0;
     }
